@@ -17,8 +17,24 @@ def string_to_transform(template_string):
 def to_pretext(transform,data_dict):
     doc = etree.Element("data")
     for key in data_dict.keys():
-        se = etree.SubElement(doc, key)
-        se.text = latex(data_dict[key])
+        data = data_dict[key]
+        if data is False:
+            pass #skip generating element only when exactly False
+        else:
+            se = etree.SubElement(doc, key)
+            if isinstance(data, list):
+                for datum in data:
+                    sse = etree.SubElement(se, 'item')
+                    if isinstance(datum, str):
+                        sse.text = datum
+                    else:
+                        sse.text = latex(datum)
+            else:
+                if isinstance(data,str):
+                    se.text = data
+                else:
+                    se.text = latex(data)
+    #print(etree.tostring(doc))
     return transform(doc)
 
 def to_string(doc):

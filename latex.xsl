@@ -23,6 +23,14 @@
 
     <xsl:template match="me">\[<xsl:value-of select="."/>\]</xsl:template>
 
+    <xsl:template match="md">\[\begin{align*}<xsl:apply-templates select="mrow"/>\end{align*}\]</xsl:template>
+
+    <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
+
     <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
+
+    <xsl:template match="ul">\begin{itemize}<xsl:apply-templates select="li"/>\end{itemize}</xsl:template>
+    <xsl:template match="ol">\begin{enumerate}[(a)]<xsl:apply-templates select="li"/>\end{enumerate}</xsl:template>
+    <xsl:template match="li">\item <xsl:apply-templates/> </xsl:template>
 
 </xsl:stylesheet>
