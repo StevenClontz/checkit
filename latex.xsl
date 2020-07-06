@@ -33,4 +33,7 @@
     <xsl:template match="ol">\begin{enumerate}[(a)]<xsl:apply-templates select="li"/>\end{enumerate}</xsl:template>
     <xsl:template match="li">\item <xsl:apply-templates/> </xsl:template>
 
+  <!-- https://stackoverflow.com/a/5044657/1607849 -->
+  <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
+
 </xsl:stylesheet>

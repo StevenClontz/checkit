@@ -31,4 +31,7 @@
     <xsl:template match="li"><li><xsl:apply-templates/></li></xsl:template>
 
 
+  <!-- https://stackoverflow.com/a/5044657/1607849 -->
+  <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
+
 </xsl:stylesheet>

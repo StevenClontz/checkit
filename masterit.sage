@@ -1,17 +1,16 @@
 from lxml import etree
 
-PREFIX = """<?xml version="1.0"?>
+def string_to_transform(template_string):
+    PREFIX = """<?xml version="1.0"?>
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="xml"/>
     <xsl:template match="/data">
 """
-SUFFIX = """
+    SUFFIX = """
     </xsl:template>
 </xsl:stylesheet>
 """
-
-def string_to_transform(template_string):
     return etree.XSLT(etree.XML(PREFIX+template_string+SUFFIX))
 
 def insert_object_into_element(obj,name,element):
@@ -54,3 +53,21 @@ def to_latex(doc):
     return str(
         transform(doc)
     )
+
+def build_latex(name,generator,template_string,amount=50,fixed=True):
+    import os
+    if not os.path.isdir('build'): os.mkdir('build')
+    build_path = f"build/{name}"
+    if not os.path.isdir(build_path): os.mkdir(build_path)
+    seed = -1
+    for count in range(0,amount):
+        if fixed:
+            seed += 1
+        else:
+            seed = randrange(0,10000)
+        set_random_seed(seed)
+        with open(f'{build_path}/{count:03}.tex','w') as outfile:
+            for item in [f"Seed {seed}","",to_latex(to_pretext(string_to_transform(template_string),generator())),""]:
+                print(item)
+                print(item, file=outfile)
+
