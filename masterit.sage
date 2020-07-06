@@ -14,27 +14,27 @@ SUFFIX = """
 def string_to_transform(template_string):
     return etree.XSLT(etree.XML(PREFIX+template_string+SUFFIX))
 
-def to_pretext(transform,data_dict):
+def insert_object_into_element(obj,name,element):
+    if obj is False:
+        return None #skip generating element only when exactly False
+    se = etree.SubElement(element, name)
+    if isinstance(obj, list):
+        for item in obj:
+            insert_object_into_element(item,"item",se)
+    else:
+        if isinstance(obj,str):
+            se.text = obj
+        else:
+            se.text = f" {latex(obj)} "
+
+def to_xml(data_dict):
     doc = etree.Element("data")
     for key in data_dict.keys():
-        data = data_dict[key]
-        if data is False:
-            pass #skip generating element only when exactly False
-        else:
-            se = etree.SubElement(doc, key)
-            if isinstance(data, list):
-                for datum in data:
-                    sse = etree.SubElement(se, 'item')
-                    if isinstance(datum, str):
-                        sse.text = datum
-                    else:
-                        sse.text = latex(datum)
-            else:
-                if isinstance(data,str):
-                    se.text = data
-                else:
-                    se.text = latex(data)
-    #print(etree.tostring(doc))
+        insert_object_into_element(data_dict[key], key, doc)
+    return doc
+
+def to_pretext(transform,data_dict):
+    doc = to_xml(data_dict)
     return transform(doc)
 
 def to_string(doc):
