@@ -6,12 +6,16 @@
     <!-- Normalize whitespace but don't completely trim beginning or end: https://stackoverflow.com/a/5044657/1607849 -->
     <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
 
+    <xsl:template match="exercise">
+        <div class="exercise"><xsl:apply-templates/></div>
+    </xsl:template>
+
     <xsl:template match="statement">
-        <div><xsl:apply-templates/></div>
+        <div class="exercise-statement"><xsl:apply-templates/></div>
     </xsl:template>
 
     <xsl:template match="answer">
-        <div>
+        <div class="exercise-answer">
             <p><b>Answer:</b></p>
             <xsl:apply-templates/>
         </div>
@@ -41,6 +45,9 @@
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
 
     <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
+    <!--<xsl:template match="m"><xsl:call-template name="codecogs-math"><xsl:with-param name="latex"><xsl:value-of select="."/></xsl:with-param></xsl:call-template></xsl:template>-->
+
+    <xsl:template name="codecogs-math"><xsl:param name="latex"/><img><xsl:attribute name="src">https://latex.codecogs.com/svg.latex?<xsl:value-of select="normalize-space($latex)"/></xsl:attribute></img></xsl:template>
 
     <xsl:template match="ul"><ul><xsl:apply-templates select="li"/></ul></xsl:template>
     <xsl:template match="ol"><ol type="a"><xsl:apply-templates select="li"/></ol></xsl:template>

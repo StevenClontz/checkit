@@ -71,6 +71,10 @@ class Exercise:
         transform = etree.XSLT(etree.parse("latex.xsl"))
         return str(transform(self.pretext_tree()))
 
+    def qti(self):
+        transform = etree.XSLT(etree.parse("qti.xsl"))
+        return str(transform(self.pretext_tree()))
+
     def preview(self):
         print("HTML source")
         print("-----------")
@@ -79,6 +83,10 @@ class Exercise:
         print("LaTeX source")
         print("------------")
         print(self.latex())
+        print()
+        print("QTI source")
+        print("------------")
+        print(self.qti())
         print()
         print("PreTeXt source")
         print("------------")
@@ -100,5 +108,7 @@ class Exercise:
                 print(self.latex(), file=outfile)
             with open(f'{build_path}/{count:04}.html','w') as outfile:
                 print(self.html(), file=outfile)
+            with open(f'{build_path}/{count:04}.qti','w') as outfile:
+                print(self.qti(), file=outfile)
         print(f"Files built successfully at {build_path}")
 
