@@ -1,4 +1,5 @@
 from lxml import etree
+import lxml.html
 
 def insert_object_into_element(obj,name,element):
     if obj is False:
@@ -55,13 +56,14 @@ class Exercise:
 
     def pretext_tree(self):
         transform = self.template()
-        return transform(self.data_tree())
+        tree = transform(self.data_tree()).getroot()
+        tree.xpath("/*")[0].attrib['masterit-seed'] = str(self.__seed)
+        tree.xpath("/*")[0].attrib['masterit-slug'] = str(self.__slug)
+        tree.xpath("/*")[0].attrib['masterit-name'] = str(self.__name)
+        return tree
 
     def pretext(self):
-        return str(
-            etree.tostring(self.pretext_tree()),
-            encoding="UTF-8",
-        )
+        return str(etree.tostring(self.pretext_tree()), encoding="UTF-8")
 
     def html(self):
         transform = etree.XSLT(etree.parse("html.xsl"))
@@ -73,7 +75,13 @@ class Exercise:
 
     def qti(self):
         transform = etree.XSLT(etree.parse("qti.xsl"))
-        return str(transform(self.pretext_tree()))
+        tree = transform(self.pretext_tree()).getroot()
+        for mattextxml in tree.xpath("//mattextxml"):
+            mattext = etree.Element("mattext")
+            mattext.attrib['texttype'] = 'text/html'
+            mattext.text = lxml.html.tostring(lxml.html.fromstring(etree.tostring(mattextxml.find("*"))))
+            mattextxml.addnext(mattext)
+        return str(etree.tostring(tree), 'UTF-8')
 
     def preview(self):
         print("HTML source")

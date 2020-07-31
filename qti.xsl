@@ -6,7 +6,9 @@
 
 
     <xsl:template match="exercise">
-      <item ident="A1q9" title="Question 9">
+      <item>
+        <xsl:attribute name="ident"><xsl:value-of select="@masterit-slug"/>-<xsl:value-of select="@masterit-seed"/></xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="@masterit-slug"/> | <xsl:value-of select="@masterit-name"/> | ver. <xsl:value-of select="@masterit-seed"/></xsl:attribute>
         <itemmetadata>
           <qtimetadata>
             <qtimetadatafield>
@@ -17,7 +19,8 @@
         </itemmetadata>
         <presentation>
           <material>
-            <mattext texttype="text/html"><xsl:apply-templates select="statement"/></mattext>
+            <!-- converts to <mattext texttype="text/html"/> via LXML -->
+            <mattextxml><xsl:apply-templates select="statement"/></mattextxml>
           </material>
           <response_str ident="response1" rcardinality="Single">
             <render_fib>
@@ -28,7 +31,7 @@
         <itemfeedback ident="general_fb">
           <flow_mat>
             <material>
-              <mattext texttype="text/html"><xsl:apply-templates select="answer"/></mattext>
+              <mattextxml><xsl:apply-templates select="answer"/></mattextxml>
             </material>
           </flow_mat>
         </itemfeedback>
