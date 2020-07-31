@@ -3,6 +3,9 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="html"/>
 
+    <!-- Normalize whitespace but don't completely trim beginning or end: https://stackoverflow.com/a/5044657/1607849 -->
+    <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
+
     <xsl:template match="statement">
         <div><xsl:apply-templates/></div>
     </xsl:template>
@@ -18,9 +21,22 @@
         <p><xsl:apply-templates/></p>
     </xsl:template>
 
+    <xsl:template match="claim">
+        <p><xsl:apply-templates/></p>
+    </xsl:template>
+
     <xsl:template match="me"><p>\[<xsl:value-of select="."/>\]</p></xsl:template>
 
-    <xsl:template match="md">\[\begin{align*}<xsl:apply-templates select="mrow"/>\end{align*}\]</xsl:template>
+        <xsl:template match="md">
+        <xsl:choose>
+            <xsl:when test="@alignment='alignat'">
+                \begin{alignat*}{<xsl:value-of select="@alignat-columns"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
+            </xsl:when>
+            <xsl:otherwise>
+                \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
 
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
 
@@ -29,9 +45,5 @@
     <xsl:template match="ul"><ul><xsl:apply-templates select="li"/></ul></xsl:template>
     <xsl:template match="ol"><ol type="a"><xsl:apply-templates select="li"/></ol></xsl:template>
     <xsl:template match="li"><li><xsl:apply-templates/></li></xsl:template>
-
-
-  <!-- https://stackoverflow.com/a/5044657/1607849 -->
-  <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
 
 </xsl:stylesheet>

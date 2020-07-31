@@ -20,9 +20,9 @@ def dict_to_tree(data_dict):
     return tree
 
 class Exercise:
-    def __init__(self,name=None,short_name=None,generator=None,template=None,seed=None):
+    def __init__(self, name=None, slug=None, generator=None, template=None, seed=None):
         self.__name = name
-        self.__short_name = short_name
+        self.__slug = slug
         self.__generator = generator
         self.__template = template
         self.reset_seed(seed=seed)
@@ -87,7 +87,7 @@ class Exercise:
     def build_files(self, amount=50, fixed=True):
         import os
         if not os.path.isdir('build'): os.mkdir('build')
-        build_path = f"build/{self.__short_name}"
+        build_path = f"build/{self.__slug}"
         if not os.path.isdir(build_path): os.mkdir(build_path)
         for count in range(0,amount):
             if fixed:
