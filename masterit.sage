@@ -73,7 +73,7 @@ class Exercise:
         transform = etree.XSLT(etree.parse("latex.xsl"))
         return str(transform(self.pretext_tree()))
 
-    def qti(self):
+    def qti_tree(self):
         transform = etree.XSLT(etree.parse("qti.xsl"))
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
@@ -81,7 +81,10 @@ class Exercise:
             mattext.attrib['texttype'] = 'text/html'
             mattext.text = lxml.html.tostring(lxml.html.fromstring(etree.tostring(mattextxml.find("*"))))
             mattextxml.addnext(mattext)
-        return str(etree.tostring(tree), 'UTF-8')
+        return tree
+
+    def qti(self):
+        return str(etree.tostring(self.qti_tree()), 'UTF-8')
 
     def preview(self):
         print("HTML source")
@@ -105,11 +108,26 @@ class Exercise:
         if not os.path.isdir('build'): os.mkdir('build')
         build_path = f"build/{self.__slug}"
         if not os.path.isdir(build_path): os.mkdir(build_path)
+        bank_build_path = f"build/qti-bank"
+        if not os.path.isdir(bank_build_path): os.mkdir(bank_build_path)
+        bank_tree = etree.fromstring("""<?xml version="1.0"?>
+<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
+  <objectbank>
+    <qtimetadata>
+      <qtimetadatafield/>
+    </qtimetadata>
+  </objectbank>
+</questestinterop>""")
+        label = etree.SubElement(bank_tree.find("*/*/*"), "fieldlabel")
+        label.text = "bank_title"
+        entry = etree.SubElement(bank_tree.find("*/*/*"), "fieldentry")
+        entry.text = f"MasterIt Question Bank -- {self.__slug}"
         for count in range(0,amount):
             if fixed:
                 self.reset_seed(count)
             else:
                 self.reset_seed()
+            # build flat files
             with open(f'{build_path}/{count:04}.ptx','w') as outfile:
                 print(self.pretext(), file=outfile)
             with open(f'{build_path}/{count:04}.tex','w') as outfile:
@@ -118,5 +136,10 @@ class Exercise:
                 print(self.html(), file=outfile)
             with open(f'{build_path}/{count:04}.qti','w') as outfile:
                 print(self.qti(), file=outfile)
+            # add to bank file
+            bank_tree.find("*/*").append(self.qti_tree())
+            bank_tree.find("*/*").attrib['ident'] = self.__slug
+        with open(f'{bank_build_path}/{self.__slug}.qti','w') as outfile:
+            print(str(etree.tostring(bank_tree, encoding="UTF-8", xml_declaration=True),"UTF-8"), file=outfile)
         print(f"Files built successfully at {build_path}")
 
