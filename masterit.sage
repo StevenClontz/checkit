@@ -20,6 +20,50 @@ def dict_to_tree(data_dict):
         insert_object_into_element(data_dict[key], key, tree)
     return tree
 
+
+
+import os
+
+def path_relative_from_script(rel_path):
+    try:
+        dirname = os.path.dirname(__file__)
+    except NameError:
+        dirname = ""
+    return os.path.join(dirname, rel_path)
+
+
+
+
+def mi_vars(*latex_names, random_order=True):
+    """
+    Given one or more `latex_names` of strings, returns a tuple
+    of Sage variables. `random_order` names them so that they appear
+    in expressions in a random order.
+    """
+    stamp = randrange(100000,999999)
+    indices = list(range(len(latex_names)))
+    if random_order:
+        shuffle(indices)
+    return (var(f"mi_var_{stamp}_{indices[i]}", latex_name=name) for i, name in enumerate(latex_names))
+
+def shuffled_equation(equation):
+    """
+    Returns the given equation after randomly swapping sides each term appears on.
+    """
+    new_equation = 0
+    for term in equation.lhs().operands():
+        if choice([True,False]):
+            new_equation += (term==0)
+        else:
+            new_equation += (0==-term)
+    for term in equation.rhs().operands():
+        if choice([True,False]):
+            new_equation += (-term==0)
+        else:
+            new_equation += (0==term)
+    return new_equation
+
+
 class Exercise:
     def __init__(self, name=None, slug=None, generator=None, template=None, seed=None):
         self.__name = name
@@ -66,15 +110,15 @@ class Exercise:
         return str(etree.tostring(self.pretext_tree()), encoding="UTF-8")
 
     def html(self):
-        transform = etree.XSLT(etree.parse("html.xsl"))
+        transform = etree.XSLT(etree.parse(path_relative_from_script("html.xsl")))
         return str(transform(self.pretext_tree()))
 
     def latex(self):
-        transform = etree.XSLT(etree.parse("latex.xsl"))
+        transform = etree.XSLT(etree.parse(path_relative_from_script("latex.xsl")))
         return str(transform(self.pretext_tree()))
 
     def qti_tree(self):
-        transform = etree.XSLT(etree.parse("qti.xsl"))
+        transform = etree.XSLT(etree.parse(path_relative_from_script("qti.xsl")))
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
             mattext = etree.Element("mattext")
@@ -104,7 +148,6 @@ class Exercise:
         print(self.pretext())
 
     def build_files(self, amount=50, fixed=True):
-        import os
         if not os.path.isdir('build'): os.mkdir('build')
         build_path = f"build/{self.__slug}"
         if not os.path.isdir(build_path): os.mkdir(build_path)
@@ -137,9 +180,27 @@ class Exercise:
             with open(f'{build_path}/{count:04}.qti','w') as outfile:
                 print(self.qti(), file=outfile)
             # add to bank file
-            bank_tree.find("*/*").append(self.qti_tree())
-            bank_tree.find("*/*").attrib['ident'] = self.__slug
+            bank_tree.find("*").append(self.qti_tree())
+            bank_tree.find("*").attrib['ident'] = self.__slug
         with open(f'{bank_build_path}/{self.__slug}.qti','w') as outfile:
             print(str(etree.tostring(bank_tree, encoding="UTF-8", xml_declaration=True),"UTF-8"), file=outfile)
         print(f"Files built successfully at {build_path}")
 
+
+
+def main(library_path):
+    config = etree.parse(os.path.join(library_path, "masterit.xml"))
+    for objective in config.xpath("/masterit/objectives/objective"):
+        slug = objective.find("slug").text
+        load(os.path.join(library_path, f"{slug}.sage")) # imports `generator` function
+        with open(os.path.join(library_path, f"{slug}.ptx"),'r') as template_file:
+            template = template_file.read()
+        Exercise(
+            name=objective.find("title").text,
+            slug=slug,
+            generator=generator,
+            template=template
+        ).build_files()
+
+if (__name__ == "__main__") and ("repl/" not in sys.argv[0]): #hax
+    main(sys.argv[1])
