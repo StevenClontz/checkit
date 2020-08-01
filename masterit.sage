@@ -57,7 +57,7 @@ class Exercise:
     def pretext_tree(self):
         transform = self.template()
         tree = transform(self.data_tree()).getroot()
-        tree.xpath("/*")[0].attrib['masterit-seed'] = str(self.__seed)
+        tree.xpath("/*")[0].attrib['masterit-seed'] = f"{self.__seed:04}"
         tree.xpath("/*")[0].attrib['masterit-slug'] = str(self.__slug)
         tree.xpath("/*")[0].attrib['masterit-name'] = str(self.__name)
         return tree
