@@ -46,21 +46,17 @@ def mi_vars(*latex_names, random_order=True):
         shuffle(indices)
     return (var(f"mi_var_{stamp}_{indices[i]}", latex_name=name) for i, name in enumerate(latex_names))
 
-def shuffled_equation(equation):
+def shuffled_equation(*terms):
     """
-    Returns the given equation after randomly swapping sides each term appears on.
+    Represents the equation sum(terms)==0, but with terms shuffled randomly
+    to each side.
     """
     new_equation = 0
-    for term in equation.lhs().operands():
+    for term in terms:
         if choice([True,False]):
             new_equation += (term==0)
         else:
             new_equation += (0==-term)
-    for term in equation.rhs().operands():
-        if choice([True,False]):
-            new_equation += (-term==0)
-        else:
-            new_equation += (0==term)
     return new_equation
 
 
