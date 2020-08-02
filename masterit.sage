@@ -8,6 +8,9 @@ def insert_object_into_element(obj,name,element):
     if isinstance(obj, list):
         for item in obj:
             insert_object_into_element(item,"item",se)
+    elif isinstance(obj, dict):
+        for key in obj.keys():
+            insert_object_into_element(obj[key],key,se)
     else:
         if isinstance(obj,str):
             se.text = obj
@@ -57,7 +60,7 @@ def shuffled_equation(*terms):
             new_equation += (term==0)
         else:
             new_equation += (0==-term)
-    return new_equation
+    return new_equation*choice([-1,1])
 
 
 class Exercise:
@@ -127,6 +130,14 @@ class Exercise:
         return str(etree.tostring(self.qti_tree()), 'UTF-8')
 
     def preview(self):
+        print("Data dictionary")
+        print("-----------")
+        print(self.data_dict())
+        print()
+        print("Data XML")
+        print("-----------")
+        print(str(etree.tostring(self.data_tree()), "UTF-8"))
+        print()
         print("HTML source")
         print("-----------")
         print(self.html())
@@ -143,11 +154,11 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-    def build_files(self, amount=50, fixed=True):
-        if not os.path.isdir('build'): os.mkdir('build')
-        build_path = f"build/{self.__slug}"
+    def build_files(self, amount=50, fixed=True, build_path="build"):
         if not os.path.isdir(build_path): os.mkdir(build_path)
-        bank_build_path = f"build/qti-bank"
+        obj_build_path = os.path.join(build_path, self.__slug)
+        if not os.path.isdir(obj_build_path): os.mkdir(obj_build_path)
+        bank_build_path = os.path.join(build_path, "qti-bank")
         if not os.path.isdir(bank_build_path): os.mkdir(bank_build_path)
         bank_tree = etree.fromstring("""<?xml version="1.0"?>
 <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
@@ -167,20 +178,20 @@ class Exercise:
             else:
                 self.reset_seed()
             # build flat files
-            with open(f'{build_path}/{count:04}.ptx','w') as outfile:
+            with open(f'{obj_build_path}/{count:04}.ptx','w') as outfile:
                 print(self.pretext(), file=outfile)
-            with open(f'{build_path}/{count:04}.tex','w') as outfile:
+            with open(f'{obj_build_path}/{count:04}.tex','w') as outfile:
                 print(self.latex(), file=outfile)
-            with open(f'{build_path}/{count:04}.html','w') as outfile:
+            with open(f'{obj_build_path}/{count:04}.html','w') as outfile:
                 print(self.html(), file=outfile)
-            with open(f'{build_path}/{count:04}.qti','w') as outfile:
+            with open(f'{obj_build_path}/{count:04}.qti','w') as outfile:
                 print(self.qti(), file=outfile)
             # add to bank file
             bank_tree.find("*").append(self.qti_tree())
             bank_tree.find("*").attrib['ident'] = self.__slug
         with open(f'{bank_build_path}/{self.__slug}.qti','w') as outfile:
             print(str(etree.tostring(bank_tree, encoding="UTF-8", xml_declaration=True),"UTF-8"), file=outfile)
-        print(f"Files built successfully at {build_path}")
+        print(f"Files built successfully at {obj_build_path}")
 
 
 
@@ -196,7 +207,9 @@ def main(library_path):
             slug=slug,
             generator=generator,
             template=template
-        ).build_files()
+        ).build_files(
+            build_path=os.path.join(library_path,"build")
+        )
 
 if (__name__ == "__main__") and ("repl/" not in sys.argv[0]): #hax
     main(sys.argv[1])
