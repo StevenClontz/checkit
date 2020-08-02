@@ -26,14 +26,9 @@ def dict_to_tree(data_dict):
 
 
 import os
-
-def path_relative_from_script(rel_path):
-    try:
-        dirname = os.path.dirname(__file__)
-    except NameError:
-        dirname = ""
-    return os.path.join(dirname, rel_path)
-
+# always change working directory to the directory containing masterit.sage:
+# oldwd=os.getcwd();os.chdir("path/to/dir");load("masterit.sage");os.chdir(oldwd)
+SCRIPT_DIR = os.getcwd()
 
 
 
@@ -109,15 +104,15 @@ class Exercise:
         return str(etree.tostring(self.pretext_tree()), encoding="UTF-8")
 
     def html(self):
-        transform = etree.XSLT(etree.parse(path_relative_from_script("html.xsl")))
+        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","html.xsl")))
         return str(transform(self.pretext_tree()))
 
     def latex(self):
-        transform = etree.XSLT(etree.parse(path_relative_from_script("latex.xsl")))
+        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","latex.xsl")))
         return str(transform(self.pretext_tree()))
 
     def qti_tree(self):
-        transform = etree.XSLT(etree.parse(path_relative_from_script("qti.xsl")))
+        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","qti.xsl")))
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
             mattext = etree.Element("mattext")
@@ -195,12 +190,14 @@ class Exercise:
 
 
 
-def main(library_path):
+def build_library(library_path):
     config = etree.parse(os.path.join(library_path, "masterit.xml"))
     library_title = config.xpath("/masterit/title")[0].text
     for objective in config.xpath("/masterit/objectives/objective"):
         slug = objective.find("slug").text
-        load(os.path.join(library_path, f"{slug}.sage")) # imports `generator` function
+        oldwd=os.getcwd();os.chdir(library_path)
+        load(f"{slug}.sage") # imports `generator` function
+        os.chdir(oldwd)
         with open(os.path.join(library_path, f"{slug}.ptx"),'r') as template_file:
             template = template_file.read()
         Exercise(
@@ -212,6 +209,3 @@ def main(library_path):
             library_title=library_title,
             build_path=os.path.join(library_path,"build")
         )
-
-if (__name__ == "__main__") and ("repl/" not in sys.argv[0]): #hax
-    main(sys.argv[1])
