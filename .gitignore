@@ -1,6 +1,6 @@
 *.sage-jupyter2
 *.sage.py
 build
-library/*
-!library/build.ipynb
-!library/preview.ipynb
+libraries/*
+!libraries/build.ipynb
+!libraries/preview.ipynb
