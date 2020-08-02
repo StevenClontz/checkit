@@ -37,7 +37,7 @@
     <xsl:template match="md">
         <xsl:choose>
             <xsl:when test="@alignment='alignat'">
-\begin{alignat*}{<xsl:value-of select="@alignat-columns"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
+\begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
             </xsl:when>
             <xsl:otherwise>
 \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}

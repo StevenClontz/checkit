@@ -34,7 +34,7 @@
         <xsl:template match="md">
         <xsl:choose>
             <xsl:when test="@alignment='alignat'">
-                \begin{alignat*}{<xsl:value-of select="@alignat-columns"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
+                \begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
             </xsl:when>
             <xsl:otherwise>
                 \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}
@@ -46,7 +46,6 @@
 
     <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
 
-    <xsl:template name="codecogs-math"><xsl:param name="latex"/><img><xsl:attribute name="src">https://latex.codecogs.com/svg.latex?<xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute></img></xsl:template>
 
     <xsl:template match="ul"><ul><xsl:apply-templates select="li"/></ul></xsl:template>
     <xsl:template match="ol"><ol type="a"><xsl:apply-templates select="li"/></ol></xsl:template>

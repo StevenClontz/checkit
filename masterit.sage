@@ -154,7 +154,7 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-    def build_files(self, amount=50, fixed=True, build_path="build"):
+    def build_files(self, amount=50, fixed=True, build_path="build", library_title="MasterIt Question Bank"):
         if not os.path.isdir(build_path): os.mkdir(build_path)
         obj_build_path = os.path.join(build_path, self.__slug)
         if not os.path.isdir(obj_build_path): os.mkdir(obj_build_path)
@@ -171,7 +171,7 @@ class Exercise:
         label = etree.SubElement(bank_tree.find("*/*/*"), "fieldlabel")
         label.text = "bank_title"
         entry = etree.SubElement(bank_tree.find("*/*/*"), "fieldentry")
-        entry.text = f"MasterIt Question Bank -- {self.__slug}"
+        entry.text = f"{library_title} -- {self.__slug}"
         for count in range(0,amount):
             if fixed:
                 self.reset_seed(count)
@@ -197,6 +197,7 @@ class Exercise:
 
 def main(library_path):
     config = etree.parse(os.path.join(library_path, "masterit.xml"))
+    library_title = config.xpath("/masterit/title")[0].text
     for objective in config.xpath("/masterit/objectives/objective"):
         slug = objective.find("slug").text
         load(os.path.join(library_path, f"{slug}.sage")) # imports `generator` function
@@ -208,6 +209,7 @@ def main(library_path):
             generator=generator,
             template=template
         ).build_files(
+            library_title=library_title,
             build_path=os.path.join(library_path,"build")
         )
 

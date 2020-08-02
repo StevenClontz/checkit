@@ -40,19 +40,22 @@
 
     <xsl:template match="answer">
         <div class="exercise-answer">
+            <h4>Partial Answer:</h4>
             <xsl:apply-templates/>
         </div>
     </xsl:template>
 
-    <xsl:template match="me"><p><xsl:call-template name="codecogs-math"><xsl:with-param name="latex"><xsl:value-of select="."/></xsl:with-param></xsl:call-template></p></xsl:template>
+    <xsl:template name="codecogs-math"><xsl:param name="latex"/><img style="border:1px #ddd solid;padding:5px;border-radius:5px;"><xsl:attribute name="src">https://latex.codecogs.com/svg.latex?<xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="title"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="data-latex"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute></img></xsl:template>
+
+    <xsl:template match="me"><p style="text-align:center;"><xsl:call-template name="codecogs-math"><xsl:with-param name="latex"><xsl:value-of select="."/></xsl:with-param></xsl:call-template></p></xsl:template>
 
     <xsl:template match="md">
-      <p>
+      <p style="text-align:center;">
         <xsl:call-template name="codecogs-math">
           <xsl:with-param name="latex">
             <xsl:choose>
               <xsl:when test="@alignment='alignat'">
-\begin{alignat*}{<xsl:value-of select="@alignat-columns"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
+\begin{alignat*} <xsl:for-each select="mrow">&amp; <xsl:apply-templates select="."/></xsl:for-each> \end{alignat*}
               </xsl:when>
               <xsl:otherwise>
 \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}
@@ -63,7 +66,6 @@
       </p>
     </xsl:template>
 
-    <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
 
     <xsl:template match="m"><xsl:call-template name="codecogs-math"><xsl:with-param name="latex"><xsl:value-of select="."/></xsl:with-param></xsl:call-template></xsl:template>
 
