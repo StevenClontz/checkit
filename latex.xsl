@@ -62,4 +62,7 @@
 \item <xsl:apply-templates/>
     </xsl:template>
 
+    <xsl:template match="c">\verb|<xsl:value-of select="."/>|</xsl:template>
+    <xsl:template match="url">\verb|<xsl:value-of select="@href"/>|</xsl:template>
+
 </xsl:stylesheet>
