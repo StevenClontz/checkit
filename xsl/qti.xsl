@@ -23,7 +23,7 @@
         <presentation>
           <material>
             <!-- converts to <mattext texttype="text/html"/> via LXML -->
-              <mattextxml><xsl:apply-templates select="statement"/></mattextxml>
+             <mattextxml><xsl:apply-templates select="statement"/></mattextxml>
           </material>
           <response_str ident="response1" rcardinality="Single">
             <render_fib>
