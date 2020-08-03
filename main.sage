@@ -42,7 +42,9 @@ def mi_vars(*latex_names, random_order=True):
     indices = list(range(len(latex_names)))
     if random_order:
         shuffle(indices)
-    return (var(f"mi_var_{stamp}_{indices[i]}", latex_name=name) for i, name in enumerate(latex_names))
+    import string
+    random_letter = choice(list(string.ascii_lowercase))
+    return (var(f"{random_letter}_mi_var_{stamp}_{indices[i]}", latex_name=name) for i, name in enumerate(latex_names))
 
 def shuffled_equation(*terms):
     """
