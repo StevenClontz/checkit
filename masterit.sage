@@ -141,12 +141,12 @@ class Exercise:
         for mattextxml in tree.xpath("//mattextxml"):
             mattext = etree.Element("mattext")
             mattext.attrib['texttype'] = 'text/html'
-            mattext.text = lxml.html.tostring(lxml.html.fromstring(etree.tostring(mattextxml.find("*"))))
+            mattext.text = lxml.html.tostring(lxml.html.fromstring(etree.tostring(mattextxml.find("*"),pretty_print=True)),pretty_print=True)
             mattextxml.addnext(mattext)
         return tree
 
     def qti(self):
-        return str(etree.tostring(self.qti_tree()), 'UTF-8')
+        return str(etree.tostring(self.qti_tree(),pretty_print=True), 'UTF-8')
 
     def preview(self):
         print("Data dictionary")
@@ -209,7 +209,7 @@ class Exercise:
             bank_tree.find("*").append(self.qti_tree())
             bank_tree.find("*").attrib['ident'] = self.__slug
         with open(f'{bank_build_path}/{self.__slug}.qti','w') as outfile:
-            print(str(etree.tostring(bank_tree, encoding="UTF-8", xml_declaration=True),"UTF-8"), file=outfile)
+            print(str(etree.tostring(bank_tree, encoding="UTF-8", xml_declaration=True,pretty_print=True),"UTF-8"), file=outfile)
         print(f"Files built successfully at {obj_build_path}")
 
 
