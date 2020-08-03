@@ -54,4 +54,6 @@
     <xsl:template match="c"><code><xsl:value-of select="."/></code></xsl:template>
     <xsl:template match="url"><a><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="@href"/></a></xsl:template>
 
+    <xsl:template match="image"><img><xsl:attribute name="src"><xsl:value-of select="@source"/></xsl:attribute></img></xsl:template>
+
 </xsl:stylesheet>

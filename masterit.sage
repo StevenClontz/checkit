@@ -57,6 +57,30 @@ def shuffled_equation(*terms):
             new_equation += (0==-term)
     return new_equation*choice([-1,1])
 
+def base64_graphic(obj, file_format="svg"):
+    """
+    Generates Base64 encoding of the graphic in the requested file_format.
+    """
+    if not isinstance(obj,Graphics):
+        raise TypeError("Only graphics may be encoded as base64")
+    if file_format not in ["svg", "png"]:
+        raise ValueError("Invalid file format")
+    filename = tmp_filename(ext=f'.{file_format}')
+    obj.save(filename)
+    with open(filename, 'rb') as f:
+        from base64 import b64encode
+        b64 = b64encode(f.read())
+    return b64
+
+def data_url_graphic(obj, file_format="svg"):
+    """
+    Generates Data URL representing the graphic in the requested file_format.
+    """
+    b64 = base64_graphic(obj, file_format=file_format).decode('utf-8')
+    if file_format=="svg":
+        file_format = "svg+xml"
+    return f"data:image/{file_format};base64,{b64}"
+
 
 class Exercise:
     def __init__(self, name=None, slug=None, generator=None, template=None, seed=None):
