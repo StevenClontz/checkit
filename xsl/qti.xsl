@@ -4,6 +4,9 @@
     <xsl:import href="html.xsl" />
     <xsl:output method="xml"/>
 
+    <xsl:template match="statement">
+        <div class="exercise-statement"><p><strong><xsl:value-of select="../@masterit-slug"/>.</strong></p><xsl:apply-templates/></div>
+    </xsl:template>
 
     <xsl:template match="exercise">
       <item>
@@ -20,7 +23,7 @@
         <presentation>
           <material>
             <!-- converts to <mattext texttype="text/html"/> via LXML -->
-            <mattextxml><xsl:apply-templates select="statement"/></mattextxml>
+             <mattextxml><xsl:apply-templates select="statement"/></mattextxml>
           </material>
           <response_str ident="response1" rcardinality="Single">
             <render_fib>
