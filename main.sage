@@ -26,8 +26,8 @@ def dict_to_tree(data_dict):
 
 
 import os
-# always change working directory to the directory containing masterit.sage:
-# oldwd=os.getcwd();os.chdir("path/to/dir");load("masterit.sage");os.chdir(oldwd)
+# always change working directory to the directory containing main.sage:
+# oldwd=os.getcwd();os.chdir("path/to/dir");load("main.sage");os.chdir(oldwd)
 SCRIPT_DIR = os.getcwd()
 
 
@@ -215,9 +215,9 @@ class Exercise:
 
 
 def build_library(library_path):
-    config = etree.parse(os.path.join(library_path, "masterit.xml"))
-    library_title = config.xpath("/masterit/title")[0].text
-    for objective in config.xpath("/masterit/objectives/objective"):
+    config = etree.parse(os.path.join(library_path, "__bank__.xml"))
+    library_title = config.xpath("/bank/title")[0].text
+    for objective in config.xpath("/bank/objectives/objective"):
         slug = objective.find("slug").text
         oldwd=os.getcwd();os.chdir(library_path)
         load(f"{slug}.sage") # imports `generator` function
