@@ -216,7 +216,7 @@ class Exercise:
 
 
 
-def build_library(library_path):
+def build_library(library_path, amount=50):
     config = etree.parse(os.path.join(library_path, "__bank__.xml"))
     library_title = config.xpath("/bank/title")[0].text
     for objective in config.xpath("/bank/objectives/objective"):
@@ -233,5 +233,6 @@ def build_library(library_path):
             template=template
         ).build_files(
             library_title=library_title,
-            build_path=os.path.join(library_path,"build")
+            build_path=os.path.join(library_path,"build"),
+            amount=amount
         )
