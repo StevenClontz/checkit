@@ -12,6 +12,6 @@ to use the platform in your browser -- no install required.
 Open the [Tutorial Notebook](tutorial.ipynb) to quickly start
 authoring random problems.
 
-## Developing a Library
+## Developing an Exercise Bank
 
 TODO
