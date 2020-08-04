@@ -83,6 +83,45 @@ def data_url_graphic(obj, file_format="svg"):
         file_format = "svg+xml"
     return f"data:image/{file_format};base64,{b64}"
 
+def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_list=[]):
+    # Augment with zero vector if not already augmented
+    if not matrix.subdivisions()[1]:
+        matrix=matrix.augment(zero_vector(ZZ, len(matrix.rows())), subdivide=true)
+    num_vars = matrix.subdivisions()[1][0]
+    # Start using requested variables
+    system_vars = variable_list
+    # Conveniently add xyzwv if requested
+    if alpha_mode:
+        system_vars += list(var("x y z w v"))
+    # Finally fall back to x_n as needed
+    system_vars += [var(f"{variables}_{n+1}") for n in range(num_vars)]
+    # Build matrix
+    latex_output = "\\begin{matrix}\n"
+    for row in matrix.rows():
+        if row[0]!= 0:
+            latex_output += latex(row[0]*system_vars[0])
+            previous_terms = True
+        else:
+            previous_terms = False
+        for n,cell in enumerate(row[1:num_vars]):
+            latex_output += " & "
+            if cell < 0 and previous_terms:
+                latex_output += " - "
+            elif cell > 0 and previous_terms:
+                latex_output += " + "
+            latex_output += " & "
+            if cell != 0:
+                latex_output += latex(cell.abs()*system_vars[n+1])
+            if not previous_terms:
+                previous_terms = bool(cell!=0)
+        if not previous_terms:
+            latex_output += " 0 "
+        latex_output += " & = & "
+        latex_output += latex(row[num_vars])
+        latex_output += "\\\\\n"
+    latex_output += "\\end{matrix}"
+    return latex_output
+
 
 class Exercise:
     def __init__(self, name=None, slug=None, generator=None, template=None, seed=None):
