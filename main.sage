@@ -175,7 +175,7 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-    def build_files(self, amount=50, fixed=True, build_path="build", library_title="MasterIt Question Bank"):
+    def build_files(self, amount=50, fixed=False, build_path="build", library_title="MasterIt Question Bank"):
         if not os.path.isdir(build_path): os.mkdir(build_path)
         obj_build_path = os.path.join(build_path, self.__slug)
         if not os.path.isdir(obj_build_path): os.mkdir(obj_build_path)
@@ -216,7 +216,7 @@ class Exercise:
 
 
 
-def build_library(library_path, amount=50):
+def build_library(library_path, amount=50, fixed=False):
     config = etree.parse(os.path.join(library_path, "__bank__.xml"))
     library_title = config.xpath("/bank/title")[0].text
     for objective in config.xpath("/bank/objectives/objective"):
@@ -234,5 +234,6 @@ def build_library(library_path, amount=50):
         ).build_files(
             library_title=library_title,
             build_path=os.path.join(library_path,"build"),
-            amount=amount
+            amount=amount,
+            fixed=fixed,
         )
