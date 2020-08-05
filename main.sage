@@ -257,9 +257,22 @@ class Exercise:
 
 def build_library(library_path, amount=50, fixed=False):
     config = etree.parse(os.path.join(library_path, "__bank__.xml"))
-    library_title = config.xpath("/bank/title")[0].text
-    for objective in config.xpath("/bank/objectives/objective"):
+    library_title = config.find("title").text
+    library_slug = config.find("slug").text
+    outcome_csv = [[
+        "vendor_guid",
+        "object_type",
+        "title",
+        "description",
+        "display_name",
+        "calculation_method",
+        "calculation_int",
+        "mastery_points",
+        "ratings",
+    ]]
+    for n,objective in enumerate(config.xpath("objectives/objective")):
         slug = objective.find("slug").text
+        title = objective.find("title").text
         oldwd=os.getcwd();os.chdir(library_path)
         load(f"{slug}.sage") # imports `generator` function
         os.chdir(oldwd)
@@ -276,3 +289,28 @@ def build_library(library_path, amount=50, fixed=False):
             amount=amount,
             fixed=fixed,
         )
+        outcome_csv.append([
+            f"{library_slug}_{n:02}_{slug}",
+            "outcome",
+            f"{n:02}-{slug}: {title}",
+            "",
+            slug,
+            "n_mastery",
+            "2",
+            "3",
+            "4",
+            "Exceeds Mastery",
+            "3",
+            "Meets Mastery",
+            "2",
+            "Near Mastery",
+            "1",
+            "Well Below Mastery",
+            "0",
+            "Insufficient Work to Assess",
+        ])
+    import csv
+    with open(os.path.join(library_path, "build", "canvas-outcomes.csv"),'w') as f:
+        csv.writer(f).writerows(outcome_csv)
+    print("Canvas outcomes built.")
+    print("Library build complete!")
