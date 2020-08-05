@@ -166,11 +166,15 @@ class Exercise:
         return tree
 
     def pretext(self):
-        return str(etree.tostring(self.pretext_tree()), encoding="UTF-8")
+        return str(etree.tostring(self.pretext_tree(), pretty_print=True), encoding="UTF-8")
+
+    def html_tree(self):
+        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","html.xsl")))
+        tree = transform(self.pretext_tree()).getroot()
+        return tree
 
     def html(self):
-        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","html.xsl")))
-        return str(transform(self.pretext_tree()))
+        return str(etree.tostring(self.html_tree(),pretty_print=True), 'UTF-8')
 
     def latex(self):
         transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","latex.xsl")))
@@ -190,13 +194,9 @@ class Exercise:
         return str(etree.tostring(self.qti_tree(),pretty_print=True), 'UTF-8')
 
     def preview(self):
-        print("Data dictionary")
-        print("-----------")
-        print(self.data_dict())
-        print()
         print("Data XML")
         print("-----------")
-        print(str(etree.tostring(self.data_tree()), "UTF-8"))
+        print(str(etree.tostring(self.data_tree(), pretty_print=True), "UTF-8"))
         print()
         print("HTML source")
         print("-----------")
