@@ -28,8 +28,9 @@ def dict_to_tree(data_dict):
 import os
 # always change working directory to the directory containing main.sage:
 # oldwd=os.getcwd();os.chdir("path/to/dir");load("main.sage");os.chdir(oldwd)
-SCRIPT_DIR = os.getcwd()
-
+HTML_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","html.xsl")))
+LATEX_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","latex.xsl")))
+QTI_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","qti.xsl")))
 
 
 def mi_vars(*latex_names, random_order=True):
@@ -169,7 +170,7 @@ class Exercise:
         return str(etree.tostring(self.pretext_tree(), pretty_print=True), encoding="UTF-8")
 
     def html_tree(self):
-        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","html.xsl")))
+        transform = HTML_TRANSFORM
         tree = transform(self.pretext_tree()).getroot()
         return tree
 
@@ -177,11 +178,11 @@ class Exercise:
         return str(etree.tostring(self.html_tree(),pretty_print=True), 'UTF-8')
 
     def latex(self):
-        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","latex.xsl")))
+        transform = LATEX_TRANSFORM
         return str(transform(self.pretext_tree()))
 
     def qti_tree(self):
-        transform = etree.XSLT(etree.parse(os.path.join(SCRIPT_DIR,"xsl","qti.xsl")))
+        transform = QTI_TRANSFORM
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
             mattext = etree.Element("mattext")
@@ -214,7 +215,7 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-    def build_files(self, amount=50, fixed=False, build_path="build", library_title="MasterIt Question Bank"):
+    def build_files(self, amount=50, fixed=False, build_path="build", library_title="MasterIt Question Bank", public=False):
         if not os.path.isdir(build_path): os.mkdir(build_path)
         obj_build_path = os.path.join(build_path, self.__slug)
         if not os.path.isdir(obj_build_path): os.mkdir(obj_build_path)
@@ -233,7 +234,9 @@ class Exercise:
         entry = etree.SubElement(bank_tree.find("*/*/*"), "fieldentry")
         entry.text = f"{library_title} -- {self.__slug}"
         for count in range(0,amount):
-            if fixed:
+            if fixed and public:
+                self.reset_seed(10000+count)
+            elif fixed: #not public
                 self.reset_seed(count)
             else:
                 self.reset_seed()
@@ -255,7 +258,7 @@ class Exercise:
 
 
 
-def build_library(library_path, amount=50, fixed=False):
+def build_library(library_path, amount=50, fixed=False, public=False):
     config = etree.parse(os.path.join(library_path, "__bank__.xml"))
     library_title = config.find("title").text
     library_slug = config.find("slug").text
@@ -288,6 +291,7 @@ def build_library(library_path, amount=50, fixed=False):
             build_path=os.path.join(library_path,"build"),
             amount=amount,
             fixed=fixed,
+            public=public,
         )
         outcome_csv.append([
             f"{library_slug}_{n:02}_{slug}",
