@@ -1,22 +1,10 @@
-# MasterIt
+# CheckIt 
 
-Platform for authoring randomized mathematics exercises.
+Platform for authoring free and open randomized exercises for practice and assessment.
 
-#### Made for CoCalc
+Visit <https://checkit.clontz.org> to learn more.
 
-[Open this project in CoCalc](https://share.cocalc.com/app?anonymous=true&launch=share/9b7553d2ecfe356945710e8d076db237f28dec50/masterit/)
-to use the platform in your browser -- no install required.
-
-## Getting started
-
-Open the [Tutorial Notebook](tutorial.ipynb) to quickly start
-authoring random problems.
-
-## Authoring an exercise bank
-
-TODO
-
-## Developing the MasterIt platform
+## Developing the CheckIt platform
 
 TODO
 

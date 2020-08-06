@@ -161,9 +161,9 @@ class Exercise:
     def pretext_tree(self):
         transform = self.template()
         tree = transform(self.data_tree()).getroot()
-        tree.xpath("/*")[0].attrib['masterit-seed'] = f"{self.__seed:04}"
-        tree.xpath("/*")[0].attrib['masterit-slug'] = str(self.__slug)
-        tree.xpath("/*")[0].attrib['masterit-name'] = str(self.__name)
+        tree.xpath("/*")[0].attrib['checkit-seed'] = f"{self.__seed:04}"
+        tree.xpath("/*")[0].attrib['checkit-slug'] = str(self.__slug)
+        tree.xpath("/*")[0].attrib['checkit-name'] = str(self.__name)
         return tree
 
     def pretext(self):
@@ -215,7 +215,7 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-    def build_files(self, amount=50, fixed=False, build_path="build", library_title="MasterIt Question Bank", public=False):
+    def build_files(self, amount=50, fixed=False, build_path="build", library_title="CheckIt Question Bank", public=False):
         if not os.path.isdir(build_path): os.mkdir(build_path)
         obj_build_path = os.path.join(build_path, self.__slug)
         if not os.path.isdir(obj_build_path): os.mkdir(obj_build_path)
