@@ -51,12 +51,12 @@ def shuffled_equation(*terms):
     Represents the equation sum(terms)==0, but with terms shuffled randomly
     to each side.
     """
-    new_equation = 0
+    new_equation = (SR(0)==0)
     for term in terms:
         if choice([True,False]):
-            new_equation += (term==0)
+            new_equation += (SR(term)==0)
         else:
-            new_equation += (0==-term)
+            new_equation += (0==-SR(term))
     return new_equation*choice([-1,1])
 
 def base64_graphic(obj, file_format="svg"):
