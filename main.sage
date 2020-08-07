@@ -273,6 +273,8 @@ def build_library(library_path, amount=50, fixed=False, public=False):
         "mastery_points",
         "ratings",
     ]]
+    # Canvas chokes on repeated IDs from mult instructors in same institution
+    import time; oid_suffix = time.time()
     for n,objective in enumerate(config.xpath("objectives/objective")):
         slug = objective.find("slug").text
         title = objective.find("title").text
@@ -294,7 +296,7 @@ def build_library(library_path, amount=50, fixed=False, public=False):
             public=public,
         )
         outcome_csv.append([
-            f"{library_slug}_{n:02}_{slug}",
+            f"checkit_{library_slug}_{n:02}_{slug}_{oid_suffix:06}",
             "outcome",
             f"{n:02}-{slug}: {title}",
             "",
