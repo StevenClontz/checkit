@@ -1,6 +1,22 @@
 from lxml import etree
 import lxml.html
+import os
 
+
+
+# USAGE NOTE: If this script is loaded from another script/notebook
+# located in a different directory, use the following pattern
+# to ensure XSL files are imported correctly as well.
+    # oldwd=os.getcwd()
+    # try: os.chdir("path/to"); load("main.sage")
+    # finally: os.chdir(oldwd)
+HTML_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","html.xsl")))
+LATEX_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","latex.xsl")))
+QTI_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","qti.xsl")))
+
+
+
+# XSL Helpers
 def insert_object_into_element(obj,name,element):
     if obj is False:
         return None #skip generating element only when exactly False (not falsy)
@@ -25,14 +41,7 @@ def dict_to_tree(data_dict):
 
 
 
-import os
-# always change working directory to the directory containing main.sage:
-# oldwd=os.getcwd();os.chdir("path/to/dir");load("main.sage");os.chdir(oldwd)
-HTML_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","html.xsl")))
-LATEX_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","latex.xsl")))
-QTI_TRANSFORM = etree.XSLT(etree.parse(os.path.join("xsl","qti.xsl")))
-
-
+# Generator helpers
 def mi_vars(*latex_names, random_order=True):
     """
     Given one or more `latex_names` of strings, returns a tuple
@@ -124,6 +133,8 @@ def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_l
     return latex_output
 
 
+
+# Exercise object
 class Exercise:
     def __init__(self, name=None, slug=None, generator=None, template=None, seed=None):
         self.__name = name
@@ -258,6 +269,7 @@ class Exercise:
 
 
 
+# Library building
 def build_library(library_path, amount=50, fixed=False, public=False):
     config = etree.parse(os.path.join(library_path, "__bank__.xml"))
     library_title = config.find("title").text
