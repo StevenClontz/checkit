@@ -23,3 +23,15 @@ git add banks/{bank}.ipynb
 git commit -m "Message"
 git update-index --skip-worktree banks/*ipynb
 ```
+
+## Why "CheckIt"?
+
+I used to call this platform "Mastr/MasterIt", but switched
+to ☑️It/CheckIt. While the problem banks on this platform (so far)
+are designed with Mastery/Pointless Grading in mind, there's
+no hard-requirement that they be used for this purpose. But as
+[Jean-Sébastien](https://twitter.com/JeanSebTurcotte/status/1290691807718903808)
+pointed out, "CheckIt" emphasizes the purpose of the platform:
+to *check* student understanding, while also reflecting the use
+of checkmarks in many objective-based grading systems (such
+as my own).
