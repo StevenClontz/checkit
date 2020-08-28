@@ -143,10 +143,12 @@ class Exercise:
         self.__template = template
         self.reset_seed(seed=seed)
 
-    def reset_seed(self, seed=None):
+    def reset_seed(self, seed=None, public=False):
         if seed is None:
             set_random_seed()
             seed = randrange(0,10000)
+        if public: #FIXME after 2020 Fall, 000-999 will be public, but for now 10000+ is
+            seed += 10000
         self.__seed = seed
 
     def data_dict(self):
@@ -245,12 +247,10 @@ class Exercise:
         entry = etree.SubElement(bank_tree.find("*/*/*"), "fieldentry")
         entry.text = f"{library_title} -- {self.__slug}"
         for count in range(0,amount):
-            if public: #public is always fixed at 10000+
-                self.reset_seed(10000+count)
-            elif fixed: #but not public
-                self.reset_seed(count)
+            if fixed:
+                self.reset_seed(count,public=public)
             else:
-                self.reset_seed()
+                self.reset_seed(public=public)
             # build flat files
             with open(f'{obj_build_path}/{count:04}.ptx','w') as outfile:
                 print(self.pretext(), file=outfile)
