@@ -245,9 +245,9 @@ class Exercise:
         entry = etree.SubElement(bank_tree.find("*/*/*"), "fieldentry")
         entry.text = f"{library_title} -- {self.__slug}"
         for count in range(0,amount):
-            if fixed and public:
+            if public: #public is always fixed at 10000+
                 self.reset_seed(10000+count)
-            elif fixed: #not public
+            elif fixed: #but not public
                 self.reset_seed(count)
             else:
                 self.reset_seed()
