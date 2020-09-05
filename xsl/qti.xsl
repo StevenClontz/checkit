@@ -5,13 +5,13 @@
     <xsl:output method="xml"/>
 
     <xsl:template match="statement">
-        <div class="exercise-statement"><p><strong><xsl:value-of select="../@masterit-slug"/>.</strong></p><xsl:apply-templates/></div>
+        <div class="exercise-statement"><p><strong><xsl:value-of select="../@checkit-slug"/>.</strong></p><xsl:apply-templates/></div>
     </xsl:template>
 
     <xsl:template match="exercise">
       <item>
-        <xsl:attribute name="ident"><xsl:value-of select="@masterit-slug"/>-<xsl:value-of select="@masterit-seed"/></xsl:attribute>
-        <xsl:attribute name="title"><xsl:value-of select="@masterit-slug"/> | <xsl:value-of select="@masterit-name"/> | ver. <xsl:value-of select="@masterit-seed"/></xsl:attribute>
+        <xsl:attribute name="ident"><xsl:value-of select="@checkit-slug"/>-<xsl:value-of select="@checkit-seed"/></xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="@checkit-slug"/> | <xsl:value-of select="@checkit-name"/> | ver. <xsl:value-of select="@checkit-seed"/></xsl:attribute>
         <itemmetadata>
           <qtimetadata>
             <qtimetadatafield>

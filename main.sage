@@ -199,13 +199,13 @@ class Exercise:
     def qti(self):
         return str(etree.tostring(self.qti_tree(),pretty_print=True), 'UTF-8')
 
-    def dictionary(self, seeds):
+    def dict(self):
         return {
             "seed": self.__seed,
-            "qti": self.qti,
-            "pretext": self.pretext,
-            "html": self.html,
-            "tex": self.tex,
+            "qti": self.qti(),
+            "pretext": self.pretext(),
+            "html": self.html(),
+            "tex": self.latex(),
         }
 
     def preview(self):
@@ -229,8 +229,14 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-    @classmethod
-    def get_seeds(cls, amount=50, fixed=False, public=False):
+
+# Exercises collection
+class Exercises():
+    def __init__(self, name=None, slug=None, generator=None, template=None, amount=50, fixed=False, public=False):
+        self.__name = name
+        self.__slug = slug
+        self.__generator = generator
+        self.__template = template
         if public:
             start = 0
             end = 1000
@@ -238,13 +244,22 @@ class Exercise:
             start = 1000
             end = 10000
         if fixed:
-            return list(range(start,start+amount))
+            self.__seeds = list(range(start,start+amount))
         else:
             set_random_seed()
-            return [randrange(start,end) for _ in range(amount)]
+            self.__seeds = [randrange(start,end) for _ in range(amount)]
 
-    @classmethod
-    def qtibank_generic_tree(cls,title,slug):
+    def list(self):
+        return [Exercise(self.__name,self.__slug,self.__generator,self.__template,seed) for seed in self.__seeds]
+
+    def dict(self):
+        return {
+            "name": self.__name,
+            "slug": self.__slug,
+            "exercises": [e.dict() for e in self.list()],
+        }
+
+    def qtibank_generic_tree(self,bank_title):
         qtibank_tree = etree.fromstring("""<?xml version="1.0"?>
 <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
   <objectbank>
@@ -256,95 +271,16 @@ class Exercise:
         label = etree.SubElement(qtibank_tree.find("*/*/*"), "fieldlabel")
         label.text = "bank_title"
         entry = etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
-        entry.text = f"{title} -- {slug}"
+        entry.text = f"{bank_title} -- {self.__slug}"
         return qtibank_tree
 
-    @classmethod
-    def build_files(
-        cls,
-        name=None,
-        slug=None,
-        generator=None,
-        template=None,
-        amount=50,
-        fixed=False,
-        public=False,
-        build_path="build",
-        bank_title="CheckIt Question Bank"
-    ):
-        # provision filesystem
-        if not os.path.isdir(build_path): os.mkdir(build_path)
-        outcome_build_path = os.path.join(build_path, slug)
-        if not os.path.isdir(outcome_build_path): os.mkdir(outcome_build_path)
-        qtibank_build_path = os.path.join(build_path, "qti-bank")
-        if not os.path.isdir(qtibank_build_path): os.mkdir(qtibank_build_path)
-
-        qtibank_tree = cls.qtibank_generic_tree(bank_title,slug)
-        seeds = cls.get_seeds(amount,fixed,public)
-
-        for count in range(0,amount):
-            exercise = cls(name,slug,generator,template,seeds[count])
-            # build flat files
-            with open(f'{outcome_build_path}/{count:04}.ptx','w') as outfile:
-                print(exercise.pretext(), file=outfile)
-            with open(f'{outcome_build_path}/{count:04}.tex','w') as outfile:
-                print(exercise.latex(), file=outfile)
-            with open(f'{outcome_build_path}/{count:04}.html','w') as outfile:
-                print(exercise.html(), file=outfile)
-            with open(f'{outcome_build_path}/{count:04}.qti','w') as outfile:
-                print(exercise.qti(), file=outfile)
-            # add to qtibank file
-            qtibank_tree.find("*").append(exercise.qti_tree())
-            qtibank_tree.find("*").attrib['ident'] = slug
-        with open(f'{qtibank_build_path}/{slug}.qti','w') as outfile:
-            print(str(etree.tostring(qtibank_tree, encoding="UTF-8", xml_declaration=True,pretty_print=True),"UTF-8"), file=outfile)
-        print(f"Files built successfully at {outcome_build_path}")
-
-
-
-# Bank building
-def build_bank(bank_path, amount=50, fixed=False, public=False):
-    config = etree.parse(os.path.join(bank_path, "__bank__.xml"))
-    bank_title = config.find("title").text
-    bank_slug = config.find("slug").text
-    outcome_csv = [[
-        "vendor_guid",
-        "object_type",
-        "title",
-        "description",
-        "display_name",
-        "calculation_method",
-        "calculation_int",
-        "mastery_points",
-        "ratings",
-    ]]
-    # Canvas chokes on repeated IDs from mult instructors in same institution
-    import time; oid_suffix = time.time()
-    for n,objective in enumerate(config.xpath("objectives/objective")):
-        slug = objective.find("slug").text
-        title = objective.find("title").text
-        oldwd=os.getcwd();os.chdir(bank_path)
-        load(f"{slug}.sage") # imports `generator` function
-        os.chdir(oldwd)
-        with open(os.path.join(bank_path, f"{slug}.ptx"),'r') as template_file:
-            template = template_file.read()
-        Exercise.build_files(
-            name=objective.find("title").text,
-            slug=slug,
-            generator=generator,
-            template=template,
-            amount=amount,
-            fixed=fixed,
-            public=public,
-            build_path=os.path.join(bank_path,"build"),
-            bank_title=bank_title,
-        )
-        outcome_csv.append([
-            f"checkit_{bank_slug}_{n:02}_{slug}_{oid_suffix:06}",
+    def outcome_csv_row(self,count,bank_slug,oid_suffix):
+        return [
+            f"checkit_{bank_slug}_{count:02}_{self.__slug}_{oid_suffix:06}",
             "outcome",
-            f"{n:02}-{slug}: {title}",
+            f"{count:02}-{self.__slug}: {self.__name}",
             "",
-            slug,
+            self.__slug,
             "n_mastery",
             "2",
             "3",
@@ -358,9 +294,97 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
             "Well Below Mastery",
             "0",
             "Insufficient Work to Assess",
-        ])
+        ]
+
+    def build_files(
+        self,
+        build_path="__build__",
+        bank_title="CheckIt Question Bank"
+    ):
+        # provision filesystem
+        if not os.path.isdir(build_path): os.mkdir(build_path)
+        outcome_build_path = os.path.join(build_path, self.__slug)
+        if not os.path.isdir(outcome_build_path): os.mkdir(outcome_build_path)
+        qtibank_build_path = os.path.join(build_path, "qti-bank")
+        if not os.path.isdir(qtibank_build_path): os.mkdir(qtibank_build_path)
+        print(f"Building {outcome_build_path}...")
+
+        qtibank_tree = self.qtibank_generic_tree(bank_title)
+
+        for count,seed in enumerate(self.__seeds):
+            exercise = self.list()[count]
+            # build flat files
+            with open(f'{outcome_build_path}/{count:04}.ptx','w') as outfile:
+                print(exercise.pretext(), file=outfile)
+            with open(f'{outcome_build_path}/{count:04}.tex','w') as outfile:
+                print(exercise.latex(), file=outfile)
+            with open(f'{outcome_build_path}/{count:04}.html','w') as outfile:
+                print(exercise.html(), file=outfile)
+            with open(f'{outcome_build_path}/{count:04}.qti','w') as outfile:
+                print(exercise.qti(), file=outfile)
+            # add to qtibank file
+            qtibank_tree.find("*").append(exercise.qti_tree())
+            qtibank_tree.find("*").attrib['ident'] = self.__slug
+        with open(f'{qtibank_build_path}/{self.__slug}.qti','w') as outfile:
+            print(str(etree.tostring(qtibank_tree, encoding="UTF-8", xml_declaration=True,pretty_print=True),"UTF-8"), file=outfile)
+        print(f"- Files built successfully!")
+
+
+
+# Bank building
+def build_bank(bank_path, amount=50, fixed=False, public=False):
+    config = etree.parse(os.path.join(bank_path, "__bank__.xml"))
+    bank_title = config.find("title").text
+    bank_slug = config.find("slug").text
+    # build Canvas outcome CSV
+    outcome_csv = [[
+        "vendor_guid",
+        "object_type",
+        "title",
+        "description",
+        "display_name",
+        "calculation_method",
+        "calculation_int",
+        "mastery_points",
+        "ratings",
+    ]]
+    # build JSON blob for bank
+    bank_json = {
+        "title": bank_title,
+        "slug": bank_slug,
+        "outcomes": [],
+    }
+    # Canvas chokes on repeated IDs from mult instructors in same institution
+    import time; oid_suffix = time.time()
+    for n,objective in enumerate(config.xpath("objectives/objective")):
+        slug = objective.find("slug").text
+        title = objective.find("title").text
+        oldwd=os.getcwd();os.chdir(bank_path)
+        load(f"{slug}.sage") # imports `generator` function
+        os.chdir(oldwd)
+        with open(os.path.join(bank_path, f"{slug}.ptx"),'r') as template_file:
+            template = template_file.read()
+        exercises = Exercises(
+            name=title,
+            slug=slug,
+            generator=generator,
+            template=template,
+            amount=amount,
+            fixed=fixed,
+            public=public,
+        )
+        exercises.build_files(
+            build_path=os.path.join(bank_path,"__build__"),
+            bank_title=bank_title,
+        )
+        bank_json["outcomes"].append(exercises.dict())
+        outcome_csv.append(exercises.outcome_csv_row(n,bank_slug,oid_suffix))
     import csv
-    with open(os.path.join(bank_path, "build", "canvas-outcomes.csv"),'w') as f:
+    with open(os.path.join(bank_path, "__build__", "{bank_slug}-canvas-outcomes.csv"),'w') as f:
         csv.writer(f).writerows(outcome_csv)
     print("Canvas outcomes built.")
+    import json
+    with open(os.path.join(bank_path, "__build__", "{bank_slug}-bank.json"),'w') as f:
+        json.dump(bank_json,f)
+    print("JSON blob built.")
     print("Bank build complete!")
