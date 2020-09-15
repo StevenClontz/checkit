@@ -136,8 +136,8 @@ def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_l
 
 # Exercise object
 class Exercise:
-    def __init__(self, name=None, slug=None, generator=None, template=None, seed=None):
-        self.__name = name
+    def __init__(self, title=None, slug=None, generator=None, template=None, seed=None):
+        self.__title = title
         self.__slug = slug
         self.__generator = generator
         self.__template = template
@@ -168,7 +168,7 @@ class Exercise:
         tree = transform(self.data_tree()).getroot()
         tree.xpath("/*")[0].attrib['checkit-seed'] = f"{self.__seed:04}"
         tree.xpath("/*")[0].attrib['checkit-slug'] = str(self.__slug)
-        tree.xpath("/*")[0].attrib['checkit-name'] = str(self.__name)
+        tree.xpath("/*")[0].attrib['checkit-title'] = str(self.__title)
         return tree
 
     def pretext(self):
@@ -231,9 +231,9 @@ class Exercise:
 
 
 # Exercises collection
-class Exercises():
-    def __init__(self, name=None, slug=None, generator=None, template=None, amount=50, fixed=False, public=False):
-        self.__name = name
+class Outcome():
+    def __init__(self, title=None, slug=None, generator=None, template=None, amount=50, fixed=False, public=False):
+        self.__title = title
         self.__slug = slug
         self.__generator = generator
         self.__template = template
@@ -250,11 +250,11 @@ class Exercises():
             self.__seeds = [randrange(start,end) for _ in range(amount)]
 
     def list(self):
-        return [Exercise(self.__name,self.__slug,self.__generator,self.__template,seed) for seed in self.__seeds]
+        return [Exercise(self.__title,self.__slug,self.__generator,self.__template,seed) for seed in self.__seeds]
 
     def dict(self):
         return {
-            "name": self.__name,
+            "title": self.__title,
             "slug": self.__slug,
             "exercises": [e.dict() for e in self.list()],
         }
@@ -278,7 +278,7 @@ class Exercises():
         return [
             f"checkit_{bank_slug}_{count:02}_{self.__slug}_{oid_suffix:06}",
             "outcome",
-            f"{count:02}-{self.__slug}: {self.__name}",
+            f"{count:02}-{self.__slug}: {self.__title}",
             "",
             self.__slug,
             "n_mastery",
@@ -364,8 +364,8 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
         os.chdir(oldwd)
         with open(os.path.join(bank_path, f"{slug}.ptx"),'r') as template_file:
             template = template_file.read()
-        exercises = Exercises(
-            name=title,
+        outcome = Outcome(
+            title=title,
             slug=slug,
             generator=generator,
             template=template,
@@ -373,18 +373,18 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
             fixed=fixed,
             public=public,
         )
-        exercises.build_files(
+        outcome.build_files(
             build_path=os.path.join(bank_path,"__build__"),
             bank_title=bank_title,
         )
-        bank_json["outcomes"].append(exercises.dict())
-        outcome_csv.append(exercises.outcome_csv_row(n,bank_slug,oid_suffix))
+        bank_json["outcomes"].append(outcome.dict())
+        outcome_csv.append(outcome.outcome_csv_row(n,bank_slug,oid_suffix))
     import csv
-    with open(os.path.join(bank_path, "__build__", "{bank_slug}-canvas-outcomes.csv"),'w') as f:
+    with open(os.path.join(bank_path, "__build__", f"{bank_slug}-canvas-outcomes.csv"),'w') as f:
         csv.writer(f).writerows(outcome_csv)
     print("Canvas outcomes built.")
     import json
-    with open(os.path.join(bank_path, "__build__", "{bank_slug}-bank.json"),'w') as f:
+    with open(os.path.join(bank_path, "__build__", f"{bank_slug}-bank.json"),'w') as f:
         json.dump(bank_json,f)
     print("JSON blob built.")
     print("Bank build complete!")

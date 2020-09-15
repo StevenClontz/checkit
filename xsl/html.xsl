@@ -29,22 +29,22 @@
         <p><xsl:apply-templates/></p>
     </xsl:template>
 
-    <xsl:template match="me"><p>\[<xsl:value-of select="."/>\]</p></xsl:template>
+    <xsl:template match="me"><p class="math">\[<xsl:value-of select="."/>\]</p></xsl:template>
 
         <xsl:template match="md">
         <xsl:choose>
             <xsl:when test="@alignment='alignat'">
-                \begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
+                <p class="math">\begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}</p>
             </xsl:when>
             <xsl:otherwise>
-                \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}
+                <p class="math">\begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}</p>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
 
-    <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
+    <xsl:template match="m"><span class="math">\(<xsl:value-of select="."/>\)</span></xsl:template>
 
 
     <xsl:template match="ul"><ul><xsl:apply-templates select="li"/></ul></xsl:template>
