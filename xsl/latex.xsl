@@ -6,17 +6,16 @@
     <!-- Normalize whitespace but don't completely trim beginning or end: https://stackoverflow.com/a/5044657/1607849 -->
     <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
 
-    <xsl:template match="statement">
-\begin{exerciseStatement}
-<xsl:apply-templates/>
-\end{exerciseStatement}
-    </xsl:template>
+    <xsl:template match="exercise">
+\begin{exercise}{<xsl:value-of select="@checkit-slug"/>}{<xsl:value-of select="@checkit-title"/>}{<xsl:value-of select="@checkit-seed"/>}<xsl:apply-templates/>\end{exercise}
+</xsl:template>
 
-    <xsl:template match="answer">
-\begin{exerciseAnswer} 
-<xsl:apply-templates/>
-\end{exerciseAnswer}
-    </xsl:template>
+    <xsl:template match="statement">
+\begin{exerciseStatement}<xsl:apply-templates/>\end{exerciseStatement}
+</xsl:template>
+
+    <xsl:template match="answer">\begin{exerciseAnswer}<xsl:apply-templates/>\end{exerciseAnswer}
+</xsl:template>
 
     <xsl:template match="p">
 <xsl:text>
@@ -51,12 +50,16 @@
     <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
 
     <xsl:template match="ul">
+
 \begin{itemize}<xsl:apply-templates select="li"/>
 \end{itemize}
+
     </xsl:template>
     <xsl:template match="ol">
+
 \begin{enumerate}[(a)]<xsl:apply-templates select="li"/>
 \end{enumerate}
+
     </xsl:template>
     <xsl:template match="li">
 \item <xsl:apply-templates/>

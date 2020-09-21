@@ -7,7 +7,12 @@
     <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
 
     <xsl:template match="exercise">
-        <div class="exercise"><xsl:apply-templates/></div>
+        <div class="checkit exercise">
+            <xsl:attribute name="data-checkit-slug"><xsl:value-of select="@checkit-slug"/></xsl:attribute>
+            <xsl:attribute name="data-checkit-title"><xsl:value-of select="@checkit-title"/></xsl:attribute>
+            <xsl:attribute name="data-checkit-seed"><xsl:value-of select="@checkit-seed"/></xsl:attribute>
+            <xsl:apply-templates/>
+        </div>
     </xsl:template>
 
     <xsl:template match="statement">
@@ -29,22 +34,22 @@
         <p><xsl:apply-templates/></p>
     </xsl:template>
 
-    <xsl:template match="me"><p class="math">\[<xsl:value-of select="."/>\]</p></xsl:template>
+    <xsl:template match="me"><p class="math math-display">\[<xsl:value-of select="."/>\]</p></xsl:template>
 
         <xsl:template match="md">
         <xsl:choose>
             <xsl:when test="@alignment='alignat'">
-                <p class="math">\begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}</p>
+                <p class="math math-display">\begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}</p>
             </xsl:when>
             <xsl:otherwise>
-                <p class="math">\begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}</p>
+                <p class="math math-display">\begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}</p>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
 
-    <xsl:template match="m"><span class="math">\(<xsl:value-of select="."/>\)</span></xsl:template>
+    <xsl:template match="m"><span class="math math-inline">\(<xsl:value-of select="."/>\)</span></xsl:template>
 
 
     <xsl:template match="ul"><ul><xsl:apply-templates select="li"/></ul></xsl:template>

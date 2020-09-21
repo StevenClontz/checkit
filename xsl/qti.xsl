@@ -11,7 +11,7 @@
     <xsl:template match="exercise">
       <item>
         <xsl:attribute name="ident"><xsl:value-of select="@checkit-slug"/>-<xsl:value-of select="@checkit-seed"/></xsl:attribute>
-        <xsl:attribute name="title"><xsl:value-of select="@checkit-slug"/> | <xsl:value-of select="@checkit-name"/> | ver. <xsl:value-of select="@checkit-seed"/></xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="@checkit-slug"/> | <xsl:value-of select="@checkit-title"/> | ver. <xsl:value-of select="@checkit-seed"/></xsl:attribute>
         <itemmetadata>
           <qtimetadata>
             <qtimetadatafield>
