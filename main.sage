@@ -232,9 +232,11 @@ class Exercise:
 
 # Exercises collection
 class Outcome():
-    def __init__(self, title=None, slug=None, generator=None, template=None, amount=50, fixed=False, public=False):
+    def __init__(self, title=None, slug=None, description=None, alignment=None, generator=None, template=None, amount=50, fixed=False, public=False):
         self.__title = title
         self.__slug = slug
+        self.__description = description
+        self.__alignment = alignment
         self.__generator = generator
         self.__template = template
         if public:
@@ -256,6 +258,8 @@ class Outcome():
         return {
             "title": self.__title,
             "slug": self.__slug,
+            "description": self.__description,
+            "alignment": self.__alignment,
             "exercises": [e.dict() for e in self.list()],
         }
 
@@ -359,6 +363,8 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
     for n,objective in enumerate(config.xpath("objectives/objective")):
         slug = objective.find("slug").text
         title = objective.find("title").text
+        description = objective.find("description").text
+        alignment = objective.find("alignment").text
         oldwd=os.getcwd();os.chdir(bank_path)
         load(f"{slug}.sage") # imports `generator` function
         os.chdir(oldwd)
@@ -367,6 +373,8 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
         outcome = Outcome(
             title=title,
             slug=slug,
+            description=description,
+            alignment=alignment,
             generator=generator,
             template=template,
             amount=amount,
