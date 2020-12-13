@@ -1,3 +1,4 @@
 *.sage-jupyter2
 *.sage.py
 banks/*
+__pycache__

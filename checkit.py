@@ -1,4 +1,5 @@
-import lxml.etree, lxml.html, os, json, subprocess
+import lxml.etree, lxml.html
+import os, json, subprocess, time
 
 TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
@@ -58,6 +59,29 @@ class Bank():
             for ele in xml.xpath("outcomes/outcome")
         ]
 
+    def build_path(self,public=False):
+        if public:
+            build_dir = "public"
+        else:
+            build_dir = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+        return os.path.join("banks",self.slug,"builds",build_dir)
+
+    def generate_dict(self,public=False,amount=300):
+        print(f"Generating exercises for {len(self.outcomes)} outcomes...")
+        olist = [o.generate_dict(public,amount) for o in self.outcomes]
+        print("Exercises successfully generated for all outcomes!")
+        return {
+            "title": self.title,
+            "slug": self.slug,
+            "outcomes": olist,
+        }
+
+    def build_json(self,public=False,amount=300):
+        path = self.build_path(public)
+        os.makedirs(path, exist_ok=True)
+        with open(os.path.join(path, f"{self.slug}-bank.json"),'w') as f:
+            json.dump(self.generate_dict(public,amount),f)
+
 
 class Outcome():
     def __init__(self, title=None, slug=None, description=None, alignment=None, bank=None):
@@ -97,25 +121,27 @@ class Outcome():
             f"{self.slug}.sage"
         )
 
-    def generate_exercises(self,public=True,amount=100):
+    def generate_exercises(self,public=False,amount=300):
         # get sage script to run generator
         script_path = os.path.join("scripts","generator.sage")
         # run script to return JSON output with [amount] seeds
         command = ["sage",script_path,self.generator_filepath(),str(amount)]
         if public:
             command.append("PUBLIC")
+            amount = 1000
         else:
             command.append("PRIVATE")
+        print(f"Generating {amount} exercises for {self.slug}...")
         # returns json list of exercise objects
         data_json_list = subprocess.run(command,capture_output=True).stdout
-        print(data_json_list)
+        print("Done!")
         data_list = json.loads(data_json_list)
         return [
             Exercise(data["values"],data["seed"],self) \
             for data in data_list
         ]
 
-    def generate_dict(self,public=True,amount=100):
+    def generate_dict(self,public=False,amount=300):
         exercises = self.generate_exercises(public,amount)
         return {
             "title": self.title,
