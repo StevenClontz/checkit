@@ -1,5 +1,5 @@
 import lxml.etree, lxml.html
-import os, json, subprocess, time, csv
+import os, json, subprocess, time, csv, io, zipfile
 
 TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
@@ -117,16 +117,30 @@ class Bank():
             csv.writer(f).writerows(self.outcome_csv_list())
         print(f"Outcome CSV written to {build_path}")
 
-    def build(self,public=False,amount=300,regenerate=False):
-        self.write_json(public,amount,regenerate)
-        self.write_outcome_csv(public,regenerate)
-
     def outcome_from_slug(self,outcome_slug):
         return [x for x in self.outcomes if x.slug==outcome_slug][0]
 
     def sample_for_outcome(self,outcome_slug):
         return self.outcome_from_slug(outcome_slug).generate_exercises(amount=1,regenerate=True,save=False)[0]
 
+    def write_qti_zip(self,public=False,amount=300,regenerate=False):
+        build_path = self.build_path(public)
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+            for outcome in self.outcomes:
+                zip_file.writestr(
+                    f"{outcome.slug}.qti",
+                    str(lxml.etree.tostring(outcome.qtibank_tree(public,amount,regenerate),
+                                            encoding="UTF-8", xml_declaration=True),"UTF-8")
+                )
+        with open(os.path.join(build_path, f"{self.slug}-canvas-qtibank.zip"),'wb') as f:
+            f.write(zip_buffer.getvalue())
+        print(f"Canvas QTI bank zip written to {build_path}")
+
+    def build(self,public=False,amount=300,regenerate=False):
+        self.write_json(public,amount,regenerate)
+        self.write_qti_zip(public,amount,regenerate)
+        self.write_outcome_csv(public,regenerate)
 
 
 class Outcome():
@@ -209,13 +223,12 @@ class Outcome():
             "exercises": [e.dict() for e in exercises],
         }
 
-    def qtibank_tree(self):
+    def qtibank_tree(self,public=False,amount=300,regenerate=False):
         qtibank_tree = lxml.etree.fromstring(f"""<?xml version="1.0"?>
           <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            ident="{self.slug}"
             xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
-            <objectbank>
+            <objectbank ident="{self.bank.slug}_{self.slug}">
               <qtimetadata>
                 <qtimetadatafield/>
               </qtimetadata>
@@ -225,7 +238,7 @@ class Outcome():
         label.text = "bank_title"
         entry = lxml.etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
         entry.text = f"{self.bank.title} -- {self.slug}"
-        for exercise in generate_exercises():
+        for exercise in self.generate_exercises(public,amount,regenerate):
             qtibank_tree.find("*").append(exercise.qti_tree())
         return qtibank_tree
 
