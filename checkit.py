@@ -70,6 +70,7 @@ class Bank():
         else:
             build_dir = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
         self.__build_path = os.path.join("banks",self.slug,"builds",build_dir)
+        os.makedirs(self.__build_path, exist_ok=True)
         return self.__build_path
 
     def generate_dict(self,public=False,amount=300,regenerate=False):
@@ -87,10 +88,10 @@ class Bank():
         }
 
     def write_json(self,public=False,amount=300,regenerate=False):
-        path = self.build_path(public,regenerate)
-        os.makedirs(path, exist_ok=True)
-        with open(os.path.join(path, f"{self.slug}-bank.json"),'w') as f:
+        build_path = self.build_path(public,regenerate)
+        with open(os.path.join(build_path, f"{self.slug}-bank.json"),'w') as f:
             json.dump(self.generate_dict(public,amount,regenerate),f)
+        print(f"Bank JSON written to {build_path}")
 
     def outcome_csv_list(self):
         outcome_csv = [[
@@ -113,6 +114,7 @@ class Bank():
         build_path = self.build_path(public)
         with open(os.path.join(build_path, f"{self.slug}-canvas-outcomes.csv"),'w') as f:
             csv.writer(f).writerows(self.outcome_csv_list())
+        print(f"Outcome CSV written to {build_path}")
 
     def build(self,public=False,amount=300,regenerate=False):
         self.write_json(public,amount,regenerate)
