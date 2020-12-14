@@ -1,5 +1,5 @@
 import lxml.etree, lxml.html
-import os, json, subprocess, time
+import os, json, subprocess, time, csv
 
 TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
@@ -59,20 +59,26 @@ class Bank():
             for ele in xml.xpath("outcomes/outcome")
         ]
 
-    def build_path(self,public=False):
+    def build_path(self,public=False,regenerate=False):
+        if not(regenerate):
+            try:
+                return self.__build_path
+            except:
+                pass
         if public:
             build_dir = "public"
         else:
             build_dir = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
-        return os.path.join("banks",self.slug,"builds",build_dir)
+        self.__build_path = os.path.join("banks",self.slug,"builds",build_dir)
+        return self.__build_path
 
-    def generate_dict(self,public=False,amount=300):
+    def generate_dict(self,public=False,amount=300,regenerate=False):
         if public:
             exs = "public exercises"
         else:
             exs = "private exercises"
         print(f"Generating {exs} for {len(self.outcomes)} outcomes...")
-        olist = [o.generate_dict(public,amount) for o in self.outcomes]
+        olist = [o.generate_dict(public,amount,regenerate) for o in self.outcomes]
         print("Exercises successfully generated for all outcomes!")
         return {
             "title": self.title,
@@ -80,11 +86,39 @@ class Bank():
             "outcomes": olist,
         }
 
-    def build_json(self,public=False,amount=300):
-        path = self.build_path(public)
+    def write_json(self,public=False,amount=300,regenerate=False):
+        path = self.build_path(public,regenerate)
         os.makedirs(path, exist_ok=True)
         with open(os.path.join(path, f"{self.slug}-bank.json"),'w') as f:
-            json.dump(self.generate_dict(public,amount),f)
+            json.dump(self.generate_dict(public,amount,regenerate),f)
+
+    def outcome_csv_list(self):
+        outcome_csv = [[
+            "vendor_guid",
+            "object_type",
+            "title",
+            "description",
+            "display_name",
+            "calculation_method",
+            "calculation_int",
+            "mastery_points",
+            "ratings",
+        ]]
+        oid_suffix = time.time()
+        for count,outcome in enumerate(self.outcomes):
+            outcome_csv.append(outcome.csv_row(count,oid_suffix))
+        return outcome_csv
+
+    def write_outcome_csv(self,public=False,regenerate=False):
+        build_path = self.build_path(public)
+        with open(os.path.join(build_path, f"{self.slug}-canvas-outcomes.csv"),'w') as f:
+            csv.writer(f).writerows(self.outcome_csv_list())
+
+    def build(self,public=False,amount=300,regenerate=False):
+        self.write_json(public,amount,regenerate)
+        self.write_outcome_csv(public,regenerate)
+
+
 
 
 class Outcome():
@@ -107,14 +141,14 @@ class Outcome():
         with open(self.template_filepath()) as template_file:
             template_file_text = template_file.read()
         complete_template = f"""<?xml version="1.0"?>
-<xsl:stylesheet version="1.0"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <xsl:output method="xml"/>
-    <xsl:template match="/data">
-        {template_file_text}
-    </xsl:template>
-</xsl:stylesheet>
-"""
+          <xsl:stylesheet version="1.0"
+                          xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+              <xsl:output method="xml"/>
+              <xsl:template match="/data">
+                  {template_file_text}
+              </xsl:template>
+          </xsl:stylesheet>
+        """
         return lxml.etree.XSLT(lxml.etree.XML(complete_template))
 
     def generator_filepath(self):
@@ -125,7 +159,12 @@ class Outcome():
             f"{self.slug}.sage"
         )
 
-    def generate_exercises(self,public=False,amount=300):
+    def generate_exercises(self,public=False,amount=300,regenerate=False):
+        if not(regenerate):
+            try:
+                return self.__exercises
+            except:
+                pass
         # get sage script to run generator
         script_path = os.path.join("scripts","generator.sage")
         # run script to return JSON output with [amount] seeds
@@ -144,13 +183,14 @@ class Outcome():
         data_json_list = subprocess.run(command,capture_output=True).stdout
         print("Done!")
         data_list = json.loads(data_json_list)
-        return [
+        self.__exercises = [
             Exercise(data["values"],data["seed"],self) \
             for data in data_list
         ]
+        return self.__exercises
 
-    def generate_dict(self,public=False,amount=300):
-        exercises = self.generate_exercises(public,amount)
+    def generate_dict(self,public=False,amount=300,regenerate=False):
+        exercises = self.generate_exercises(public,amount,regenerate)
         return {
             "title": self.title,
             "slug": self.slug,
@@ -161,13 +201,15 @@ class Outcome():
 
     def qtibank_tree(self):
         qtibank_tree = lxml.etree.fromstring("""<?xml version="1.0"?>
-<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
-  <objectbank>
-    <qtimetadata>
-      <qtimetadatafield/>
-    </qtimetadata>
-  </objectbank>
-</questestinterop>""")
+          <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
+            <objectbank>
+              <qtimetadata>
+                <qtimetadatafield/>
+              </qtimetadata>
+            </objectbank>
+          </questestinterop>""")
         label = lxml.etree.SubElement(qtibank_tree.find("*/*/*"), "fieldlabel")
         label.text = "bank_title"
         entry = lxml.etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
@@ -332,7 +374,6 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
         "outcomes": [],
     }
     # Canvas chokes on repeated IDs from mult instructors in same institution
-    import time; oid_suffix = time.time()
     for n,objective in enumerate(config.xpath("objectives/objective")):
         slug = objective.find("slug").text
         title = objective.find("title").text
@@ -360,9 +401,6 @@ def build_bank(bank_path, amount=50, fixed=False, public=False):
         )
         bank_json["outcomes"].append(outcome.dict())
         outcome_csv.append(outcome.outcome_csv_row(n,bank_slug,oid_suffix))
-    import csv
-    with open(os.path.join(bank_path, "__build__", f"{bank_slug}-canvas-outcomes.csv"),'w') as f:
-        csv.writer(f).writerows(outcome_csv)
     print("Canvas outcomes built.")
     import json
     with open(os.path.join(bank_path, "__build__", f"{bank_slug}-bank.json"),'w') as f:
