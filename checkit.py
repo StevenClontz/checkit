@@ -124,8 +124,8 @@ class Bank():
     def outcome_from_slug(self,outcome_slug):
         return [x for x in self.outcomes if x.slug==outcome_slug][0]
 
-    def print_outcome_preview(self,outcome_slug):
-        self.outcome_from_slug(outcome_slug).print_preview()
+    def sample_for_outcome(self,outcome_slug):
+        return self.outcome_from_slug(outcome_slug).generate_exercises(amount=1,regenerate=True,save=False)[0]
 
 
 
@@ -210,9 +210,10 @@ class Outcome():
         }
 
     def qtibank_tree(self):
-        qtibank_tree = lxml.etree.fromstring("""<?xml version="1.0"?>
+        qtibank_tree = lxml.etree.fromstring(f"""<?xml version="1.0"?>
           <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            ident="{self.slug}"
             xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
             <objectbank>
               <qtimetadata>
@@ -224,6 +225,8 @@ class Outcome():
         label.text = "bank_title"
         entry = lxml.etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
         entry.text = f"{self.bank.title} -- {self.slug}"
+        for exercise in generate_exercises():
+            qtibank_tree.find("*").append(exercise.qti_tree())
         return qtibank_tree
 
     def csv_row(self,count,oid_suffix):
