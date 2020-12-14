@@ -25,15 +25,16 @@ def insert_object_into_element(obj,name,element):
     else:
         se.text = str(obj)
 
-def dict_to_tree(data_dict):
+def dict_to_tree(data_dict,seed):
     """
     Takes a dictionary of data (typically randomized exercise data)
     and represents it as an XML tree
     """
-    tree = lxml.etree.Element("data")
+    data = lxml.etree.Element("data")
+    data.attrib['seed'] = f"{seed:04}"
     for key in data_dict.keys():
-        insert_object_into_element(data_dict[key], key, tree)
-    return tree
+        insert_object_into_element(data_dict[key], key, data)
+    return data
 
 
 
@@ -120,6 +121,11 @@ class Bank():
         self.write_json(public,amount,regenerate)
         self.write_outcome_csv(public,regenerate)
 
+    def outcome_from_slug(self,outcome_slug):
+        return [x for x in self.outcomes if x.slug==outcome_slug][0]
+
+    def print_outcome_preview(self,outcome_slug):
+        self.outcome_from_slug(outcome_slug).print_preview()
 
 
 
@@ -161,7 +167,7 @@ class Outcome():
             f"{self.slug}.sage"
         )
 
-    def generate_exercises(self,public=False,amount=300,regenerate=False):
+    def generate_exercises(self,public=False,amount=300,regenerate=False,save=True):
         if not(regenerate):
             try:
                 return self.__exercises
@@ -180,16 +186,18 @@ class Outcome():
             exs = "public exercises"
         else:
             exs = "private exercises"
-        print(f"Generating {amount} {exs} for {self.slug}...")
+        print(f"Generating {amount} {exs} for {self.slug}...",end=" ")
         # returns json list of exercise objects
         data_json_list = subprocess.run(command,capture_output=True).stdout
         print("Done!")
         data_list = json.loads(data_json_list)
-        self.__exercises = [
+        exercises = [
             Exercise(data["values"],data["seed"],self) \
             for data in data_list
         ]
-        return self.__exercises
+        if save:
+            self.__exercises = exercises
+        return exercises
 
     def generate_dict(self,public=False,amount=300,regenerate=False):
         exercises = self.generate_exercises(public,amount,regenerate)
@@ -240,6 +248,10 @@ class Outcome():
             "Insufficient Work to Assess",
         ]
 
+    def print_preview(self):
+        ex = self.generate_exercises(amount=1,regenerate=True,save=False)[0]
+        ex.print_preview()
+
 
 class Exercise:
     def __init__(self, data=None, seed=None, outcome=None):
@@ -248,7 +260,7 @@ class Exercise:
         self.outcome = outcome
 
     def data_tree(self):
-        return dict_to_tree(self.data)
+        return dict_to_tree(self.data,self.seed)
 
     def pretext_tree(self):
         transform = self.outcome.template()
