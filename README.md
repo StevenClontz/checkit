@@ -1,11 +1,11 @@
 # CheckIt Dashboard
 
-Platform for authoring free and open randomized exercises for practice and assessment.
+A platform for authoring free and open randomized exercises for practice and assessment.
 
-Exercise banks are hosted for the public at
+Exercise banks are hosted for the public using the *CheckIt Viewer*, available at
 <https://checkit.clontz.org>.
 
-## Generating new exercises or authoring an exercise bank
+## Running the CheckIt Dashboard
 
 The CheckIt Dashboard runs completely inside your web browser, powered by
 [CoCalc.com](https://cocalc.com/). Open the
@@ -13,35 +13,47 @@ The CheckIt Dashboard runs completely inside your web browser, powered by
 and click the green "Open with one click!" button.
 (CoCalc trial accounts take some time to load and compute, so consider
 purchasing a CoCalc subscription if you like using CheckIt.)
-Open `dashboard.ipynb` to get started.
+
+Open `dashboard.ipynb` to get started. The dashboard contains instructions on
+**previewing exercises** to get a new randomly generated exercise, and
+**building banks** to get files for a bank that can be used with
+your LMS or the CheckIt Viewer.
+
+## Connect with the community
 
 Our community of authors and developers is organized in the #checkit-app channel of the
 [Mastery Grading Slack workspace](https://bit.ly/join-mastery-grading). Come join us!
 
-## TODO PUT IN DASH Generating an exercise bank for Canvas
+## Using your bank with the CheckIt Viewer
 
-In a CoCalc project (see previous section),
-open the `banks/build.ipynb` notebook and run the cell,
-making sure `fixed=False` and `public=False`.
+Using custom generated banks with the CheckIt Viewer at <https://checkit.clontz.org>
+is not yet supported, but will be in the future. For now, contact
+[Steven Clontz](mailto:steven.clontz@gmail.com) if you have a bank you'd like to
+share with the public on the Viewer.
 
-Inside the bank folder, a `build` folder should be present. Select the `qti-bank` folder
-and download the `zip` file to your computer. This file can be uploaded to Canvas
-via these instructions at
-[community.canvaslms.com](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-quizzes-from-QTI-packages/ta-p/1046).
+## Using your bank with Canvas
+
+First use the dashboard to build a private version of the bank you wish to use with Canvas.
+The output from the dashboard will tell you where to browse using CoCalc's file manager
+to download `canvas-outcomes.csv` and `canvas-qtibank.zip`.
+
+- Instructions for uploading outcomes: [community.canvaslms.com](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-outcomes-for-a-course/ta-p/702)
+- Instructions for uploading QTI bank (exercises for use on quizzes): [community.canvaslms.com](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-quizzes-from-QTI-packages/ta-p/1046).
 
 ## Developing the CheckIt Dashboard
 
 The following lines will get you set up to start developing. Note
-that the Jupyter notebooks used to generate/preview exercise banks
-change every time they are used, so we ignore those changes in general.
+that the Jupyter notebook serving as the dashboard GUI
+changes every time it is used to save the latest output,
+so we want to ignore those changes in general.
 
 ```bash
 git clone git@github.com:StevenClontz/checkit.git
 git update-index --skip-worktree dashboard.ipynb
 ```
 
-If the dashboard actually needs to be updated, copy Code cells to
-new ones (without running) and delete old ones for a clean result.
+If the dashboard's underlying code needs to be updated, copy each Code cell to a
+new one (without running) and delete each old one for a clean result.
 Then do the following.
 
 ```bash
@@ -60,4 +72,9 @@ no hard-requirement that they be used for this purpose. But as
 [Jean-Sébastien](https://twitter.com/JeanSebTurcotte/status/1290691807718903808)
 pointed out, "CheckIt" emphasizes the purpose of the platform:
 to *check* student understanding, while also reflecting the use
-of checkmarks in many objective-based grading systems.
+of checkmarks in many outcomes-based grading systems.
+
+An important note: CheckIt aims to provide instructors a tool to efficiently check students'
+understanding directly by quickly providing randomly-generated exercises
+that typically ask for full explanations rather than just typing in a "final answer";
+there is no automatic grading of these exercises.

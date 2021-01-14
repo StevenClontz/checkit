@@ -1,5 +1,6 @@
 import lxml.etree, lxml.html
 import os, json, subprocess, time, csv, io, zipfile
+from IPython.core.display import display, HTML
 
 TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
@@ -266,6 +267,7 @@ class Outcome():
 
     def print_preview(self):
         ex = self.generate_exercises(amount=1,regenerate=True,save=False)[0]
+        display(HTML("<h2>Preview:</h2> "+ex.html()))
         ex.print_preview()
 
 
