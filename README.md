@@ -9,7 +9,7 @@ Exercise banks are hosted for the public using the *CheckIt Viewer*, available a
 
 The CheckIt Dashboard runs completely inside your web browser, powered by
 [CoCalc.com](https://cocalc.com/). Open the
-[template project](https://share.cocalc.com/share/ba2dd9e2216be0d5c07a18a509afaadeebaf451c/checkit-public/?viewer=share)
+[template project](https://cocalc.com/share/00854508a0fa6e8a193cbc90aff10b9dd7f446b4/checkit/?viewer=share)
 and click the green "Open with one click!" button.
 (CoCalc trial accounts take some time to load and compute, so consider
 purchasing a CoCalc subscription if you like using CheckIt.)
