@@ -56,14 +56,7 @@
       <p style="text-align:center;">
         <xsl:call-template name="image-based-math">
           <xsl:with-param name="latex">
-            <xsl:choose>
-              <xsl:when test="@alignment='alignat'">
-\begin{alignat*} <xsl:for-each select="mrow">&amp; <xsl:apply-templates select="."/></xsl:for-each> \end{alignat*}
-              </xsl:when>
-              <xsl:otherwise>
 \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}
-              </xsl:otherwise>
-            </xsl:choose>
           </xsl:with-param>
         </xsl:call-template>
       </p>

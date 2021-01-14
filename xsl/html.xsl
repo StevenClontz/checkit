@@ -30,27 +30,12 @@
         <p><xsl:apply-templates/></p>
     </xsl:template>
 
-    <xsl:template match="claim">
-        <p><xsl:apply-templates/></p>
-    </xsl:template>
-
     <xsl:template match="me"><p class="math math-display">\[<xsl:value-of select="."/>\]</p></xsl:template>
-
-        <xsl:template match="md">
-        <xsl:choose>
-            <xsl:when test="@alignment='alignat'">
-                <p class="math math-display">\begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}</p>
-            </xsl:when>
-            <xsl:otherwise>
-                <p class="math math-display">\begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}</p>
-            </xsl:otherwise>
-        </xsl:choose>
+    <xsl:template match="md">
+        <p class="math math-display">\begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}</p>
     </xsl:template>
-
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
-
     <xsl:template match="m"><span class="math math-inline">\(<xsl:value-of select="."/>\)</span></xsl:template>
-
 
     <xsl:template match="ul"><ul><xsl:apply-templates select="li"/></ul></xsl:template>
     <xsl:template match="ol"><ol type="a"><xsl:apply-templates select="li"/></ol></xsl:template>

@@ -25,28 +25,11 @@
 </xsl:text>
     </xsl:template>
 
-    <xsl:template match="claim">
-\begin{center}\begin{minipage}{0.8\textwidth}
-<xsl:apply-templates/>
-\end{minipage}\end{center}
-    </xsl:template>
-
     <xsl:template match="me">\[<xsl:value-of select="."/>\]</xsl:template>
-
     <xsl:template match="md">
-        <xsl:choose>
-            <xsl:when test="@alignment='alignat'">
-\begin{alignat*}{<xsl:value-of select="normalize-space(@alignat-columns)"/>} <xsl:apply-templates select="mrow"/> \end{alignat*}
-            </xsl:when>
-            <xsl:otherwise>
 \begin{align*} <xsl:apply-templates select="mrow"/> \end{align*}
-            </xsl:otherwise>
-        </xsl:choose>
     </xsl:template>
-
-
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
-
     <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
 
     <xsl:template match="ul">
