@@ -99,6 +99,32 @@ def latexify(obj):
     else:
         return str(latex(obj))
 
+def simple_random_matrix_of_rank(rank,rows=1,columns=1):
+    # get extra rows and columns, at least zero
+    extra_rows = max(0,rows-rank)
+    extra_columns = max(0,columns-rank)
+    # create matrix with terms between -5 and 5 inclusive, rank in every column, and integer entries RREF
+    A = random_matrix(QQ,rank+extra_rows,rank,algorithm='echelonizable',rank=rank,upper_bound=6)
+    # randomly choose pivot indices where dependent columns are injected afterward
+    inserts = [randrange(rank) for _ in range(extra_columns)]
+    # we'll insert columns backwards to avoid messing up where to inject columns
+    inserts.sort(reverse=True)
+    # we won't repeat dependent columns
+    inserted_columns = []
+    for pivot in inserts:
+        while True:
+            # get random numbers for pivot rows
+            rref_pivot_entries = [randrange(-3,4) for _ in range(pivot+1)]
+            # ensure at least one is nonzero
+            rref_pivot_entries[randrange(pivot+1)] = randrange(1,4)*choice([-1,1])
+            # create vector
+            dependent_vector = sum([rref_pivot_entries[_]*A.column(_) for _ in range(pivot+1)])
+            if dependent_vector not in inserted_columns:
+                inserted_columns.append(dependent_vector)
+                A = matrix(A.columns()[:pivot+1]+[dependent_vector]+A.columns()[pivot+1:]).transpose()
+                break
+    return A
+
 import sys,json,os
 if sys.argv[4]:
     generator_directory_path = sys.argv[1]
