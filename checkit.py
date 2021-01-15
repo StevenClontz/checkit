@@ -196,7 +196,6 @@ class Outcome():
         command = ["sage",script_path,self.generator_directory_path(),self.generator_filename(),str(amount)]
         if public:
             command.append("PUBLIC")
-            amount = 1000
         else:
             command.append("PRIVATE")
         if public:
@@ -326,7 +325,7 @@ class Exercise:
     def dict(self):
         return {
             "seed": self.seed,
-            "qti": self.qti(),
+            #"qti": self.qti(),
             "pretext": self.pretext(),
             "html": self.html(),
             "tex": self.latex(),
