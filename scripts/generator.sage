@@ -95,11 +95,11 @@ def latexify(obj):
     elif isinstance(obj,list):
         return [latexify(item) for item in obj]
     elif isinstance(obj,dict):
-        return {key:latexify(obj[key]) for key in obj.keys()}
+        return {key:latexify(obj[key]) for key in obj.keys() if obj[key] is not False}
     else:
         return str(latex(obj))
 
-def simple_random_matrix_of_rank(rank,rows=1,columns=1):
+def simple_random_matrix_of_rank(rank,rows=1,columns=1,augmented=False):
     # get extra rows and columns, at least zero
     extra_rows = max(0,rows-rank)
     extra_columns = max(0,columns-rank)
@@ -107,6 +107,9 @@ def simple_random_matrix_of_rank(rank,rows=1,columns=1):
     A = random_matrix(QQ,rank+extra_rows,rank,algorithm='echelonizable',rank=rank,upper_bound=6)
     # randomly choose pivot indices where dependent columns are injected afterward
     inserts = [randrange(rank) for _ in range(extra_columns)]
+    # pedagogically we want final column to be dependent at least half the time
+    if extra_columns>0 and choice([True,False]):
+        inserts[0]=rank-1
     # we'll insert columns backwards to avoid messing up where to inject columns
     inserts.sort(reverse=True)
     # we won't repeat dependent columns
@@ -123,6 +126,8 @@ def simple_random_matrix_of_rank(rank,rows=1,columns=1):
                 inserted_columns.append(dependent_vector)
                 A = matrix(A.columns()[:pivot+1]+[dependent_vector]+A.columns()[pivot+1:]).transpose()
                 break
+    if augmented:
+        A.subdivide([],[columns-1])
     return A
 
 import sys,json,os
