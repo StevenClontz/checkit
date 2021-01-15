@@ -99,12 +99,15 @@ def latexify(obj):
     else:
         return str(latex(obj))
 
-import sys,json
-if sys.argv[3]:
-    generator_path = sys.argv[1]
-    amount = int(sys.argv[2])
-    public = (sys.argv[3]=="PUBLIC")
-    load(generator_path) # provides generator() function
+import sys,json,os
+if sys.argv[4]:
+    generator_directory_path = sys.argv[1]
+    current_dir = os.getcwd()
+    os.chdir(generator_directory_path)
+    generator_filename = sys.argv[2]
+    amount = int(sys.argv[3])
+    public = (sys.argv[4]=="PUBLIC")
+    load(generator_filename) # provides generator() function
     seeds = []
     for i in range(amount):
         if public:
@@ -115,3 +118,4 @@ if sys.argv[3]:
         set_random_seed(seed)
         seeds.append({"seed":int(seed),"values":latexify(generator())})
     print(json.dumps(seeds))
+    os.chdir(current_dir)

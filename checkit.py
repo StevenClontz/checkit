@@ -174,13 +174,15 @@ class Outcome():
         """
         return lxml.etree.XSLT(lxml.etree.XML(complete_template))
 
-    def generator_filepath(self):
+    def generator_directory_path(self):
         return os.path.join(
             "banks",
             self.bank.slug,
-            "outcomes",
-            f"{self.slug}.sage"
+            "outcomes"
         )
+
+    def generator_filename(self):
+        return f"{self.slug}.sage"
 
     def generate_exercises(self,public=False,amount=300,regenerate=False,save=True):
         if not(regenerate):
@@ -191,7 +193,7 @@ class Outcome():
         # get sage script to run generator
         script_path = os.path.join("scripts","generator.sage")
         # run script to return JSON output with [amount] seeds
-        command = ["sage",script_path,self.generator_filepath(),str(amount)]
+        command = ["sage",script_path,self.generator_directory_path(),self.generator_filename(),str(amount)]
         if public:
             command.append("PUBLIC")
             amount = 1000
@@ -203,7 +205,12 @@ class Outcome():
             exs = "private exercises"
         print(f"Generating {amount} {exs} for {self.slug}...",end=" ")
         # returns json list of exercise objects
-        data_json_list = subprocess.run(command,capture_output=True).stdout
+        result = subprocess.run(command,capture_output=True)
+        if result.stderr:
+            print("ERROR, no exercises generated:")
+            print(result.stderr)
+            return []
+        data_json_list = result.stdout
         print("Done!")
         data_list = json.loads(data_json_list)
         exercises = [
@@ -346,96 +353,3 @@ class Exercise:
         print("------------")
         print(self.pretext())
 
-
-#    def build_files(
-#        self,
-#        build_path="__build__",
-#        bank_title="CheckIt Question Bank"
-#    ):
-#        # provision filesystem
-#        if not os.path.isdir(build_path): os.mkdir(build_path)
-#        outcome_build_path = os.path.join(build_path, self.__slug)
-#        if not os.path.isdir(outcome_build_path): os.mkdir(outcome_build_path)
-#        qtibank_build_path = os.path.join(build_path, "qti-bank")
-#        if not os.path.isdir(qtibank_build_path): os.mkdir(qtibank_build_path)
-#        print(f"Building {outcome_build_path}...")
-
-#        qtibank_tree = self.qtibank_generic_tree(bank_title)
-
-#        for count,seed in enumerate(self.__seeds):
-#            exercise = self.list()[count]
-#            # build flat files
-#            with open(f'{outcome_build_path}/{count:04}.ptx','w') as outfile:
-#                print(exercise.pretext(), file=outfile)
-#            with open(f'{outcome_build_path}/{count:04}.tex','w') as outfile:
-#                print(exercise.latex(), file=outfile)
-#            with open(f'{outcome_build_path}/{count:04}.html','w') as outfile:
-#                print(exercise.html(), file=outfile)
-#            with open(f'{outcome_build_path}/{count:04}.qti','w') as outfile:
-#                print(exercise.qti(), file=outfile)
-#            # add to qtibank file
-#            qtibank_tree.find("*").append(exercise.qti_tree())
-#            qtibank_tree.find("*").attrib['ident'] = self.__slug
-#        with open(f'{qtibank_build_path}/{self.__slug}.qti','w') as outfile:
-#            print(str(lxml.etree.tostring(qtibank_tree, encoding="UTF-8", xml_declaration=True,pretty_print=True),"UTF-8"), file=outfile)
-#        print(f"- Files built successfully!")
-
-
-
-# Bank building
-def build_bank(bank_path, amount=50, fixed=False, public=False):
-    config = lxml.etree.parse(os.path.join(bank_path, "__bank__.xml"))
-    bank_title = config.find("title").text
-    bank_slug = config.find("slug").text
-    # build Canvas outcome CSV
-    outcome_csv = [[
-        "vendor_guid",
-        "object_type",
-        "title",
-        "description",
-        "display_name",
-        "calculation_method",
-        "calculation_int",
-        "mastery_points",
-        "ratings",
-    ]]
-    # build JSON blob for bank
-    bank_json = {
-        "title": bank_title,
-        "slug": bank_slug,
-        "outcomes": [],
-    }
-    # Canvas chokes on repeated IDs from mult instructors in same institution
-    for n,objective in enumerate(config.xpath("objectives/objective")):
-        slug = objective.find("slug").text
-        title = objective.find("title").text
-        description = objective.find("description").text
-        alignment = objective.find("alignment").text
-        oldwd=os.getcwd();os.chdir(bank_path)
-        load(f"{slug}.sage") # imports `generator` function
-        os.chdir(oldwd)
-        with open(os.path.join(bank_path, f"{slug}.ptx"),'r') as template_file:
-            template = template_file.read()
-        outcome = Outcome(
-            title=title,
-            slug=slug,
-            description=description,
-            alignment=alignment,
-            generator=generator,
-            template=template,
-            amount=amount,
-            fixed=fixed,
-            public=public,
-        )
-        outcome.build_files(
-            build_path=os.path.join(bank_path,"__build__"),
-            bank_title=bank_title,
-        )
-        bank_json["outcomes"].append(outcome.dict())
-        outcome_csv.append(outcome.outcome_csv_row(n,bank_slug,oid_suffix))
-    print("Canvas outcomes built.")
-    import json
-    with open(os.path.join(bank_path, "__build__", f"{bank_slug}-bank.json"),'w') as f:
-        json.dump(bank_json,f)
-    print("JSON blob built.")
-    print("Bank build complete!")
