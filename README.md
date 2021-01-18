@@ -52,8 +52,10 @@ git clone git@github.com:StevenClontz/checkit.git
 git update-index --skip-worktree dashboard.ipynb
 ```
 
-If the dashboard's underlying code needs to be updated, copy each Code cell to a
-new one (without running) and delete each old one for a clean result.
+If the dashboard notebook does need to be updated for
+the repo,
+first make sure to clear output of cells using
+`Cell > Clear all output`.
 Then do the following.
 
 ```bash
