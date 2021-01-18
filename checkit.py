@@ -12,10 +12,12 @@ TRANSFORM = {
 # XSL Helpers
 def insert_object_into_element(obj,name,element):
     """
-    Inserts Python object into tree
+    Inserts Python object into xml element
     """
     if obj is False:
-        return None #skip generating element only when exactly False (not falsy)
+        # skip generating element only when exactly False (not falsy)
+        # since xsl:if checks if element exists
+        return None
     se = lxml.etree.SubElement(element, name)
     if isinstance(obj, list):
         for item in obj:

@@ -89,13 +89,13 @@ def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_l
     latex_output += "\\end{matrix}"
     return latex_output
 
-def latexify(obj):
-    if isinstance(obj,str):
+def json_ready(obj):
+    if isinstance(obj,str) or isinstance(obj,bool):
         return obj
     elif isinstance(obj,list):
-        return [latexify(item) for item in obj]
+        return [json_ready(item) for item in obj]
     elif isinstance(obj,dict):
-        return {key:latexify(obj[key]) for key in obj.keys() if obj[key] is not False}
+        return {key:json_ready(obj[key]) for key in obj.keys()}
     else:
         return str(latex(obj))
 
@@ -147,6 +147,6 @@ if sys.argv[4]:
             set_random_seed()
             seed = randrange(1000,10000)
         set_random_seed(seed)
-        seeds.append({"seed":int(seed),"values":latexify(generator())})
+        seeds.append({"seed":int(seed),"values":json_ready(generator())})
     print(json.dumps(seeds))
     os.chdir(current_dir)
