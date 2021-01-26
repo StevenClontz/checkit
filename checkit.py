@@ -193,7 +193,7 @@ class Outcome():
             except:
                 pass
         # get sage script to run generator
-        script_path = os.path.join("scripts","generator.sage")
+        script_path = os.path.join("wrappers","sage_wrapper.sage")
         # run script to return JSON output with [amount] seeds
         command = ["sage",script_path,self.generator_directory_path(),self.generator_filename(),str(amount)]
         if public:
