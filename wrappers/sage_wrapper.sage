@@ -72,7 +72,7 @@ def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_l
             previous_terms = False
         for n,cell in enumerate(row[1:num_vars]):
             latex_output += " & "
-            if cell < 0 and previous_terms:
+            if cell < 0:
                 latex_output += " - "
             elif cell > 0 and previous_terms:
                 latex_output += " + "
