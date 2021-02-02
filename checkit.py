@@ -209,6 +209,7 @@ class Outcome():
         result = subprocess.run(command,capture_output=True)
         if result.stderr:
             print("ERROR, no exercises generated:")
+            print(result.stdout.decode())
             print(result.stderr.decode())
             return []
         data_json_list = result.stdout
