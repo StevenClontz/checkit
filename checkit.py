@@ -1,6 +1,7 @@
 import lxml.etree, lxml.html
 import os, json, subprocess, time, csv, io, zipfile
 from IPython.core.display import display, HTML
+import urllib
 
 TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
@@ -316,6 +317,10 @@ class Exercise:
         transform = TRANSFORM["qti"]
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
+            for img in mattextxml.xpath("//img"):
+                tex = img.get("data-equation-content")
+                src = "https://pi998nv7pc.execute-api.us-east-1.amazonaws.com/production/svg?tex="+urllib.parse.quote(tex)
+                img.set("src",src)
             mattext = lxml.etree.Element("mattext")
             mattext.attrib['texttype'] = 'text/html'
             mattext.text = lxml.html.tostring(lxml.html.fromstring(lxml.etree.tostring(mattextxml.find("*"),pretty_print=True)),pretty_print=True)

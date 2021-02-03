@@ -48,7 +48,7 @@
         </div>
     </xsl:template>
 
-    <xsl:template name="image-based-math"><xsl:param name="latex"/><img style="border:1px #ddd solid;padding:5px;border-radius:5px;"><xsl:attribute name="src">https://canvas.instructure.com/equation_images/<xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="alt"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="title"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="data-latex"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute></img></xsl:template>
+    <xsl:template name="image-based-math"><xsl:param name="latex"/><img style="border:1px #ddd solid;padding:5px;border-radius:5px;"><xsl:attribute name="alt">LaTeX: <xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="title"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute><xsl:attribute name="data-equation-content"><xsl:value-of select="normalize-space($latex)"/></xsl:attribute></img></xsl:template>
 
     <xsl:template match="me"><p style="text-align:center;"><xsl:call-template name="image-based-math"><xsl:with-param name="latex"><xsl:value-of select="."/></xsl:with-param></xsl:call-template></p></xsl:template>
 
