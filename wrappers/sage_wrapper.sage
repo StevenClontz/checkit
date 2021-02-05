@@ -53,7 +53,7 @@ def data_url_graphic(obj, file_format="svg"):
 def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_list=[]):
     # Augment with zero vector if not already augmented
     if not matrix.subdivisions()[1]:
-        matrix=matrix.augment(zero_vector(ZZ, len(matrix.rows())), subdivide=true)
+        matrix=matrix.augment(zero_vector(QQ, len(matrix.rows())), subdivide=true)
     num_vars = matrix.subdivisions()[1][0]
     # Start using requested variables
     system_vars = variable_list
@@ -88,6 +88,23 @@ def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_l
         latex_output += "\\\\\n"
     latex_output += "\\end{matrix}"
     return latex_output
+
+def latex_solution_set_from_matrix(matrix):
+    # Augment with zero vector if not already augmented
+    if not matrix.subdivisions()[1]:
+        matrix=matrix.augment(zero_vector(QQ, len(matrix.rows())), subdivide=true)
+    if (len(matrix.columns())-1) in matrix.pivots():
+        return r" \{\} "
+    solution_dimension = len(matrix.columns())-1
+    free_variables = list(var("a b c d e f g h i j"))
+    kernel_basis=matrix.subdivision(0,0).right_kernel(basis='pivot').basis()
+    span = sum([kernel_basis[i]*free_variables[i] for i in range(len(kernel_basis))])
+    offset = zero_vector(QQ,solution_dimension)
+    for row_index,col_index in enumerate(matrix.pivots()):
+        offset[col_index] = matrix.rref().columns()[-1][row_index]
+    rep = column_matrix(span+offset)
+    predicate = ",".join([latex(a) for a in free_variables[:len(kernel_basis)]])
+    return r" \left\{ " + latex(rep) + r" \,\middle|\, " + predicate + r" \in\mathbb R \right\} "
 
 def json_ready(obj):
     if isinstance(obj,str) or isinstance(obj,bool):
