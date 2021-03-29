@@ -1,6 +1,6 @@
 import lxml.etree, lxml.html
 import os, json, subprocess, time, csv, io, zipfile
-from IPython.core.display import display, HTML
+from IPython.core.display import display, HTML, Markdown
 import urllib
 
 TRANSFORM = {
@@ -73,7 +73,7 @@ class Bank():
         if public:
             build_dir = "public"
         else:
-            build_dir = time.strftime("%Y-%m-%d_%H:%M:%S", time.localtime())
+            build_dir = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
         self.__build_path = os.path.join("banks",self.slug,"builds",build_dir)
         os.makedirs(self.__build_path, exist_ok=True)
         return self.__build_path
@@ -93,10 +93,10 @@ class Bank():
         }
 
     def write_json(self,public=False,amount=300,regenerate=False):
-        build_path = self.build_path(public,regenerate)
-        with open(os.path.join(build_path, f"{self.slug}-bank.json"),'w') as f:
+        build_path = os.path.join(self.build_path(public,regenerate),f"{self.slug}-bank.json")
+        with open(build_path,'w') as f:
             json.dump(self.generate_dict(public,amount,regenerate),f)
-        print(f"Bank JSON written to {build_path}")
+        display(Markdown(f"- Bank JSON written to [{build_path}]({self.build_path(public)})"))
 
     def outcome_csv_list(self):
         outcome_csv = [[
@@ -116,10 +116,10 @@ class Bank():
         return outcome_csv
 
     def write_outcome_csv(self,public=False,regenerate=False):
-        build_path = self.build_path(public)
-        with open(os.path.join(build_path, f"{self.slug}-canvas-outcomes.csv"),'w') as f:
+        build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-outcomes.csv")
+        with open(build_path,'w') as f:
             csv.writer(f).writerows(self.outcome_csv_list())
-        print(f"Outcome CSV written to {build_path}")
+        display(Markdown(f"- Outcome CSV written to [{build_path}]({self.build_path(public)})"))
 
     def outcome_from_slug(self,outcome_slug):
         return [x for x in self.outcomes if x.slug==outcome_slug][0]
@@ -128,7 +128,7 @@ class Bank():
         return self.outcome_from_slug(outcome_slug).generate_exercises(amount=1,regenerate=True,save=False)[0]
 
     def write_qti_zip(self,public=False,amount=300,regenerate=False):
-        build_path = self.build_path(public)
+        build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-qtibank.zip")
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
             for outcome in self.outcomes:
@@ -137,9 +137,9 @@ class Bank():
                     str(lxml.etree.tostring(outcome.qtibank_tree(public,amount,regenerate),
                                             encoding="UTF-8", xml_declaration=True),"UTF-8")
                 )
-        with open(os.path.join(build_path, f"{self.slug}-canvas-qtibank.zip"),'wb') as f:
+        with open(build_path,'wb') as f:
             f.write(zip_buffer.getvalue())
-        print(f"Canvas QTI bank zip written to {build_path}")
+        display(Markdown(f"- Canvas QTI bank zip written to [{build_path}]({self.build_path(public)})"))
 
     def build(self,public=False,amount=300,regenerate=False):
         self.write_json(public,amount,regenerate)
