@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<bank xmlns="https://checkit.clontz.org" version="0.0">
+    <title>Demo Bank</title>
+    <github>
+        <user>StevenClontz</user>
+        <repo>checkit</repo>
+    </github>
+    <outcomes>
+        <outcome>
+            <title>Line Slopes</title>
+            <slug>Demo1</slug>
+            <description>
+Identify the slope of a line from its equation.
+            </description>
+            <alignment>
+Your Favorite Textbook, Section 1.2.3
+            </alignment>
+        </outcome>
+        <outcome>
+            <title>Product Rule</title>
+            <slug>Demo2</slug>
+            <description>
+Apply the product rule to take derivatives
+            </description>
+            <alignment>
+Your Favorite Textbook, Section 1.2.4
+            </alignment>
+        </outcome>
+        <outcome>
+            <title>Matrix Example</title>
+            <slug>Demo3</slug>
+            <description>
+Write equivalent matrices, linear systems, and vector equations.
+            </description>
+            <alignment>
+Your Favorite Textbook, Section 1.2.5
+            </alignment>
+        </outcome>
+    </outcomes>
+</bank>
