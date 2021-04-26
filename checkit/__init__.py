@@ -7,6 +7,8 @@ TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
     for filetype in ["html","latex","qti"]
 }
+NS = "{https://checkit.clontz.org}"
+XSL = "{http://www.w3.org/1999/XSL/Transform}"
 
 
 
@@ -48,20 +50,18 @@ class Bank():
     def __init__(self, slug=None):
         # read manifest for bank
         xml = lxml.etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
-        self.title = xml.find("title").text
-        self.slug = xml.find("slug").text
-        self.author = xml.find("author").text
-        self.url = xml.find("url").text
+        self.title = xml.find(f"{NS}title").text
+        self.slug = slug
         # create each outcome
         self.outcomes = [
             Outcome(
-                ele.find("title").text,
-                ele.find("slug").text,
-                ele.find("description").text,
-                ele.find("alignment").text,
+                ele.find(f"{NS}title").text,
+                ele.find(f"{NS}slug").text,
+                ele.find(f"{NS}description").text,
+                ele.find(f"{NS}alignment").text,
                 self,
             )
-            for ele in xml.xpath("outcomes/outcome")
+            for ele in xml.find(f"{NS}outcomes").iter(f"{NS}outcome")
         ]
 
     def build_path(self,public=False,regenerate=False):
@@ -160,22 +160,34 @@ class Outcome():
             "banks",
             self.bank.slug,
             "outcomes",
-            f"{self.slug}.ptx"
+            f"{self.slug}.xml"
         )
 
     def template(self):
-        with open(self.template_filepath()) as template_file:
-            template_file_text = template_file.read()
-        complete_template = f"""<?xml version="1.0"?>
-          <xsl:stylesheet version="1.0"
-                          xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-              <xsl:output method="xml"/>
-              <xsl:template match="/data">
-                  {template_file_text}
-              </xsl:template>
-          </xsl:stylesheet>
-        """
-        return lxml.etree.XSLT(lxml.etree.XML(complete_template))
+        xml = lxml.etree.parse(self.template_filepath()).getroot()
+        for e in xml.getiterator():
+            if lxml.etree.QName(e).localname=="v":
+                e.tag=f"{XSL}value-of"
+                e.set("select",e.get("of"))
+                del e.attrib["of"]
+            elif lxml.etree.QName(e).localname=="for-each":
+                e.tag=f"{XSL}for-each"
+                e.set("select",e.get("of")+"/*")
+                del e.attrib["of"]
+            elif lxml.etree.QName(e).localname=="exercise":
+                e.tag=lxml.etree.QName(e).localname
+                del e.attrib["version"]
+            else:
+                e.tag=lxml.etree.QName(e).localname
+        lxml.etree.cleanup_namespaces(xml)
+        xsl = lxml.etree.Element(f"{XSL}stylesheet")
+        xsl.set('version', "1.0")
+        output = lxml.etree.SubElement(xsl,f"{XSL}output")
+        output.set('method', "xml")
+        template = lxml.etree.SubElement(xsl,f"{XSL}template")
+        template.set('match', "/data")
+        template.append(xml)
+        return lxml.etree.XSLT(xsl)
 
     def generator_directory_path(self):
         return os.path.join(
@@ -293,9 +305,9 @@ class Exercise:
     def pretext_tree(self):
         transform = self.outcome.template()
         tree = transform(self.data_tree()).getroot()
-        tree.xpath("/*")[0].attrib['checkit-seed'] = f"{self.seed:04}"
-        tree.xpath("/*")[0].attrib['checkit-slug'] = str(self.outcome.slug)
-        tree.xpath("/*")[0].attrib['checkit-title'] = str(self.outcome.title)
+        tree.find(".").set('checkit-seed', f"{self.seed:04}")
+        tree.find(".").set('checkit-slug', str(self.outcome.slug))
+        tree.find(".").set('checkit-title', str(self.outcome.title))
         return tree
 
     def pretext(self):
