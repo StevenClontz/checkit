@@ -25,4 +25,7 @@ def generator():
     lines = [line1,line2]
     shuffle(lines)
 
-    return {"lines": lines}
+    return {
+        "lines": lines,
+        "alt_prompt": choice([True,False]),
+    }

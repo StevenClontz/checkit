@@ -174,11 +174,23 @@ class Outcome():
                 e.tag=f"{XSL}for-each"
                 e.set("select",e.get("of")+"/*")
                 del e.attrib["of"]
+            elif lxml.etree.QName(e).localname=="if":
+                e.tag=f"{XSL}choose"
+                check = e.get("check")
+                del e.attrib["check"]
+                e_then = e.find("{*}then")
+                if e_then is not None:
+                    e_then.tag = f"{XSL}when"
+                    e_then.set("test",check)
+                e_else = e.find("{*}else")
+                if e_else is not None:
+                    e_else.tag = f"{XSL}otherwise"
             elif lxml.etree.QName(e).localname=="exercise":
                 e.tag=lxml.etree.QName(e).localname
                 del e.attrib["version"]
             else:
-                e.tag=lxml.etree.QName(e).localname
+                if lxml.etree.QName(e).namespace!=XSL[1:-1]:
+                    e.tag=lxml.etree.QName(e).localname
         lxml.etree.cleanup_namespaces(xml)
         xsl = lxml.etree.Element(f"{XSL}stylesheet")
         xsl.set('version', "1.0")
@@ -187,6 +199,7 @@ class Outcome():
         template = lxml.etree.SubElement(xsl,f"{XSL}template")
         template.set('match', "/data")
         template.append(xml)
+        #print(lxml.etree.tostring(xsl).decode("UTF-8"))
         return lxml.etree.XSLT(xsl)
 
     def generator_directory_path(self):
