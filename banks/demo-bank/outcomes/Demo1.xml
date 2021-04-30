@@ -1,18 +1,18 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <exercise xmlns="https://spatext.clontz.org" version="0.0">
     <statement>
-        <if check="alt_prompt">
-            <then>
+        <cases of="alt_prompt">
+            <case-true>
                 <p>
 For each of the following line equations, identify its slope.
                 </p>
-            </then>
-            <else>
+            </case-true>
+            <otherwise>
                 <p>
 Identify the slope for each of the following line equations.
                 </p>
-            </else>
-        </if>
+            </otherwise>
+        </cases>
         <ol>
             <for-each of="lines">
                 <li><m><v of="equation"/></m></li>

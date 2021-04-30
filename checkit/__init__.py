@@ -174,17 +174,20 @@ class Outcome():
                 e.tag=f"{XSL}for-each"
                 e.set("select",e.get("of")+"/*")
                 del e.attrib["of"]
-            elif lxml.etree.QName(e).localname=="if":
+            elif lxml.etree.QName(e).localname=="cases":
                 e.tag=f"{XSL}choose"
-                check = e.get("check")
-                del e.attrib["check"]
-                e_then = e.find("{*}then")
-                if e_then is not None:
-                    e_then.tag = f"{XSL}when"
-                    e_then.set("test",check)
-                e_else = e.find("{*}else")
-                if e_else is not None:
-                    e_else.tag = f"{XSL}otherwise"
+                check = e.get("of")
+                del e.attrib["of"]
+                for case in e.iterfind("{*}case"):
+                    case.tag=f"{XSL}when"
+                    value = case.get("when")
+                    del case.attrib["when"]
+                    case.set("test", f"{check} = '{value}'")
+                for case_true in e.iterfind("{*}case-true"):
+                    case_true.tag=f"{XSL}when"
+                    case_true.set("test", check)
+                for otherwise in e.iterfind("{*}otherwise"):
+                    otherwise.tag = f"{XSL}otherwise"
             elif lxml.etree.QName(e).localname=="exercise":
                 e.tag=lxml.etree.QName(e).localname
                 del e.attrib["version"]
@@ -199,7 +202,7 @@ class Outcome():
         template = lxml.etree.SubElement(xsl,f"{XSL}template")
         template.set('match', "/data")
         template.append(xml)
-        #print(lxml.etree.tostring(xsl).decode("UTF-8"))
+        print(lxml.etree.tostring(xsl).decode("UTF-8"))
         return lxml.etree.XSLT(xsl)
 
     def generator_directory_path(self):

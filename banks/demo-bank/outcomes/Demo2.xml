@@ -2,7 +2,10 @@
 <exercise xmlns="https://spatext.clontz.org" version="0.0">
     <statement>
         <p>
-Explain how to find the derivative <m>f'(x)</m>.
+Explain how to find the <cases of="variant">
+            <case when="derivative">derivative</case>
+            <case when="rate">rate of change</case>
+</cases> <m>f'(x)</m>.
         </p>
         <me>
 f(x)=<v of="f"/>
