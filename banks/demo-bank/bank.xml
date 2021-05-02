@@ -1,10 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <bank xmlns="https://checkit.clontz.org" version="0.0">
     <title>Demo Bank</title>
-    <github>
-        <user>StevenClontz</user>
-        <repo>checkit</repo>
-    </github>
+    <homepage>https://github.com/StevenClontz/checkit</homepage>
     <outcomes>
         <outcome>
             <title>Line Slopes</title>

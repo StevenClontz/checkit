@@ -51,6 +51,7 @@ class Bank():
         # read manifest for bank
         xml = lxml.etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
         self.title = xml.find(f"{NS}title").text
+        self.homepage = xml.find(f"{NS}homepage").text
         self.slug = slug
         # create each outcome
         self.outcomes = [
@@ -89,6 +90,7 @@ class Bank():
         return {
             "title": self.title,
             "slug": self.slug,
+            "homepage": self.homepage,
             "outcomes": olist,
         }
 
@@ -202,7 +204,7 @@ class Outcome():
         template = lxml.etree.SubElement(xsl,f"{XSL}template")
         template.set('match', "/data")
         template.append(xml)
-        print(lxml.etree.tostring(xsl).decode("UTF-8"))
+        #print(lxml.etree.tostring(xsl).decode("UTF-8"))
         return lxml.etree.XSLT(xsl)
 
     def generator_directory_path(self):
