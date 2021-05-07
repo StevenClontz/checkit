@@ -1,6 +1,5 @@
 from .exercise import Exercise
 from lxml import etree
-from IPython.display import display, HTML
 import subprocess, os, json
 
 class Outcome():
@@ -159,7 +158,8 @@ class Outcome():
             "Insufficient Work to Assess",
         ]
 
-    def print_preview(self):
+    def print_preview(self,callback=print):
         ex = self.generate_exercises(amount=1,regenerate=True,save=False)[0]
-        display(HTML("<h2>Preview:</h2> "+ex.html()))
+        callback("<h2>Preview:</h2>")
+        callback(ex.html())
         ex.print_preview()

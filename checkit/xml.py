@@ -6,7 +6,6 @@ TRANSFORM = {
     for filetype in ["html","latex","qti"]
 }
 NS = "{https://checkit.clontz.org}"
-XSL = "{http://www.w3.org/1999/XSL/Transform}"
 
 def insert_object_into_element(obj,name,element):
     """

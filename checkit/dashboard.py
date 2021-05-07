@@ -26,17 +26,18 @@ def run():
             def build_bank(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
-                    bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value)
+                    bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,
+                              callback=lambda x:display(Markdown(x)))
             build_button.on_click(build_bank)
             outcomes_dropdown = widgets.Dropdown(options=[(f"{o.slug}: {o.title}",o) for o in bank.outcomes])
             def preview_outcome(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
-                    outcomes_dropdown.value.print_preview()
+                    outcomes_dropdown.value.print_preview(callback=lambda x:display(HTML(x)))
             outcome_button = widgets.Button(description="Preview exercise")
             outcome_button.on_click(preview_outcome)
             with bank_output:
-                display(Markdown('### '+bank.title))
+                display(Markdown(f'### {bank.title}'))
                 display(widgets.HBox([build_button,build_public_dropdown,build_amount_widget]))
                 display(widgets.HBox([outcome_button,outcomes_dropdown]))
                 display(bank_suboutput)
