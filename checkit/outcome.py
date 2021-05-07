@@ -1,3 +1,7 @@
+from .exercise import Exercise
+from lxml import etree
+from IPython.display import display, HTML
+import subprocess, os, json
 
 class Outcome():
     def __init__(self, title=None, slug=None, description=None, alignment=None, bank=None):
@@ -16,17 +20,17 @@ class Outcome():
         )
 
     def template(self):
-        xml = lxml.etree.parse(self.template_filepath()).getroot()
+        xml = etree.parse(self.template_filepath()).getroot()
         for e in xml.getiterator():
-            if lxml.etree.QName(e).localname=="v":
+            if etree.QName(e).localname=="v":
                 e.tag=f"{XSL}value-of"
                 e.set("select",e.get("of"))
                 del e.attrib["of"]
-            elif lxml.etree.QName(e).localname=="for-each":
+            elif etree.QName(e).localname=="for-each":
                 e.tag=f"{XSL}for-each"
                 e.set("select",e.get("of")+"/*")
                 del e.attrib["of"]
-            elif lxml.etree.QName(e).localname=="cases":
+            elif etree.QName(e).localname=="cases":
                 e.tag=f"{XSL}choose"
                 check = e.get("of")
                 del e.attrib["of"]
@@ -40,22 +44,22 @@ class Outcome():
                     case_true.set("test", check)
                 for otherwise in e.iterfind("{*}otherwise"):
                     otherwise.tag = f"{XSL}otherwise"
-            elif lxml.etree.QName(e).localname=="exercise":
-                e.tag=lxml.etree.QName(e).localname
+            elif etree.QName(e).localname=="exercise":
+                e.tag=etree.QName(e).localname
                 del e.attrib["version"]
             else:
-                if lxml.etree.QName(e).namespace!=XSL[1:-1]:
-                    e.tag=lxml.etree.QName(e).localname
-        lxml.etree.cleanup_namespaces(xml)
-        xsl = lxml.etree.Element(f"{XSL}stylesheet")
+                if etree.QName(e).namespace!=XSL[1:-1]:
+                    e.tag=etree.QName(e).localname
+        etree.cleanup_namespaces(xml)
+        xsl = etree.Element(f"{XSL}stylesheet")
         xsl.set('version', "1.0")
-        output = lxml.etree.SubElement(xsl,f"{XSL}output")
+        output = etree.SubElement(xsl,f"{XSL}output")
         output.set('method', "xml")
-        template = lxml.etree.SubElement(xsl,f"{XSL}template")
+        template = etree.SubElement(xsl,f"{XSL}template")
         template.set('match', "/data")
         template.append(xml)
-        #print(lxml.etree.tostring(xsl).decode("UTF-8"))
-        return lxml.etree.XSLT(xsl)
+        #print(etree.tostring(xsl).decode("UTF-8"))
+        return etree.XSLT(xsl)
 
     def generator_directory_path(self):
         return os.path.join(
@@ -115,7 +119,7 @@ class Outcome():
         }
 
     def qtibank_tree(self,public=False,amount=300,regenerate=False):
-        qtibank_tree = lxml.etree.fromstring(f"""<?xml version="1.0"?>
+        qtibank_tree = etree.fromstring(f"""<?xml version="1.0"?>
           <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
@@ -125,9 +129,9 @@ class Outcome():
               </qtimetadata>
             </objectbank>
           </questestinterop>""")
-        label = lxml.etree.SubElement(qtibank_tree.find("*/*/*"), "fieldlabel")
+        label = etree.SubElement(qtibank_tree.find("*/*/*"), "fieldlabel")
         label.text = "bank_title"
-        entry = lxml.etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
+        entry = etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
         entry.text = f"{self.bank.title} -- {self.slug}"
         for exercise in self.generate_exercises(public,amount,regenerate):
             qtibank_tree.find("*").append(exercise.qti_tree())

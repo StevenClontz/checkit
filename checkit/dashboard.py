@@ -1,7 +1,7 @@
 from IPython.display import display, Markdown
 import ipywidgets as widgets
 from os import listdir, path
-from . import Bank
+from .bank import Bank
 
 def run():
     bank_output = widgets.Output()

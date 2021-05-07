@@ -1,4 +1,8 @@
-
+from lxml import etree
+from lxml import html as lxml_html
+from .xml import dict_to_tree, TRANSFORM
+import pystache
+import urllib
 
 class Exercise:
     def __init__(self, data=None, seed=None, outcome=None):
@@ -13,20 +17,20 @@ class Exercise:
         #transform = self.outcome.template()
         renderer = pystache.Renderer()
         xml_string = renderer.render_path(self.outcome.template_filepath(),self.data)
-        print(xml_string)
-        tree = lxml.etree.fromstring(bytes(xml_string, encoding='utf-8'))
+        #print(xml_string)
+        tree = etree.fromstring(bytes(xml_string, encoding='utf-8'))
         #    tree = transform(self.data_tree()).getroot()
         tree.find(".").set('checkit-seed', f"{self.seed:04}")
         tree.find(".").set('checkit-slug', str(self.outcome.slug))
         tree.find(".").set('checkit-title', str(self.outcome.title))
         #remove namespace
         for elem in tree.getiterator():
-            elem.tag = lxml.etree.QName(elem).localname
-        lxml.etree.cleanup_namespaces(tree)
+            elem.tag = etree.QName(elem).localname
+        etree.cleanup_namespaces(tree)
         return tree
 
     def pretext(self):
-        return str(lxml.etree.tostring(self.pretext_tree(), pretty_print=True), encoding="UTF-8")
+        return str(etree.tostring(self.pretext_tree(), pretty_print=True), encoding="UTF-8")
 
     def html_tree(self):
         transform = TRANSFORM["html"]
@@ -34,7 +38,7 @@ class Exercise:
         return tree
 
     def html(self):
-        return str(lxml.etree.tostring(self.html_tree(),pretty_print=True), 'UTF-8')
+        return str(etree.tostring(self.html_tree(),pretty_print=True), 'UTF-8')
 
     def latex(self):
         transform = TRANSFORM["latex"]
@@ -48,14 +52,14 @@ class Exercise:
                 tex = img.get("data-equation-content")
                 src = "https://pi998nv7pc.execute-api.us-east-1.amazonaws.com/production/svg?tex="+urllib.parse.quote(tex)
                 img.set("src",src)
-            mattext = lxml.etree.Element("mattext")
+            mattext = etree.Element("mattext")
             mattext.attrib['texttype'] = 'text/html'
-            mattext.text = lxml.html.tostring(lxml.html.fromstring(lxml.etree.tostring(mattextxml.find("*"),pretty_print=True)),pretty_print=True)
+            mattext.text = lxml_html.tostring(lxml_html.fromstring(etree.tostring(mattextxml.find("*"),pretty_print=True)),pretty_print=True)
             mattextxml.addnext(mattext)
         return tree
 
     def qti(self):
-        return str(lxml.etree.tostring(self.qti_tree(),pretty_print=True), 'UTF-8')
+        return str(etree.tostring(self.qti_tree(),pretty_print=True), 'UTF-8')
 
     def dict(self):
         return {
@@ -69,7 +73,7 @@ class Exercise:
     def print_preview(self):
         print("Data XML")
         print("-----------")
-        print(str(lxml.etree.tostring(self.data_tree(), pretty_print=True), "UTF-8"))
+        print(str(etree.tostring(self.data_tree(), pretty_print=True), "UTF-8"))
         print()
         print("HTML source")
         print("-----------")

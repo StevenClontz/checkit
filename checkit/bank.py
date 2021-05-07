@@ -1,8 +1,13 @@
+from lxml import etree
+import os, time, json, zipfile, io, csv
+from IPython.display import display, Markdown
+from .outcome import Outcome
+from .xml import NS
 
 class Bank():
     def __init__(self, slug=None):
         # read manifest for bank
-        xml = lxml.etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
+        xml = etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
         self.title = xml.find(f"{NS}title").text
         self.homepage = xml.find(f"{NS}homepage").text
         self.slug = slug
@@ -89,7 +94,7 @@ class Bank():
             for outcome in self.outcomes:
                 zip_file.writestr(
                     f"{outcome.slug}.qti",
-                    str(lxml.etree.tostring(outcome.qtibank_tree(public,amount,regenerate),
+                    str(etree.tostring(outcome.qtibank_tree(public,amount,regenerate),
                                             encoding="UTF-8", xml_declaration=True),"UTF-8")
                 )
         with open(build_path,'wb') as f:
