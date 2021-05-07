@@ -3,6 +3,7 @@ from lxml import html as lxml_html
 from .xml import dict_to_tree, TRANSFORM
 import pystache
 import urllib
+import json
 
 class Exercise:
     def __init__(self, data=None, seed=None, outcome=None):
@@ -14,19 +15,18 @@ class Exercise:
         return dict_to_tree(self.data,self.seed)
 
     def pretext_tree(self):
-        #transform = self.outcome.template()
         renderer = pystache.Renderer()
         xml_string = renderer.render_path(self.outcome.template_filepath(),self.data)
-        #print(xml_string)
         tree = etree.fromstring(bytes(xml_string, encoding='utf-8'))
-        #    tree = transform(self.data_tree()).getroot()
         tree.find(".").set('checkit-seed', f"{self.seed:04}")
         tree.find(".").set('checkit-slug', str(self.outcome.slug))
         tree.find(".").set('checkit-title', str(self.outcome.title))
+
         #remove namespace
         for elem in tree.getiterator():
             elem.tag = etree.QName(elem).localname
         etree.cleanup_namespaces(tree)
+
         return tree
 
     def pretext(self):
@@ -64,16 +64,15 @@ class Exercise:
     def dict(self):
         return {
             "seed": self.seed,
-            #"qti": self.qti(),
             "pretext": self.pretext(),
             "html": self.html(),
             "tex": self.latex(),
         }
 
     def print_preview(self):
-        print("Data XML")
+        print("Data JSON")
         print("-----------")
-        print(str(etree.tostring(self.data_tree(), pretty_print=True), "UTF-8"))
+        print(json.dumps(self.data))
         print()
         print("HTML source")
         print("-----------")

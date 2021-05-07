@@ -1,4 +1,4 @@
-from IPython.display import display, Markdown
+from IPython.display import display, Markdown, HTML
 import ipywidgets as widgets
 from os import listdir, path
 from .bank import Bank

@@ -18,48 +18,6 @@ class Outcome():
             f"{self.slug}.xml"
         )
 
-    def template(self):
-        xml = etree.parse(self.template_filepath()).getroot()
-        for e in xml.getiterator():
-            if etree.QName(e).localname=="v":
-                e.tag=f"{XSL}value-of"
-                e.set("select",e.get("of"))
-                del e.attrib["of"]
-            elif etree.QName(e).localname=="for-each":
-                e.tag=f"{XSL}for-each"
-                e.set("select",e.get("of")+"/*")
-                del e.attrib["of"]
-            elif etree.QName(e).localname=="cases":
-                e.tag=f"{XSL}choose"
-                check = e.get("of")
-                del e.attrib["of"]
-                for case in e.iterfind("{*}case"):
-                    case.tag=f"{XSL}when"
-                    value = case.get("when")
-                    del case.attrib["when"]
-                    case.set("test", f"{check} = '{value}'")
-                for case_true in e.iterfind("{*}case-true"):
-                    case_true.tag=f"{XSL}when"
-                    case_true.set("test", check)
-                for otherwise in e.iterfind("{*}otherwise"):
-                    otherwise.tag = f"{XSL}otherwise"
-            elif etree.QName(e).localname=="exercise":
-                e.tag=etree.QName(e).localname
-                del e.attrib["version"]
-            else:
-                if etree.QName(e).namespace!=XSL[1:-1]:
-                    e.tag=etree.QName(e).localname
-        etree.cleanup_namespaces(xml)
-        xsl = etree.Element(f"{XSL}stylesheet")
-        xsl.set('version', "1.0")
-        output = etree.SubElement(xsl,f"{XSL}output")
-        output.set('method', "xml")
-        template = etree.SubElement(xsl,f"{XSL}template")
-        template.set('match', "/data")
-        template.append(xml)
-        #print(etree.tostring(xsl).decode("UTF-8"))
-        return etree.XSLT(xsl)
-
     def generator_directory_path(self):
         return os.path.join(
             "banks",
