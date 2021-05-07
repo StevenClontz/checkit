@@ -1,29 +1,27 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <exercise xmlns="https://spatext.clontz.org" version="0.0">
     <statement>
-        <cases of="alt_prompt">
-            <case-true>
-                <p>
+        {{#alt_prompt}}
+            <p>
 For each of the following line equations, identify its slope.
-                </p>
-            </case-true>
-            <otherwise>
-                <p>
+            </p>
+        {{/alt_prompt}}
+        {{^alt_prompt}}
+            <p>
 Identify the slope for each of the following line equations.
-                </p>
-            </otherwise>
-        </cases>
+            </p>
+        {{/alt_prompt}}
         <ol>
-            <for-each of="lines">
-                <li><m><v of="equation"/></m></li>
-            </for-each>
+            {{#lines}}
+                <li><m>{{equation}}</m></li>
+            {{/lines}}
         </ol>
     </statement>
     <answer>
         <ol>
-            <for-each of="lines">
-                <li><m><v of="slope"/></m></li>
-            </for-each>
+            {{#lines}}
+                <li><m>{{slope}}</m></li>
+            {{/lines}}
         </ol>
     </answer>
 </exercise>

@@ -2,6 +2,7 @@ import lxml.etree, lxml.html
 import os, json, subprocess, time, csv, io, zipfile
 from IPython.core.display import display, HTML, Markdown
 import urllib
+import pystache
 
 TRANSFORM = {
     filetype: lxml.etree.XSLT(lxml.etree.parse(os.path.join("xsl",f"{filetype}.xsl")))
@@ -321,11 +322,19 @@ class Exercise:
         return dict_to_tree(self.data,self.seed)
 
     def pretext_tree(self):
-        transform = self.outcome.template()
-        tree = transform(self.data_tree()).getroot()
+        #transform = self.outcome.template()
+        renderer = pystache.Renderer()
+        xml_string = renderer.render_path(self.outcome.template_filepath(),self.data)
+        print(xml_string)
+        tree = lxml.etree.fromstring(bytes(xml_string, encoding='utf-8'))
+        #    tree = transform(self.data_tree()).getroot()
         tree.find(".").set('checkit-seed', f"{self.seed:04}")
         tree.find(".").set('checkit-slug', str(self.outcome.slug))
         tree.find(".").set('checkit-title', str(self.outcome.title))
+        #remove namespace
+        for elem in tree.getiterator():
+            elem.tag = lxml.etree.QName(elem).localname
+        lxml.etree.cleanup_namespaces(tree)
         return tree
 
     def pretext(self):
