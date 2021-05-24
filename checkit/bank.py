@@ -8,7 +8,7 @@ class Bank():
         # read manifest for bank
         xml = etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
         self.title = xml.find(f"{NS}title").text
-        self.homepage = xml.find(f"{NS}homepage").text
+        self.url = xml.find(f"{NS}url").text
         self.slug = slug
         # create each outcome
         self.outcomes = [
@@ -47,7 +47,7 @@ class Bank():
         return {
             "title": self.title,
             "slug": self.slug,
-            "homepage": self.homepage,
+            "url": self.url,
             "outcomes": olist,
         }
 

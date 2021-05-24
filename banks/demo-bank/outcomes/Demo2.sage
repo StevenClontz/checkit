@@ -12,10 +12,10 @@ def generator():
     shuffle(factors)
     f = choice([-1,1])*randrange(2,5)*factors[0]*factors[1]
 
-    variant = choice(["derivative", "rate"])
+    variant = choice(["derivative", "rate of change"])
 
     return {
         "f": f,
-        "df": f.diff(),
-        "variant": variant,
+        "dfdx": f.diff(),
+        "d_synonym": variant,
     }

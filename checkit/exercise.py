@@ -18,6 +18,7 @@ class Exercise:
         renderer = pystache.Renderer()
         xml_string = renderer.render_path(self.outcome.template_filepath(),self.data)
         tree = etree.fromstring(bytes(xml_string, encoding='utf-8'))
+        tree.find(".").attrib.pop("version")
         tree.find(".").set('checkit-seed', f"{self.seed:04}")
         tree.find(".").set('checkit-slug', str(self.outcome.slug))
         tree.find(".").set('checkit-title', str(self.outcome.title))

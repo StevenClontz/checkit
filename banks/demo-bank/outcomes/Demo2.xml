@@ -10,7 +10,7 @@ f(x)={{f}}
     </statement>
     <answer>
         <me>
-f'(x)={{df}}
+f'(x)={{dfdx}}
         </me>
     </answer>
 </exercise>
