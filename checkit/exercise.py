@@ -72,7 +72,7 @@ class Exercise:
     def print_preview(self):
         print("Data JSON")
         print("-----------")
-        print(json.dumps(self.data))
+        print(json.dumps(self.data, indent=2))
         print()
         print("HTML source")
         print("-----------")
