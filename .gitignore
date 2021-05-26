@@ -1,4 +1,6 @@
 *.sage-jupyter2
 *.sage.py
 banks/*
+!banks/demo-bank
+banks/demo-bank/builds
 __pycache__
