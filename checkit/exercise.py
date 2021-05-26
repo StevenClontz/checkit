@@ -25,7 +25,8 @@ class Exercise:
 
         #remove namespace
         for elem in tree.getiterator():
-            elem.tag = etree.QName(elem).localname
+            if not(type(elem) == etree._Comment):
+                elem.tag = etree.QName(elem).localname
         etree.cleanup_namespaces(tree)
 
         return tree
