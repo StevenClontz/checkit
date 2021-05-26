@@ -46,22 +46,20 @@ class Exercise:
         transform = TRANSFORM["latex"]
         return str(transform(self.pretext_tree()))
 
-    def qti_tree(self):
-        transform = TRANSFORM["qti"]
+    def canvas_tree(self):
+        transform = TRANSFORM["canvas"]
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
             for img in mattextxml.xpath("//img"):
                 tex = img.get("data-equation-content")
-                src = "https://pi998nv7pc.execute-api.us-east-1.amazonaws.com/production/svg?tex="+urllib.parse.quote(tex)
+                src = "https://canvas.instructure.com/equation_images/"+ \
+                    urllib.parse.quote(urllib.parse.quote(tex))
                 img.set("src",src)
             mattext = etree.Element("mattext")
             mattext.attrib['texttype'] = 'text/html'
             mattext.text = lxml_html.tostring(lxml_html.fromstring(etree.tostring(mattextxml.find("*"),pretty_print=True)),pretty_print=True)
             mattextxml.addnext(mattext)
         return tree
-
-    def qti(self):
-        return str(etree.tostring(self.qti_tree(),pretty_print=True), 'UTF-8')
 
     def dict(self):
         return {

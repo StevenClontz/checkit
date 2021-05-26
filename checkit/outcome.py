@@ -75,8 +75,8 @@ class Outcome():
             "exercises": [e.dict() for e in exercises],
         }
 
-    def qtibank_tree(self,public=False,amount=300,regenerate=False):
-        qtibank_tree = etree.fromstring(f"""<?xml version="1.0"?>
+    def canvas_tree(self,public=False,amount=300,regenerate=False):
+        tree = etree.fromstring(f"""<?xml version="1.0"?>
           <questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
@@ -86,13 +86,13 @@ class Outcome():
               </qtimetadata>
             </objectbank>
           </questestinterop>""")
-        label = etree.SubElement(qtibank_tree.find("*/*/*"), "fieldlabel")
+        label = etree.SubElement(tree.find("*/*/*"), "fieldlabel")
         label.text = "bank_title"
-        entry = etree.SubElement(qtibank_tree.find("*/*/*"), "fieldentry")
+        entry = etree.SubElement(tree.find("*/*/*"), "fieldentry")
         entry.text = f"{self.bank.title} -- {self.slug}"
         for exercise in self.generate_exercises(public,amount,regenerate):
-            qtibank_tree.find("*").append(exercise.qti_tree())
-        return qtibank_tree
+            tree.find("*").append(exercise.canvas_tree())
+        return tree
 
     def csv_row(self,count,oid_suffix):
         return [

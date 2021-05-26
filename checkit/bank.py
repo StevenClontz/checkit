@@ -55,7 +55,7 @@ class Bank():
         build_path = os.path.join(self.build_path(public,regenerate),f"{self.slug}-bank.json")
         with open(build_path,'w') as f:
             json.dump(self.generate_dict(public,amount,regenerate),f)
-        return f"- Bank JSON written to [{build_path}]({self.build_path(public)})"
+        return f"- CheckIt exercise bank JSON written to [{build_path}]({self.build_path(public)})"
 
     def outcome_csv_list(self):
         outcome_csv = [[
@@ -74,11 +74,11 @@ class Bank():
             outcome_csv.append(outcome.csv_row(count,oid_suffix))
         return outcome_csv
 
-    def write_outcome_csv(self,public=False,regenerate=False):
+    def write_canvas_outcome_csv(self,public=False,regenerate=False):
         build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-outcomes.csv")
         with open(build_path,'w') as f:
             csv.writer(f).writerows(self.outcome_csv_list())
-        return f"- Outcome CSV written to [{build_path}]({self.build_path(public)})"
+        return f"- Canvas outcome CSV written to [{build_path}]({self.build_path(public)})"
 
     def outcome_from_slug(self,outcome_slug):
         return [x for x in self.outcomes if x.slug==outcome_slug][0]
@@ -86,21 +86,21 @@ class Bank():
     def sample_for_outcome(self,outcome_slug):
         return self.outcome_from_slug(outcome_slug).generate_exercises(amount=1,regenerate=True,save=False)[0]
 
-    def write_qti_zip(self,public=False,amount=300,regenerate=False):
-        build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-qtibank.zip")
+    def write_canvas_zip(self,public=False,amount=300,regenerate=False):
+        build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-question-bank.zip")
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
             for outcome in self.outcomes:
                 zip_file.writestr(
                     f"{outcome.slug}.qti",
-                    str(etree.tostring(outcome.qtibank_tree(public,amount,regenerate),
+                    str(etree.tostring(outcome.canvas_tree(public,amount,regenerate),
                                             encoding="UTF-8", xml_declaration=True),"UTF-8")
                 )
         with open(build_path,'wb') as f:
             f.write(zip_buffer.getvalue())
-        return f"- Canvas QTI bank zip written to [{build_path}]({self.build_path(public)})"
+        return f"- Canvas question bank ZIP written to [{build_path}]({self.build_path(public)})"
 
     def build(self,public=False,amount=300,regenerate=False,callback=print):
         callback(self.write_json(public,amount,regenerate))
-        callback(self.write_qti_zip(public,amount,regenerate))
-        callback(self.write_outcome_csv(public,regenerate))
+        callback(self.write_canvas_zip(public,amount,regenerate))
+        callback(self.write_canvas_outcome_csv(public,regenerate))
