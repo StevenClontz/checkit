@@ -3,6 +3,10 @@ import ipywidgets as widgets
 from os import listdir, path
 from .bank import Bank
 
+# grab version number from VERSION file in directory with notebook
+with open("VERSION","r") as f:
+    VERSION = f.readline()
+
 def run():
     bank_output = widgets.Output()
     bank_slugs = [f for f in listdir('banks') if not path.isfile(path.join('banks', f))]
@@ -45,3 +49,5 @@ def run():
     display(Markdown("### Select a bank directory"))
     display(bank_dropdown)
     display(bank_output)
+    display(Markdown("---"))
+    display(Markdown(f"`CheckIt Dashboard v{VERSION}`"))
