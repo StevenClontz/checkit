@@ -1,6 +1,6 @@
 from lxml import etree
 from lxml import html as lxml_html
-from .xml import dict_to_tree, TRANSFORM
+from .xml import TRANSFORM
 import pystache
 import urllib
 import json
@@ -10,9 +10,6 @@ class Exercise:
         self.data = data
         self.seed = seed
         self.outcome = outcome
-
-    def data_tree(self):
-        return dict_to_tree(self.data,self.seed)
 
     def pretext_tree(self):
         renderer = pystache.Renderer()
