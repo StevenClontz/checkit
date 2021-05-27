@@ -136,3 +136,4 @@ class Bank():
         callback(self.write_json(public,amount,regenerate))
         callback(self.write_canvas_zip(public,amount,regenerate))
         callback(self.write_canvas_outcome_csv(public,regenerate))
+        callback(self.write_brightspace_zip(public,amount,regenerate))
