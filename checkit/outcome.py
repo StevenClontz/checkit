@@ -1,5 +1,6 @@
 from .exercise import Exercise
 from lxml import etree
+from .xml import xml_boilerplate
 import subprocess, os, json
 
 class Outcome():
@@ -89,9 +90,17 @@ class Outcome():
         label = etree.SubElement(tree.find("*/*/*"), "fieldlabel")
         label.text = "bank_title"
         entry = etree.SubElement(tree.find("*/*/*"), "fieldentry")
-        entry.text = f"{self.bank.title} -- {self.slug}"
+        entry.text = f"{self.bank.title} | {self.slug}: {self.title}"
         for exercise in self.generate_exercises(public,amount,regenerate):
             tree.find("*").append(exercise.canvas_tree())
+        return tree
+
+    def brightspace_tree(self,public=False,amount=300,regenerate=False):
+        tree = xml_boilerplate("brightspace_questiondb_outcome")
+        tree.getroot().set("title", f"{self.bank.title} | {self.slug}: {self.title}")
+        tree.find("presentation_material//mattext").text = self.description
+        for exercise in self.generate_exercises(public,amount,regenerate):
+            tree.getroot().append(exercise.brightspace_tree())
         return tree
 
     def csv_row(self,count,oid_suffix):

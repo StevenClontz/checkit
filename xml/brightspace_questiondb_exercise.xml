@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+      <item xmlns:d2l_2p0="http://desire2learn.com/xsd/d2lcp_v2p0">
+        <itemmetadata>
+          <qtimetadata>
+            <qti_metadatafield>
+              <fieldlabel>qmd_questiontype</fieldlabel>
+              <fieldentry>Long Answer</fieldentry>
+            </qti_metadatafield>
+            <qti_metadatafield>
+              <fieldlabel>qmd_weighting</fieldlabel>
+              <fieldentry>1.000000000</fieldentry>
+            </qti_metadatafield>
+          </qtimetadata>
+        </itemmetadata>
+        <itemproc_extension>
+          <d2l_2p0:difficulty>1</d2l_2p0:difficulty>
+          <d2l_2p0:isbonus>no</d2l_2p0:isbonus>
+          <d2l_2p0:ismandatory>no</d2l_2p0:ismandatory>
+        </itemproc_extension>
+        <presentation>
+          <flow>
+            <material>
+              <mattext texttype="text/html">&lt;p&gt;Explain how to find the
+              general solution to the given ODE, and the particular solution
+              that satisfies the given initial value.&lt;/p&gt;
+              &lt;p&gt;&lt;math title=""
+              xmlns="http://www.w3.org/1998/Math/MathML"
+              display="block"&gt;&lt;semantics&gt;&lt;mstyle&gt;&lt;mn&gt;5&lt;/mn&gt;&lt;mspace
+              width="thinmathspace" /&gt;&lt;mrow
+              class="MJX-TeXAtom-ORD"&gt;&lt;msup&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x2212;&lt;!--
+              − --&gt;&lt;/mo&gt;&lt;mn&gt;15&lt;/mn&gt;&lt;mspace
+              width="thinmathspace" /&gt;&lt;mrow
+              class="MJX-TeXAtom-ORD"&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mspace
+              width="1em" /&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;mrow
+              class="MJX-TeXAtom-ORD"&gt;&lt;mo maxsize="1.2em"
+              minsize="1.2em"&gt;(&lt;/mo&gt;&lt;/mrow&gt;&lt;mi&gt;log&lt;/mi&gt;&lt;mo&gt;&amp;#x2061;&lt;!--
+              ⁡
+              --&gt;&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow
+              class="MJX-TeXAtom-ORD"&gt;&lt;mo maxsize="1.2em"
+              minsize="1.2em"&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;!--
+              −
+              --&gt;&lt;/mo&gt;&lt;mn&gt;54&lt;/mn&gt;&lt;/mstyle&gt;&lt;annotation
+              encoding="latex"&gt;{"version":"1.1","math":"5 \, {y'} - 15 \,
+              {y} = 0,\hspace{1em}
+              y\big(\log\left(3\right)\big)=-54"}&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/p&gt;</mattext>
+            </material>
+            <response_extension>
+              <d2l_2p0:has_signed_comments>no</d2l_2p0:has_signed_comments>
+              <d2l_2p0:has_htmleditor>yes</d2l_2p0:has_htmleditor>
+              <d2l_2p0:has_fileupload>yes</d2l_2p0:has_fileupload>
+            </response_extension>
+            <response_str
+            rcardinality="Multiple">
+              <render_fib columns="100" fibtype="String" prompt="Box"
+              rows="15">
+                <response_label>
+                  <material>
+                    <mattext texttype="text/plain" />
+                  </material>
+                </response_label>
+              </render_fib>
+            </response_str>
+          </flow>
+        </presentation>
+        <answer_key>
+          <answer_key_material>
+            <flow_mat>
+              <material>
+                <mattext texttype="text/html">&lt;p&gt;&lt;math title=""
+                xmlns="http://www.w3.org/1998/Math/MathML"
+                display="block"&gt;&lt;semantics&gt;&lt;mstyle&gt;&lt;mtable&gt;&lt;/mtable&gt;&lt;/mstyle&gt;&lt;annotation
+                encoding="latex"&gt;{"version":"1.1","math":"{y} = k e^{\left(3
+                \,
+                t\right)}"}&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;math
+                title="" xmlns="http://www.w3.org/1998/Math/MathML"
+                display="block"&gt;&lt;semantics&gt;&lt;mstyle&gt;&lt;mrow
+                class="MJX-TeXAtom-ORD"&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;msup&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mrow
+                class="MJX-TeXAtom-ORD"&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mspace
+                width="thinmathspace"
+                /&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/mstyle&gt;&lt;annotation
+                encoding="latex"&gt;{"version":"1.1","math":"{y} = k e^{\left(3
+                \,
+                t\right)}"}&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/p&gt;
+                &lt;p&gt;&lt;math title=""
+                xmlns="http://www.w3.org/1998/Math/MathML"
+                display="block"&gt;&lt;semantics&gt;&lt;mstyle&gt;&lt;mrow
+                class="MJX-TeXAtom-ORD"&gt;&lt;mi&gt;y&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;!--
+                − --&gt;&lt;/mo&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;mspace
+                width="thinmathspace"
+                /&gt;&lt;msup&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mrow
+                class="MJX-TeXAtom-ORD"&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mn&gt;3&lt;/mn&gt;&lt;mspace
+                width="thinmathspace"
+                /&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/mstyle&gt;&lt;annotation
+                encoding="latex"&gt;{"version":"1.1","math":"{y} = -2 \,
+                e^{\left(3 \,
+                t\right)}"}&lt;/annotation&gt;&lt;/semantics&gt;&lt;/math&gt;&lt;/p&gt;</mattext>
+              </material>
+            </flow_mat>
+          </answer_key_material>
+        </answer_key>
+      </item>

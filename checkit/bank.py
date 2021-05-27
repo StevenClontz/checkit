@@ -1,25 +1,25 @@
 from lxml import etree
 import os, time, json, zipfile, io, csv
 from .outcome import Outcome
-from .xml import NS
+from .xml import CHECKIT_NS, xml_boilerplate
 
 class Bank():
     def __init__(self, slug=None):
         # read manifest for bank
         xml = etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
-        self.title = xml.find(f"{NS}title").text
-        self.url = xml.find(f"{NS}url").text
+        self.title = xml.find(f"{CHECKIT_NS}title").text
+        self.url = xml.find(f"{CHECKIT_NS}url").text
         self.slug = slug
         # create each outcome
         self.outcomes = [
             Outcome(
-                ele.find(f"{NS}title").text,
-                ele.find(f"{NS}slug").text,
-                ele.find(f"{NS}description").text,
-                ele.find(f"{NS}alignment").text,
+                ele.find(f"{CHECKIT_NS}title").text,
+                ele.find(f"{CHECKIT_NS}slug").text,
+                ele.find(f"{CHECKIT_NS}description").text,
+                ele.find(f"{CHECKIT_NS}alignment").text,
                 self,
             )
-            for ele in xml.find(f"{NS}outcomes").iter(f"{NS}outcome")
+            for ele in xml.find(f"{CHECKIT_NS}outcomes").iter(f"{CHECKIT_NS}outcome")
         ]
 
     def build_path(self,public=False,regenerate=False):
@@ -99,6 +99,38 @@ class Bank():
         with open(build_path,'wb') as f:
             f.write(zip_buffer.getvalue())
         return f"- Canvas question bank ZIP written to [{build_path}]({self.build_path(public)})"
+
+    def brightspace_manifest_tree(self):
+        IMSMD = "{http://www.imsglobal.org/xsd/imsmd_rootv1p2p1}"
+        tree = xml_boilerplate("brightspace_manifest")
+        for elem in tree.iterfind(f".//{IMSMD}langstring"):
+            elem.text = self.title
+        return tree
+
+    def brightspace_questiondb_tree(self,public=False,amount=300,regenerate=False):
+        tree = xml_boilerplate("brightspace_questiondb")
+        for o in self.outcomes:
+            tree.find("objectbank").append(o.brightspace_tree(public,amount,regenerate).getroot())
+        #print(str(etree.tostring(tree,pretty_print=True), 'utf-8'))
+        return tree
+
+    def write_brightspace_zip(self,public=False,amount=300,regenerate=False):
+        build_path = os.path.join(self.build_path(public), f"{self.slug}-brightspace-question-bank.zip")
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+            zip_file.writestr(
+                f"imsmanifest.xml",
+                str(etree.tostring(self.brightspace_manifest_tree(),
+                                        encoding="UTF-8", xml_declaration=True),"UTF-8")
+            )
+            zip_file.writestr(
+                f"questiondb.xml",
+                str(etree.tostring(self.brightspace_questiondb_tree(public,amount,regenerate),
+                                        encoding="UTF-8", xml_declaration=True),"UTF-8")
+            )
+        with open(build_path,'wb') as f:
+            f.write(zip_buffer.getvalue())
+        return f"- Brightspace question bank ZIP written to [{build_path}]({self.build_path(public)})"
 
     def build(self,public=False,amount=300,regenerate=False,callback=print):
         callback(self.write_json(public,amount,regenerate))

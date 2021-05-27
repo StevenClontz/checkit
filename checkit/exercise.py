@@ -1,6 +1,6 @@
 from lxml import etree
 from lxml import html as lxml_html
-from .xml import TRANSFORM
+from .xml import xsl_transform, xml_boilerplate
 import pystache
 import urllib
 import json
@@ -32,19 +32,19 @@ class Exercise:
         return str(etree.tostring(self.pretext_tree(), pretty_print=True), encoding="UTF-8")
 
     def html_tree(self):
-        transform = TRANSFORM["html"]
+        transform = xsl_transform("html")
         tree = transform(self.pretext_tree()).getroot()
         return tree
 
     def html(self):
-        return str(etree.tostring(self.html_tree(),pretty_print=True), 'UTF-8')
+        return str(etree.tostring(self.html_tree(),pretty_print=True), 'utf-8')
 
     def latex(self):
-        transform = TRANSFORM["latex"]
+        transform = xsl_transform("latex")
         return str(transform(self.pretext_tree()))
 
     def canvas_tree(self):
-        transform = TRANSFORM["canvas"]
+        transform = xsl_transform("canvas")
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
             for img in mattextxml.xpath("//img"):
@@ -57,6 +57,9 @@ class Exercise:
             mattext.text = lxml_html.tostring(lxml_html.fromstring(etree.tostring(mattextxml.find("*"),pretty_print=True)),pretty_print=True)
             mattextxml.addnext(mattext)
         return tree
+
+    def brightspace_tree(self):
+        return xml_boilerplate("brightspace_questiondb_exercise").getroot()
 
     def dict(self):
         return {
@@ -82,7 +85,3 @@ class Exercise:
         print("LaTeX source")
         print("------------")
         print(self.latex())
-        print()
-        print("QTI source")
-        print("------------")
-        print(self.qti())
