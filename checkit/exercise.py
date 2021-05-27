@@ -1,13 +1,13 @@
 from lxml import etree
 from lxml import html as lxml_html
 from .xml import xsl_transform, xml_boilerplate
-#from latex2mathml import converter
+from latex2mathml.converter import convert
 import pystache
 import urllib
 import json
 
 def tex_to_mathml(tex):
-    return etree.fromstring('<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>')
+    return etree.fromstring(convert(tex))
 
 class Exercise:
     def __init__(self, data=None, seed=None, outcome=None):
