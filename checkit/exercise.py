@@ -1,9 +1,13 @@
 from lxml import etree
 from lxml import html as lxml_html
 from .xml import xsl_transform, xml_boilerplate
+#from latex2mathml import converter
 import pystache
 import urllib
 import json
+
+def tex_to_mathml(tex):
+    return etree.fromstring('<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>')
 
 class Exercise:
     def __init__(self, data=None, seed=None, outcome=None):
@@ -59,7 +63,24 @@ class Exercise:
         return tree
 
     def brightspace_tree(self):
-        return xml_boilerplate("brightspace_questiondb_exercise").getroot()
+        item = xml_boilerplate("brightspace_questiondb_exercise").getroot()
+        transform = xsl_transform("brightspace")
+        statement_tree = transform(self.pretext_tree().find("statement")).getroot()
+        answer_tree = transform(self.pretext_tree().find("answer")).getroot()
+        for tree in [statement_tree,answer_tree]:
+            for elem in tree.iterfind(".//mathml"):
+                tex = elem.get("latex")
+                mathml = tex_to_mathml(tex)
+                elem.addnext(mathml)
+#                parent = elem.getparent()
+#                index = parent.index(elem)+1
+#                parent.insert(index,mathml)
+                del elem
+        statement_encoded = lxml_html.tostring(lxml_html.fromstring(etree.tostring(statement_tree,pretty_print=True)),pretty_print=True)
+        item.find("presentation/flow/material/mattext").text = statement_encoded
+        answer_encoded = lxml_html.tostring(lxml_html.fromstring(etree.tostring(answer_tree,pretty_print=True)),pretty_print=True)
+        item.find("answer_key//mattext").text = answer_encoded
+        return item
 
     def dict(self):
         return {
