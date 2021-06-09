@@ -37,6 +37,7 @@ def run():
             def preview_outcome(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
+                    display(HTML(f"<strong>Description:</strong> <em>{outcomes_dropdown.value.description}</em>"))
                     outcomes_dropdown.value.print_preview(callback=lambda x:display(HTML(x)))
             outcome_button = widgets.Button(description="Preview exercise")
             outcome_button.on_click(preview_outcome)
