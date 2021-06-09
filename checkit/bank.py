@@ -34,6 +34,7 @@ class Bank():
             build_dir = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
         self.__build_path = os.path.join("banks",self.slug,"builds",build_dir)
         os.makedirs(self.__build_path, exist_ok=True)
+        os.makedirs(os.path.join(self.__build_path,"pretext"), exist_ok=True)
         return self.__build_path
 
     def generate_dict(self,public=False,amount=300,regenerate=False):
@@ -132,8 +133,17 @@ class Bank():
             f.write(zip_buffer.getvalue())
         return f"- Brightspace question bank ZIP written to [{build_path}]({self.build_path(public)})"
 
+    def write_pretext_files(self,public=False,amount=300,regenerate=False):
+        for outcome in self.outcomes:
+            for n,exercise in enumerate(outcome.generate_exercises(public=public,amount=amount,regenerate=regenerate)[:10]):
+                build_path = os.path.join(self.build_path(public), "pretext", f"{self.slug}-{outcome.slug}-{n}.ptx")
+                et = etree.ElementTree(exercise.pretext_tree())
+                et.write(build_path, pretty_print=True)
+        return f"- Pretext files written to [{self.build_path(public)}/pretext]({self.build_path(public)})"
+
     def build(self,public=False,amount=300,regenerate=False,callback=print):
         callback(self.write_json(public,amount,regenerate))
         callback(self.write_canvas_zip(public,amount,regenerate))
         callback(self.write_canvas_outcome_csv(public,regenerate))
         callback(self.write_brightspace_zip(public,amount,regenerate))
+        callback(self.write_pretext_files(public,amount,regenerate))
