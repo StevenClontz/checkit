@@ -145,14 +145,16 @@ class Bank():
         outcomes_path = os.path.join("banks",self.slug,"outcomes")
         os.makedirs(outcomes_path,exist_ok=True)
         for outcome in self.outcomes:
-            shutil.copyfile(
-                os.path.join("xml","template_boilerplate.xml"),
-                os.path.join(outcomes_path,f"{outcome.slug}.xml"),
-            )
-            shutil.copyfile(
-                os.path.join("wrappers","sage_boilerplate.sage"),
-                os.path.join(outcomes_path,f"{outcome.slug}.sage"),
-            )
+            if not os.path.isfile(os.path.join(outcomes_path,f"{outcome.slug}.xml")):
+                shutil.copyfile(
+                    os.path.join("xml","template_boilerplate.xml"),
+                    os.path.join(outcomes_path,f"{outcome.slug}.xml"),
+                )
+            if not os.path.isfile(os.path.join(outcomes_path,f"{outcome.slug}.sage")):
+                shutil.copyfile(
+                    os.path.join("wrappers","sage_boilerplate.sage"),
+                    os.path.join(outcomes_path,f"{outcome.slug}.sage"),
+                )
 
     def build(self,public=False,amount=300,regenerate=False,callback=print):
         callback(self.write_json(public,amount,regenerate))

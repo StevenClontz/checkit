@@ -26,6 +26,11 @@ def run():
         bank_output.clear_output()
         if bank_dropdown.value != bank_dropdown_options[0]:
             bank = Bank(bank_dropdown.value)
+            boilerplate_button = widgets.Button(description="Create missing outcome files",layout=widgets.Layout(width="auto"))
+            def write_boilerplate(c=None):
+                bank.write_outcomes_boilerplate()
+                boilerplate_button.description = boilerplate_button.description + " - Done!"
+            boilerplate_button.on_click(write_boilerplate)
             bank_suboutput = widgets.Output()
             def build_bank(c=None):
                 bank_suboutput.clear_output()
@@ -43,6 +48,7 @@ def run():
             outcome_button.on_click(preview_outcome)
             with bank_output:
                 display(Markdown(f'### {bank.title}'))
+                display(boilerplate_button)
                 display(widgets.HBox([build_button,build_public_dropdown,build_amount_widget]))
                 display(widgets.HBox([outcome_button,outcomes_dropdown]))
                 display(bank_suboutput)
