@@ -1,5 +1,5 @@
 from lxml import etree
-import os, time, json, zipfile, io, csv
+import os, time, json, zipfile, io, csv, shutil
 from .outcome import Outcome
 from .xml import CHECKIT_NS, xml_boilerplate
 
@@ -140,6 +140,19 @@ class Bank():
                 et = etree.ElementTree(exercise.pretext_tree())
                 et.write(build_path, pretty_print=True)
         return f"- Pretext files written to [{self.build_path(public)}/pretext]({self.build_path(public)})"
+
+    def write_outcomes_boilerplate(self):
+        outcomes_path = os.path.join("banks",self.slug,"outcomes")
+        os.makedirs(outcomes_path,exist_ok=True)
+        for outcome in self.outcomes:
+            shutil.copyfile(
+                os.path.join("xml","template_boilerplate.xml"),
+                os.path.join(outcomes_path,f"{outcome.slug}.xml"),
+            )
+            shutil.copyfile(
+                os.path.join("wrappers","sage_boilerplate.sage"),
+                os.path.join(outcomes_path,f"{outcome.slug}.sage"),
+            )
 
     def build(self,public=False,amount=300,regenerate=False,callback=print):
         callback(self.write_json(public,amount,regenerate))
