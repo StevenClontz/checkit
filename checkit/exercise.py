@@ -82,6 +82,24 @@ class Exercise:
         item.find("answer_key//mattext").text = answer_encoded
         return item
 
+    def moodle_xmle(self):
+        transform = xsl_transform("html")
+        root = etree.Element("question")
+        root.set("type","essay")
+        name = etree.SubElement(root,"name")
+        name_text = etree.SubElement(name,"text")
+        name_text.text = f"{self.outcome.slug} | {self.outcome.title} | ver. {self.seed}"
+        statement = etree.SubElement(root,"questiontext")
+        statement.set("format","html")
+        statement_text = etree.SubElement(statement,"text")
+        statement_text.text = etree.tostring(transform(self.pretext_tree().find("statement")))
+        answer = etree.SubElement(root,"generalfeedback")
+        answer_text = etree.SubElement(answer,"text")
+        answer_text.text = etree.tostring(transform(self.pretext_tree().find("answer")))
+        attachments = etree.SubElement(root,"attachments")
+        attachments.text = "1"
+        return root
+
     def dict(self):
         return {
             "seed": self.seed,

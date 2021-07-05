@@ -133,6 +133,28 @@ class Bank():
             f.write(zip_buffer.getvalue())
         return f"- Brightspace question bank ZIP written to [{build_path}]({self.build_path(public)})"
 
+    def moodle_xmle(self,public=False,amount=300,regenerate=False):
+        root = etree.Element("quiz")
+        header = etree.SubElement(root,"question")
+        header.set("type","category")
+        category = etree.SubElement(header,"category")
+        category_text = etree.SubElement(category,"text")
+        category_text.text = f"$course$/top/checkit/{self.slug}"
+        info = etree.SubElement(header,"info")
+        info_text = etree.SubElement(info,"text")
+        info_text.text = self.title
+        root.append(header)
+        for o in self.outcomes:
+            for q in o.moodle_xmle(public,amount,regenerate).xpath("question"):
+                root.append(q)
+        return root
+
+    def write_moodle_xml(self,public=False,amount=300,regenerate=False):
+        build_path = os.path.join(self.build_path(public), f"{self.slug}-moodle-question-bank.xml")
+        et = etree.ElementTree(self.moodle_xmle(public,amount,regenerate))
+        et.write(build_path)
+        return f"- Moodle question bank XML written to [{build_path}]({self.build_path(public)})"
+
     def write_pretext_files(self,public=False,amount=300,regenerate=False):
         for outcome in self.outcomes:
             for n,exercise in enumerate(outcome.generate_exercises(public=public,amount=amount,regenerate=regenerate)[:10]):
@@ -161,4 +183,5 @@ class Bank():
         callback(self.write_canvas_zip(public,amount,regenerate))
         callback(self.write_canvas_outcome_csv(public,regenerate))
         callback(self.write_brightspace_zip(public,amount,regenerate))
+        callback(self.write_moodle_xml(public,amount,regenerate))
         callback(self.write_pretext_files(public,amount,regenerate))

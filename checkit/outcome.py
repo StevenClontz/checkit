@@ -103,6 +103,21 @@ class Outcome():
             tree.getroot().append(exercise.brightspace_tree())
         return tree
 
+    def moodle_xmle(self,public=False,amount=300,regenerate=False):
+        root = etree.Element("quiz")
+        header = etree.SubElement(root,"question")
+        header.set("type","category")
+        category = etree.SubElement(header,"category")
+        category_text = etree.SubElement(category,"text")
+        category_text.text = f"$course$/top/checkit/{self.bank.slug}/{self.slug}"
+        info = etree.SubElement(header,"info")
+        info_text = etree.SubElement(info,"text")
+        info_text.text = f"{self.slug} | {self.title}"
+        root.append(header)
+        for exercise in self.generate_exercises(public,amount,regenerate):
+            root.append(exercise.moodle_xmle())
+        return root
+
     def csv_row(self,count,oid_suffix):
         return [
             f"checkit_{self.bank.slug}_{count:02}_{self.slug}_{oid_suffix:06}",
