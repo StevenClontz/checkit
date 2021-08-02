@@ -33,5 +33,13 @@ Write equivalent matrices, linear systems, and vector equations.
 Your Favorite Textbook, Section 1.2.5
             </alignment>
         </outcome>
+        <outcome>
+            <title>Figure Example</title>
+            <slug>Demo4</slug>
+            <description>
+Example of using figures (with temporary markup.)
+            </description>
+            <alignment/>
+        </outcome>
     </outcomes>
 </bank>
