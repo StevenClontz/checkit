@@ -16,7 +16,6 @@ class Bank():
                 ele.find(f"{CHECKIT_NS}title").text,
                 ele.find(f"{CHECKIT_NS}slug").text,
                 ele.find(f"{CHECKIT_NS}description").text,
-                ele.find(f"{CHECKIT_NS}alignment").text,
                 self,
             )
             for ele in xml.find(f"{CHECKIT_NS}outcomes").iter(f"{CHECKIT_NS}outcome")

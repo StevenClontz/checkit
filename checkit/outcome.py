@@ -4,11 +4,10 @@ from .xml import xml_boilerplate
 import subprocess, os, json
 
 class Outcome():
-    def __init__(self, title=None, slug=None, description=None, alignment=None, bank=None):
+    def __init__(self, title=None, slug=None, description=None, bank=None):
         self.title = title
         self.slug = slug
         self.description = description
-        self.alignment = alignment
         self.bank = bank
 
     def template_filepath(self):
@@ -72,7 +71,6 @@ class Outcome():
             "title": self.title,
             "slug": self.slug,
             "description": self.description,
-            "alignment": self.alignment,
             "exercises": [e.dict() for e in exercises],
         }
 
