@@ -51,4 +51,14 @@
     <xsl:template match="c">\verb|<xsl:value-of select="."/>|</xsl:template>
     <xsl:template match="url">\verb|<xsl:value-of select="@href"/>|</xsl:template>
 
+    <xsl:template match="figure">
+
+\begin{figure*}[h]\centering
+\includegraphics[height=2in]{assets/<xsl:value-of select="image/@TEMP-assets-file"/>}
+\caption*{<xsl:value-of select="caption"/>}
+\end{figure*}
+
+    </xsl:template>
+    <xsl:template match="image"/><!-- currently kill images outside figures -->
+
 </xsl:stylesheet>

@@ -44,6 +44,17 @@
     <xsl:template match="c"><code><xsl:value-of select="."/></code></xsl:template>
     <xsl:template match="url"><a><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="@href"/></a></xsl:template>
 
-    <xsl:template match="image"><img><xsl:attribute name="src"><xsl:value-of select="@source"/></xsl:attribute></img></xsl:template>
+    <xsl:template match="figure">
+        <figure>
+            <img>
+                <xsl:attribute name="src"><xsl:value-of select="image/@TEMP-assets-url"/><xsl:value-of select="image/@TEMP-assets-file"/></xsl:attribute>
+                <xsl:attribute name="alt"><xsl:value-of select="description"/></xsl:attribute>
+            </img>
+            <figcaption>
+                <xsl:value-of select="caption"/>
+            </figcaption>
+        </figure>
+    </xsl:template>
+    <xsl:template match="image"/><!-- currently kill images outside figures -->
 
 </xsl:stylesheet>
