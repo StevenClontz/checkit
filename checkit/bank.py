@@ -29,10 +29,10 @@ class Bank():
             except:
                 pass
         if public:
-            build_dir = "public"
+            build_dir = os.path.join("docs")
         else:
-            build_dir = time.strftime("%Y-%m-%d_%H%M%S", time.localtime())
-        self.__build_path = os.path.join("banks",self.slug,"builds",build_dir)
+            build_dir = os.path.join("builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
+        self.__build_path = os.path.join("banks",self.slug,build_dir)
         os.makedirs(self.__build_path, exist_ok=True)
         os.makedirs(os.path.join(self.__build_path,"pretext"), exist_ok=True)
         return self.__build_path
@@ -53,7 +53,7 @@ class Bank():
         }
 
     def write_json(self,public=False,amount=300,regenerate=False):
-        build_path = os.path.join(self.build_path(public,regenerate),f"{self.slug}-bank.json")
+        build_path = os.path.join(self.build_path(public,regenerate),f"bank.json")
         with open(build_path,'w') as f:
             json.dump(self.generate_dict(public,amount,regenerate),f)
         return f"- CheckIt exercise bank JSON written to [{build_path}]({self.build_path(public)})"
@@ -76,7 +76,7 @@ class Bank():
         return outcome_csv
 
     def write_canvas_outcome_csv(self,public=False,regenerate=False):
-        build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-outcomes.csv")
+        build_path = os.path.join(self.build_path(public), f"canvas-outcomes.csv")
         with open(build_path,'w') as f:
             csv.writer(f).writerows(self.outcome_csv_list())
         return f"- Canvas outcome CSV written to [{build_path}]({self.build_path(public)})"
@@ -88,7 +88,7 @@ class Bank():
         return self.outcome_from_slug(outcome_slug).generate_exercises(amount=1,regenerate=True,save=False)[0]
 
     def write_canvas_zip(self,public=False,amount=300,regenerate=False):
-        build_path = os.path.join(self.build_path(public), f"{self.slug}-canvas-question-bank.zip")
+        build_path = os.path.join(self.build_path(public), f"canvas-question-bank.zip")
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
             for outcome in self.outcomes:
@@ -116,7 +116,7 @@ class Bank():
         return tree
 
     def write_brightspace_zip(self,public=False,amount=300,regenerate=False):
-        build_path = os.path.join(self.build_path(public), f"{self.slug}-brightspace-question-bank.zip")
+        build_path = os.path.join(self.build_path(public), f"brightspace-question-bank.zip")
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
             zip_file.writestr(
@@ -150,7 +150,7 @@ class Bank():
         return root
 
     def write_moodle_xml(self,public=False,amount=300,regenerate=False):
-        build_path = os.path.join(self.build_path(public), f"{self.slug}-moodle-question-bank.xml")
+        build_path = os.path.join(self.build_path(public), f"moodle-question-bank.xml")
         et = etree.ElementTree(self.moodle_xmle(public,amount,regenerate))
         et.write(build_path)
         return f"- Moodle question bank XML written to [{build_path}]({self.build_path(public)})"
@@ -158,7 +158,7 @@ class Bank():
     def write_pretext_files(self,public=False,amount=300,regenerate=False):
         for outcome in self.outcomes:
             for n,exercise in enumerate(outcome.generate_exercises(public=public,amount=amount,regenerate=regenerate)[:10]):
-                build_path = os.path.join(self.build_path(public), "pretext", f"{self.slug}-{outcome.slug}-{n}.ptx")
+                build_path = os.path.join(self.build_path(public), "pretext", f"{outcome.slug}-{n}.ptx")
                 et = etree.ElementTree(exercise.pretext_tree())
                 et.write(build_path, pretty_print=True)
         return f"- Pretext files written to [{self.build_path(public)}/pretext]({self.build_path(public)})"
@@ -178,10 +178,17 @@ class Bank():
                     os.path.join(outcomes_path,f"{outcome.slug}.sage"),
                 )
 
+    def copy_viewer(self,public=False):
+        copy_from_path = os.path.join("viewer")
+        copy_to_path = self.build_path(public)
+        shutil.copytree(copy_from_path,copy_to_path,dirs_exist_ok=True)
+        return f"- Viewer copied to [{copy_to_path}/index.html]({copy_to_path}/index.html)."
+
     def build(self,public=False,amount=300,regenerate=False,callback=print):
         callback(self.write_json(public,amount,regenerate))
-        callback(self.write_canvas_zip(public,amount,regenerate))
-        callback(self.write_canvas_outcome_csv(public,regenerate))
-        callback(self.write_brightspace_zip(public,amount,regenerate))
-        callback(self.write_moodle_xml(public,amount,regenerate))
-        callback(self.write_pretext_files(public,amount,regenerate))
+        callback(self.write_canvas_zip(public,amount,regenerate=False))
+        callback(self.write_canvas_outcome_csv(public,regenerate=False))
+        callback(self.write_brightspace_zip(public,amount,regenerate=False))
+        callback(self.write_moodle_xml(public,amount,regenerate=False))
+        callback(self.write_pretext_files(public,amount,regenerate=False))
+        callback(self.copy_viewer(public))

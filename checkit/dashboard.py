@@ -35,7 +35,7 @@ def run():
             def build_bank(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
-                    bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,
+                    bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=True,
                               callback=lambda x:display(Markdown(x)))
             build_button.on_click(build_bank)
             outcomes_dropdown = widgets.Dropdown(options=[(f"{o.slug}: {o.title}",o) for o in bank.outcomes])

@@ -51,7 +51,7 @@ class Exercise:
         transform = xsl_transform("canvas")
         tree = transform(self.pretext_tree()).getroot()
         for mattextxml in tree.xpath("//mattextxml"):
-            for img in mattextxml.xpath("//img"):
+            for img in mattextxml.xpath("//img[@data-equation-content]"):
                 tex = img.get("data-equation-content")
                 src = "https://canvas.instructure.com/equation_images/"+ \
                     urllib.parse.quote(urllib.parse.quote(tex))
