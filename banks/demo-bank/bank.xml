@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<bank xmlns="https://checkit.clontz.org" version="0.0">
+<bank xmlns="https://checkit.clontz.org" version="0.1">
     <title>Demo Bank</title>
     <url>https://github.com/StevenClontz/checkit</url>
     <outcomes>
