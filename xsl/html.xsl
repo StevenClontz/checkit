@@ -41,6 +41,8 @@
     <xsl:template match="ol"><ol type="a"><xsl:apply-templates select="li"/></ol></xsl:template>
     <xsl:template match="li"><li><xsl:apply-templates/></li></xsl:template>
 
+    <xsl:template match="em"><b><xsl:apply-templates/></b></xsl:template>
+
     <xsl:template match="c"><code><xsl:value-of select="."/></code></xsl:template>
     <xsl:template match="url"><a><xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute><xsl:value-of select="@href"/></a></xsl:template>
 

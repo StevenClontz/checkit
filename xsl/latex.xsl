@@ -32,6 +32,8 @@
     <xsl:template match="mrow"><xsl:value-of select="."/> \\</xsl:template>
     <xsl:template match="m">\(<xsl:value-of select="."/>\)</xsl:template>
 
+    <xsl:template match="em">\textbf{<xsl:value-of select="."/>}</xsl:template>
+
     <xsl:template match="ul">
 
 \begin{itemize}<xsl:apply-templates select="li"/>
