@@ -2,10 +2,13 @@ from IPython.display import display, Markdown, HTML
 import ipywidgets as widgets
 from os import listdir, path
 from .bank import Bank
+import io
+from contextlib import redirect_stdout
 
 # grab version number from VERSION file in directory with notebook
 with open("VERSION","r") as f:
     VERSION = f.readline()
+
 
 def run():
     bank_output = widgets.Output()
@@ -22,10 +25,14 @@ def run():
         description='Count:',
     )
     build_public_dropdown = widgets.Dropdown(options=[("Non-public",False),("Public",True)])
+
     def bank_dropdown_callback(c=None):
         bank_output.clear_output()
         if bank_dropdown.value != bank_dropdown_options[0]:
-            bank = Bank(bank_dropdown.value)
+            f = io.StringIO()
+            with redirect_stdout(f):
+                bank = Bank(bank_dropdown.value)
+            bank_errors = f.getvalue()
             boilerplate_button = widgets.Button(description="Create missing outcome files",layout=widgets.Layout(width="auto"))
             def write_boilerplate(c=None):
                 bank.write_outcomes_boilerplate()
@@ -35,24 +42,29 @@ def run():
             def build_bank(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
-                    bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=True,
-                              callback=lambda x:display(Markdown(x)))
+                    f = io.StringIO()
+                    with redirect_stdout(f):
+                        bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=True)
+                    display(Markdown(f.getvalue()))
             build_button.on_click(build_bank)
             outcomes_dropdown = widgets.Dropdown(options=[(f"{o.slug}: {o.title}",o) for o in bank.outcomes])
             def preview_outcome(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
-                    display(HTML(f"<strong>Description:</strong> <em>{outcomes_dropdown.value.description}</em>"))
-                    outcomes_dropdown.value.print_preview(callback=lambda x:display(HTML(x)))
+                    display(HTML(f"<strong>Description:</strong>" +
+                                 f"<em>{outcomes_dropdown.value.description}</em>"))
+                    display(HTML(outcomes_dropdown.value.HTML_preview()))
             outcome_button = widgets.Button(description="Preview exercise")
             outcome_button.on_click(preview_outcome)
             with bank_output:
                 display(Markdown(f'### {bank.title}'))
+                display(HTML(bank_errors))
                 display(boilerplate_button)
                 display(widgets.HBox([build_button,build_public_dropdown,build_amount_widget]))
                 display(widgets.HBox([outcome_button,outcomes_dropdown]))
                 display(bank_suboutput)
     bank_dropdown.observe(bank_dropdown_callback,names='value')
+
     display(Markdown("### Select a bank directory"))
     display(bank_dropdown)
     display(bank_output)

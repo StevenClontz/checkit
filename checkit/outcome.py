@@ -2,6 +2,9 @@ from .exercise import Exercise
 from lxml import etree
 from .xml import xml_boilerplate
 import subprocess, os, json
+import io
+from contextlib import redirect_stdout
+from html import escape as escape_html
 
 class Outcome():
     def __init__(self, title=None, slug=None, description=None, bank=None):
@@ -138,8 +141,15 @@ class Outcome():
             "Insufficient Work to Assess",
         ]
 
-    def print_preview(self,callback=print):
+    def HTML_preview(self):
         ex = self.generate_exercises(amount=1,regenerate=True,save=False)[0]
-        callback("<h2>Preview:</h2>")
-        callback(ex.html())
-        ex.print_preview()
+        html = "<h2>Preview:</h2>\n"
+        html += ex.html()
+        html += "\n"
+        html += "<pre>"
+        f = io.StringIO()
+        with redirect_stdout(f):
+            ex.print_preview()
+        html += escape_html(f.getvalue())
+        html += "</pre>"
+        return html

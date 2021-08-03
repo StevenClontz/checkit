@@ -7,6 +7,9 @@ class Bank():
     def __init__(self, slug=None):
         # read manifest for bank
         xml = etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
+        if xml.get("version") != "0.1":
+            print("WARNING: Bank configuration doesn't match CheckIt version 0.1; "+
+                  "to prevent unexpected behavior please follow bank upgrade instructions. Continuing...")
         self.title = xml.find(f"{CHECKIT_NS}title").text
         self.url = xml.find(f"{CHECKIT_NS}url").text
         self.slug = slug
@@ -183,11 +186,11 @@ class Bank():
         shutil.copytree(copy_from_path,copy_to_path,dirs_exist_ok=True)
         return f"- Viewer copied to [{copy_to_path}/index.html]({copy_to_path}/index.html)."
 
-    def build(self,public=False,amount=300,regenerate=False,callback=print):
-        callback(self.write_json(public,amount,regenerate))
-        callback(self.write_canvas_zip(public,amount,regenerate=False))
-        callback(self.write_canvas_outcome_csv(public,regenerate=False))
-        callback(self.write_brightspace_zip(public,amount,regenerate=False))
-        callback(self.write_moodle_xml(public,amount,regenerate=False))
-        callback(self.write_pretext_files(public,amount,regenerate=False))
-        callback(self.copy_viewer(public))
+    def build(self,public=False,amount=300,regenerate=False):
+        print(self.write_json(public,amount,regenerate))
+        print(self.write_canvas_zip(public,regenerate=False))
+        print(self.write_canvas_outcome_csv(public,regenerate=False))
+        print(self.write_brightspace_zip(public,regenerate=False))
+        print(self.write_moodle_xml(public,regenerate=False))
+        print(self.write_pretext_files(public,regenerate=False))
+        print(self.copy_viewer(public))
