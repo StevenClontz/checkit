@@ -25,6 +25,9 @@ class Bank():
         ]
     
     def generate_exercises(self,public=False,amount=300,regenerate=False):
+        # cache build path
+        self.build_path(public,regenerate)
+        # cache exercises
         for o in self.outcomes:
             o.generate_exercises(public,amount,regenerate)
 
