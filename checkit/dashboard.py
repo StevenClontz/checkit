@@ -42,9 +42,11 @@ def run():
             def build_bank(c=None):
                 bank_suboutput.clear_output()
                 with bank_suboutput:
+                    bank.generate_exercises(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=True)
+                    print("Now building all output formats...")
                     f = io.StringIO()
                     with redirect_stdout(f):
-                        bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=True)
+                        bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=False)
                     display(Markdown(f.getvalue()))
             build_button.on_click(build_bank)
             outcomes_dropdown = widgets.Dropdown(options=[(f"{o.slug}: {o.title}",o) for o in bank.outcomes])

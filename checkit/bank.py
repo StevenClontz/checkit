@@ -23,6 +23,10 @@ class Bank():
             )
             for ele in xml.find(f"{CHECKIT_NS}outcomes").iter(f"{CHECKIT_NS}outcome")
         ]
+    
+    def generate_exercises(self,public=False,amount=300,regenerate=False):
+        for o in self.outcomes:
+            o.generate_exercises(public,amount,regenerate)
 
     def build_path(self,public=False,regenerate=False):
         if not(regenerate):
@@ -44,9 +48,7 @@ class Bank():
             exs = "public exercises"
         else:
             exs = "private exercises"
-        print(f"Generating {exs} for {len(self.outcomes)} outcomes...")
         olist = [o.generate_dict(public,amount,regenerate) for o in self.outcomes]
-        print("Exercises successfully generated for all outcomes!")
         return {
             "title": self.title,
             "slug": self.slug,
