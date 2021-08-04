@@ -1,14 +1,25 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <exercise xmlns="https://spatext.clontz.org" version="0.1">
     <statement>
-        <p>A randomly-chosen image:</p>
+        <p>
+            How many vertices and edges does the graph depicted below have?
+        </p>
         <figure>
-            <image TEMP-assets-url="assets" TEMP-assets-file="Demo4/{{filename}}"/>
-            <caption>File {{filename}}</caption>
-            <description>A full description of {{filename}} for accessibility.</description>
+            <image
+                TEMP-assets-url="https://checkit.clontz.org/demo/assets" 
+                TEMP-assets-file="Demo4/{{filename}}"/>
+            <caption>A wheel graph</caption>
+            <description>
+                A full description of {{filename}} for accessibility.
+                That is, a wheel graph with {{outer_vertices}} vertices on its
+                exterior.
+            </description>
         </figure>
     </statement>
     <answer>
-        <p>N/A</p>
+        <p>
+            The graph has <m>{{vertices}}</m> vertices and 
+            <m>{{edges}}</m> edges.
+        </p>
     </answer>
 </exercise>
