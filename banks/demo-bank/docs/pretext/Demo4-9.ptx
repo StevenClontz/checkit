@@ -1,13 +1,22 @@
 <exercise checkit-seed="0009" checkit-slug="Demo4" checkit-title="Figure Example">
     <statement>
-        <p>A randomly-chosen image:</p>
+        <p>
+            How many vertices and edges does the graph depicted below have?
+        </p>
         <figure>
-            <image TEMP-assets-url="assets" TEMP-assets-file="Demo4/08.png"/>
-            <caption>File 08.png</caption>
-            <description>A full description of 08.png for accessibility.</description>
+            <image TEMP-assets-url="https://checkit.clontz.org/demo/assets" TEMP-assets-file="Demo4/08.png"/>
+            <caption>A wheel graph</caption>
+            <description>
+                A full description of 08.png for accessibility.
+                That is, a wheel graph with 8 vertices on its
+                exterior.
+            </description>
         </figure>
     </statement>
     <answer>
-        <p>N/A</p>
+        <p>
+            The graph has <m>9</m> vertices and 
+            <m>16</m> edges.
+        </p>
     </answer>
 </exercise>
