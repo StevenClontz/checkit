@@ -1,6 +1,6 @@
 def generator():
     # randomly choose from one of two images
-    filename = choice(["20200102/puzzle.png","dice.png"])
+    filename = f"{randrange(4,11):02}.png"
 
     return {
         "filename": filename,
