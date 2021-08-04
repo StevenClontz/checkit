@@ -8,15 +8,15 @@
             <caption>A wheel graph</caption>
             <description>
                 A full description of 07.png for accessibility.
-                That is, a wheel graph with 7 vertices on its
+                That is, a wheel graph with 6 vertices on its
                 exterior.
             </description>
         </figure>
     </statement>
     <answer>
         <p>
-            The graph has <m>8</m> vertices and 
-            <m>14</m> edges.
+            The graph has <m>7</m> vertices and 
+            <m>12</m> edges.
         </p>
     </answer>
 </exercise>
