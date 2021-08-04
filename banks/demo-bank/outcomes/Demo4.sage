@@ -4,8 +4,8 @@ def generator():
     filename = f"{n:02}.png"
 
     return {
-        "vertices": n+1,
-        "outer_vertices": n,
-        "edges": n*2,
+        "vertices": n,
+        "outer_vertices": n-1,
+        "edges": n*2-2,
         "filename": filename,
     }
