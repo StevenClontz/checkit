@@ -49,7 +49,7 @@
     <xsl:template match="figure">
         <figure>
             <img>
-                <xsl:attribute name="src"><xsl:value-of select="image/@TEMP-assets-url"/><xsl:value-of select="image/@TEMP-assets-file"/></xsl:attribute>
+                <xsl:attribute name="src"><xsl:value-of select="image/@TEMP-assets-url"/>/<xsl:value-of select="image/@TEMP-assets-file"/></xsl:attribute>
                 <xsl:attribute name="alt"><xsl:value-of select="description"/></xsl:attribute>
             </img>
             <figcaption>
