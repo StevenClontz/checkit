@@ -1,0 +1,21 @@
+<exercise checkit-seed="0003" checkit-slug="Demo1" checkit-title="Line Slopes">
+    <!-- The contents of <statement></statement> should specify
+         the task you wish them to complete. -->
+    <statement>
+            <p>
+For each of the following line equations, identify its slope.
+            </p>
+        <ol>
+                <li><m>7 \, x + 8 \, y = \left(-7\right)</m></li>
+                <li><m>y = -4 \, x + 9</m></li>
+        </ol>
+    </statement>
+    <!-- The contents of <answer></answer> summarize the
+         "final answer" related to this task. -->
+    <answer>
+        <ol>
+                <li><m>-\frac{8}{7}</m></li>
+                <li><m>-4</m></li>
+        </ol>
+    </answer>
+</exercise>

@@ -1,0 +1,21 @@
+<exercise checkit-seed="0009" checkit-slug="Demo1" checkit-title="Line Slopes">
+    <!-- The contents of <statement></statement> should specify
+         the task you wish them to complete. -->
+    <statement>
+            <p>
+Identify the slope for each of the following line equations.
+            </p>
+        <ol>
+                <li><m>5 \, x - 6 \, y = 6</m></li>
+                <li><m>y = -6 \, x + 8</m></li>
+        </ol>
+    </statement>
+    <!-- The contents of <answer></answer> summarize the
+         "final answer" related to this task. -->
+    <answer>
+        <ol>
+                <li><m>\frac{6}{5}</m></li>
+                <li><m>-6</m></li>
+        </ol>
+    </answer>
+</exercise>

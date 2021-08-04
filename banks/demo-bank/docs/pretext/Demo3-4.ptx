@@ -1,0 +1,20 @@
+<exercise checkit-seed="0004" checkit-slug="Demo3" checkit-title="Matrix Example">
+    <statement>
+        <p>Consider the following system of equations:</p>
+        <me>\begin{matrix}
+ x &amp;  &amp;  &amp;  +  &amp; 2 \, z &amp; = &amp; 3 \\
+ -2 \, x &amp;  +  &amp; y &amp;  -  &amp; 5 \, z &amp; = &amp; -2 \\
+ -3 \, x &amp;  +  &amp; y &amp;  -  &amp; 7 \, z &amp; = &amp; -4 \\
+ -2 \, x &amp;  +  &amp; y &amp;  -  &amp; 5 \, z &amp; = &amp; -5 \\
+ \end{matrix}</me>
+        <p>Write an augmented matrix corresponding to this system.</p>
+    </statement>
+    <answer>
+        <me>\left(\begin{array}{rrr|r}
+1 &amp; 0 &amp; 2 &amp; 3 \\
+-2 &amp; 1 &amp; -5 &amp; -2 \\
+-3 &amp; 1 &amp; -7 &amp; -4 \\
+-2 &amp; 1 &amp; -5 &amp; -5
+\end{array}\right)</me>
+    </answer>
+</exercise>

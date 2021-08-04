@@ -1,0 +1,15 @@
+<exercise checkit-seed="0002" checkit-slug="Demo2" checkit-title="Product Rule">
+    <statement>
+        <p>
+Explain how to find the rate of change <m>f'(x)</m>.
+        </p>
+        <me>
+f(x)=-4 \, \cos\left(x\right) \log\left(x\right)
+        </me>
+    </statement>
+    <answer>
+        <me>
+f'(x)=4 \, \log\left(x\right) \sin\left(x\right) - \frac{4 \, \cos\left(x\right)}{x}
+        </me>
+    </answer>
+</exercise>

@@ -3,5 +3,4 @@
 banks/*
 !banks/demo-bank
 banks/demo-bank/builds
-banks/demo-bank/docs
 __pycache__

@@ -1,0 +1,20 @@
+<exercise checkit-seed="0001" checkit-slug="Demo3" checkit-title="Matrix Example">
+    <statement>
+        <p>Consider the following system of equations:</p>
+        <me>\begin{matrix}
+ -3 \, x_{1} &amp;  -  &amp; x_{2} &amp;  +  &amp; 7 \, x_{3} &amp; = &amp; 4 \\
+ -3 \, x_{1} &amp;  -  &amp; 5 \, x_{2} &amp;  -  &amp; x_{3} &amp; = &amp; -4 \\
+ 4 \, x_{1} &amp;  +  &amp; 3 \, x_{2} &amp;  -  &amp; 6 \, x_{3} &amp; = &amp; -2 \\
+ -x_{1} &amp;  -  &amp; x_{2} &amp;  +  &amp; x_{3} &amp; = &amp; 0 \\
+ \end{matrix}</me>
+        <p>Write an augmented matrix corresponding to this system.</p>
+    </statement>
+    <answer>
+        <me>\left(\begin{array}{rrr|r}
+-3 &amp; -1 &amp; 7 &amp; 4 \\
+-3 &amp; -5 &amp; -1 &amp; -4 \\
+4 &amp; 3 &amp; -6 &amp; -2 \\
+-1 &amp; -1 &amp; 1 &amp; 0
+\end{array}\right)</me>
+    </answer>
+</exercise>
