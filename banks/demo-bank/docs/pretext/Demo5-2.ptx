@@ -1,0 +1,37 @@
+<exercise checkit-seed="0002" checkit-slug="Demo5" checkit-title="XML Entities">
+    <statement>
+        <p>
+Determine if each of the following piecewise functions is continuous.
+        </p>
+        <ol>
+                <li>
+                    <p>
+                        <me>
+j(x) =
+\begin{cases}
+-8 \, x + 5 &amp; x \leq 0 \\
+3 \, x + 5 &amp; x &gt; 0 \\
+\end{cases}
+                        </me>
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <me>
+n(x) =
+\begin{cases}
+-9 \, x + 9 &amp; x \leq 0 \\
+-2 \, x - 1 &amp; x &gt; 0 \\
+\end{cases}
+                        </me>
+                    </p>
+                </li>
+        </ol>
+    </statement>
+    <answer>
+        <ol>
+                    <li><p>Yes</p></li>
+                    <li><p>No</p></li>
+        </ol>
+    </answer>
+</exercise>

@@ -1,0 +1,37 @@
+<exercise checkit-seed="0001" checkit-slug="Demo5" checkit-title="XML Entities">
+    <statement>
+        <p>
+Determine if each of the following piecewise functions is continuous.
+        </p>
+        <ol>
+                <li>
+                    <p>
+                        <me>
+f(x) =
+\begin{cases}
+3 \, x + 8 &amp; x \leq 0 \\
+7 \, x + 8 &amp; x &gt; 0 \\
+\end{cases}
+                        </me>
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <me>
+m(x) =
+\begin{cases}
+-6 \, x - 4 &amp; x \leq 0 \\
+6 \, x - 1 &amp; x &gt; 0 \\
+\end{cases}
+                        </me>
+                    </p>
+                </li>
+        </ol>
+    </statement>
+    <answer>
+        <ol>
+                    <li><p>Yes</p></li>
+                    <li><p>No</p></li>
+        </ol>
+    </answer>
+</exercise>

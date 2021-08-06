@@ -1,5 +1,6 @@
 vendor_guid,object_type,title,description,display_name,calculation_method,calculation_int,mastery_points,ratings
-checkit_demo-bank_00_Demo1_1628086443.5176597,outcome,00-Demo1: Line Slopes,,Demo1,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
-checkit_demo-bank_01_Demo2_1628086443.5176597,outcome,01-Demo2: Product Rule,,Demo2,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
-checkit_demo-bank_02_Demo3_1628086443.5176597,outcome,02-Demo3: Matrix Example,,Demo3,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
-checkit_demo-bank_03_Demo4_1628086443.5176597,outcome,03-Demo4: Figure Example,,Demo4,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
+checkit_demo-bank_00_Demo1_1628211046.440854,outcome,00-Demo1: Line Slopes,,Demo1,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
+checkit_demo-bank_01_Demo2_1628211046.440854,outcome,01-Demo2: Product Rule,,Demo2,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
+checkit_demo-bank_02_Demo3_1628211046.440854,outcome,02-Demo3: Matrix Example,,Demo3,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
+checkit_demo-bank_03_Demo4_1628211046.440854,outcome,03-Demo4: Figure Example,,Demo4,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
+checkit_demo-bank_04_Demo5_1628211046.440854,outcome,04-Demo5: XML Entities,,Demo5,n_mastery,2,3,4,Exceeds Mastery,3,Meets Mastery,2,Near Mastery,1,Well Below Mastery,0,Insufficient Work to Assess
