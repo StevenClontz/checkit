@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<exercise xmlns="https://spatext.clontz.org" version="0.1">
+    <statement>
+        <p>
+Determine if each of the following piecewise functions is continuous.
+        </p>
+        <ol>
+            {{#functions}}
+                <li>
+                    <p>
+                        <me>
+{{f}}(x) =
+\begin{cases}
+{{left}} &amp; x \leq 0 \\
+{{right}} &amp; x &gt; 0 \\
+\end{cases}
+                        </me>
+                    </p>
+                </li>
+            {{/functions}}
+        </ol>
+    </statement>
+    <answer>
+        <ol>
+            {{#functions}}
+                {{#continuous}}
+                    <li><p>Yes</p></li>
+                {{/continuous}}
+                {{^continuous}}
+                    <li><p>No</p></li>
+                {{/continuous}}
+            {{/functions}}
+        </ol>
+    </answer>
+</exercise>

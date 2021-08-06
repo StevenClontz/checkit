@@ -9,9 +9,6 @@
             <description>
 Identify the slope of a line from its equation.
             </description>
-            <alignment>
-Your Favorite Textbook, Section 1.2.3
-            </alignment>
         </outcome>
         <outcome>
             <title>Product Rule</title>
@@ -19,9 +16,6 @@ Your Favorite Textbook, Section 1.2.3
             <description>
 Apply the product rule to take derivatives
             </description>
-            <alignment>
-Your Favorite Textbook, Section 1.2.4
-            </alignment>
         </outcome>
         <outcome>
             <title>Matrix Example</title>
@@ -29,9 +23,6 @@ Your Favorite Textbook, Section 1.2.4
             <description>
 Write equivalent matrices, linear systems, and vector equations.
             </description>
-            <alignment>
-Your Favorite Textbook, Section 1.2.5
-            </alignment>
         </outcome>
         <outcome>
             <title>Figure Example</title>
@@ -39,7 +30,13 @@ Your Favorite Textbook, Section 1.2.5
             <description>
 Example of using figures (with temporary markup.)
             </description>
-            <alignment/>
+        </outcome>
+        <outcome>
+            <title>XML Entities</title>
+            <slug>Demo5</slug>
+            <description>
+Example of using XML entities like &amp;amp; for &amp;
+            </description>
         </outcome>
     </outcomes>
 </bank>
