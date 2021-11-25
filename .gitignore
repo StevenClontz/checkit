@@ -1,6 +1,9 @@
+# dashboard
 *.sage-jupyter2
 *.sage.py
-banks/*
-!banks/demo-bank
-banks/demo-bank/builds
+demo-bank/builds
 __pycache__
+
+# viewer
+viewer/node_modules/
+viewer/public/build/
