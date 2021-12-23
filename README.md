@@ -28,7 +28,13 @@ either automatically or manually based on
 
 ```
 pyenv local # should show `checkit`
-python -m pip install -e .[dev]
+python -m pip install -e platform[dev]
 ```
 
+To enable this virtual environment for use as a Jupyter kernel for
+the dashboard:
+
+```
+python -m ipykernel install --user --name=checkit --display-name "CheckIt Platform"
+```
 

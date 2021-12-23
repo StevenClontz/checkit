@@ -1,12 +1,12 @@
 import setuptools
 
-with open("README.md", "r", encoding="utf-8") as fh:
+with open("src/checkit/static/README.md", "r", encoding="utf-8") as fh:
     LONG_DESCRIPTION = fh.read()
 
-with open("platform/src/checkit/static/VERSION", "r") as vf:
+with open("src/checkit/static/VERSION", "r") as vf:
     VERSION = vf.read().strip()
 
-with open("platform/src/checkit/static/PYTHON_VERSION", "r") as vf:
+with open("src/checkit/static/PYTHON_VERSION", "r") as vf:
     PYTHON_VERSION = vf.read().strip()
 
 setuptools.setup(
@@ -26,17 +26,23 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "platform/src"},
-    packages=setuptools.find_packages(where="platform/src"),
     python_requires=f">={PYTHON_VERSION}",
+    packages=setuptools.find_packages(),
+    package_dir={'':'src'},
     package_data={
         "checkit": ["static/*"],
     },
-    install_requires=[],
+    install_requires=[
+        'ipywidgets',
+        'lxml',
+        'latex2mathml',
+        'pystache',
+    ],
     extras_require={
         'dev': [
             'build',
             'twine',
+            'ipykernel',
         ]
     }
 )

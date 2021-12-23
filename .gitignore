@@ -3,9 +3,9 @@
 *.sage.py
 demo-bank/builds
 __pycache__
-build
-dist
-platform/src/checkit_platform.egg-info
+platform/build
+platform/dist
+*.egg-info
 
 # viewer
 viewer/node_modules/
