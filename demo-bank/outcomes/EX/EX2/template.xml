@@ -1,16 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<exercise xmlns="https://spatext.clontz.org" version="0.1">
+<exercise xmlns="https://spatext.clontz.org" version="0.2">
     <statement>
         <p>
 Explain how to find the {{d_synonym}} <m>f'(x)</m>.
         </p>
-        <me>
+        <p>
+            <me>
 f(x)={{f}}
-        </me>
+            </me>
+        </p>
     </statement>
     <answer>
-        <me>
+        <p>
+            <me>
 f'(x)={{dfdx}}
-        </me>
+            </me>
+        </p>
     </answer>
 </exercise>
