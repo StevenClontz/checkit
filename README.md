@@ -38,3 +38,17 @@ the dashboard:
 python -m ipykernel install --user --name=checkit --display-name "CheckIt Platform"
 ```
 
+## Demo Bank
+
+To be able to use the dashboard in the demo bank without affecting the Git repo,
+run 
+
+```
+git update-index --skip-worktree demo-bank/dashboard.ipynb
+```
+
+Of course if you really need to update the dashboard:
+
+```
+git update-index --no-skip-worktree demo-bank/dashboard.ipynb
+```

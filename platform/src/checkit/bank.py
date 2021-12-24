@@ -4,20 +4,19 @@ from .outcome import Outcome
 from .xml import CHECKIT_NS, xml_boilerplate
 
 class Bank():
-    def __init__(self, slug=None):
+    def __init__(self, path="."):
         # read manifest for bank
-        xml = etree.parse(os.path.join("banks",slug,"bank.xml")).getroot()
-        if xml.get("version") != "0.1":
-            print("WARNING: Bank configuration doesn't match CheckIt version 0.1; "+
-                  "to prevent unexpected behavior please follow bank upgrade instructions. Continuing...")
+        xml = etree.parse(os.path.join(path,"bank.xml")).getroot()
+        if xml.get("version") != "0.2":
+            raise Exception("ERROR: Bank configuration doesn't match CheckIt version 0.2")
         self.title = xml.find(f"{CHECKIT_NS}title").text
         self.url = xml.find(f"{CHECKIT_NS}url").text
-        self.slug = slug
         # create each outcome
         self.outcomes = [
             Outcome(
                 ele.find(f"{CHECKIT_NS}title").text,
                 ele.find(f"{CHECKIT_NS}slug").text,
+                ele.find(f"{CHECKIT_NS}path").text,
                 ele.find(f"{CHECKIT_NS}description").text,
                 self,
             )

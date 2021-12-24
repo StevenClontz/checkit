@@ -6,10 +6,55 @@ import io
 from contextlib import redirect_stdout
 from . import VERSION
 
+BANK = Bank()
 
 def run():
-    display(VERSION)
-    # bank_output = widgets.Output()
+    menu_dropdown = widgets.Dropdown(
+        options=[
+            ('',''),
+            ('Preview Outcome', 'outcome'),
+        ],
+        value='',
+        description='Menu:',
+    )
+    submenu = widgets.Output()
+    menu_dropdown.observe(change_submenu(submenu),names='value')
+
+    display(Markdown(f"## {BANK.title}"))
+    display(menu_dropdown)
+    display(submenu)
+    display(Markdown("---"))
+    display(Markdown(f"`CheckIt Dashboard v{VERSION}`"))
+
+def change_submenu(submenu):
+    @submenu.capture(clear_output=True)
+    def callback(value):
+        if value['new'] == 'outcome':
+            outcome_submenu()
+    return callback
+
+def outcome_submenu(): 
+    options = [
+        (f"{o.slug}: {o.title}",o) for o in BANK.outcomes
+    ]
+    outcomes_dropdown = widgets.Dropdown(options=options)
+    outcome_button = widgets.Button(description="Generate preview")
+    preview = widgets.Output()
+    outcome_button.on_click(preview_outcome(preview,outcomes_dropdown.value))
+
+    display(widgets.HBox([outcomes_dropdown,outcome_button]))
+    display(preview)
+
+def preview_outcome(preview,outcome):
+    @preview.capture(clear_output=True)
+    def callback(button):
+        display(HTML(f"<strong>Description:</strong>" +
+                    f"<em>{outcome.description}</em>"))
+        display(HTML(outcome.HTML_preview()))
+    return callback
+
+
+    # 
     # bank_slugs = [f for f in listdir('banks') if not path.isfile(path.join('banks', f))]
     # bank_slugs.sort()
     # bank_dropdown_options = ['']+bank_slugs
@@ -68,5 +113,3 @@ def run():
     # display(Markdown("### Select a bank directory"))
     # display(bank_dropdown)
     # display(bank_output)
-    # display(Markdown("---"))
-    # display(Markdown(f"`CheckIt Dashboard v{VERSION}`"))

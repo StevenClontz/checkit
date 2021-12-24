@@ -7,29 +7,26 @@ from contextlib import redirect_stdout
 from html import escape as escape_html
 
 class Outcome():
-    def __init__(self, title=None, slug=None, description=None, bank=None):
+    def __init__(self, title=None, slug=None, path=None, description=None, bank=None):
         self.title = title
         self.slug = slug
+        self.path = path
         self.description = description
         self.bank = bank
 
     def template_filepath(self):
         return os.path.join(
-            "banks",
-            self.bank.slug,
-            "outcomes",
-            f"{self.slug}.xml"
+            self.path,
+            "template.xml"
         )
 
     def generator_directory_path(self):
         return os.path.join(
-            "banks",
-            self.bank.slug,
-            "outcomes"
+            self.path
         )
 
     def generator_filename(self):
-        return f"{self.slug}.sage"
+        return f"generator.sage"
 
     def generate_exercises(self,public=False,amount=300,regenerate=False,save=True):
         if not(regenerate):
