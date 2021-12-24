@@ -6,6 +6,7 @@ __pycache__
 platform/build
 platform/dist
 *.egg-info
+seeds.json
 
 # viewer
 viewer/node_modules/

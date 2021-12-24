@@ -30,7 +30,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_dir={'':'src'},
     package_data={
-        "checkit": ["static/*"],
+        "checkit": [
+            "static/*", 
+            "wrapper/*",
+        ],
     },
     install_requires=[
         'ipywidgets',

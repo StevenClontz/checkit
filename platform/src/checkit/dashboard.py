@@ -38,19 +38,31 @@ def outcome_submenu():
         (f"{o.slug}: {o.title}",o) for o in BANK.outcomes
     ]
     outcomes_dropdown = widgets.Dropdown(options=options)
-    outcome_button = widgets.Button(description="Generate preview")
-    preview = widgets.Output()
-    outcome_button.on_click(preview_outcome(preview,outcomes_dropdown.value))
+    preview_button = widgets.Button(description="Generate preview")
+    build_button = widgets.Button(description="Build seeds")
+    output = widgets.Output()
+    preview_button.on_click(preview_outcome(output,outcomes_dropdown))
+    build_button.on_click(build_outcome(output,outcomes_dropdown))
 
-    display(widgets.HBox([outcomes_dropdown,outcome_button]))
-    display(preview)
+    display(widgets.HBox([outcomes_dropdown,preview_button,build_button]))
+    display(output)
 
-def preview_outcome(preview,outcome):
-    @preview.capture(clear_output=True)
+def preview_outcome(output,outcomes_dropdown):
+    @output.capture(clear_output=True)
     def callback(button):
-        display(HTML(f"<strong>Description:</strong>" +
-                    f"<em>{outcome.description}</em>"))
-        display(HTML(outcome.HTML_preview()))
+        o = outcomes_dropdown.value
+        display(HTML("<strong>Description:</strong> " +
+                    f"<em>{o.description}</em>"))
+        display(HTML(o.HTML_preview()))
+    return callback
+
+def build_outcome(output,outcomes_dropdown):
+    @output.capture(clear_output=True)
+    def callback(button):
+        o = outcomes_dropdown.value
+        display(Markdown("Building seeds..."))
+        o.generate_exercises()
+        display(Markdown("Done!"))
     return callback
 
 

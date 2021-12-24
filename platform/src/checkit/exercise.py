@@ -15,25 +15,25 @@ class Exercise:
         self.seed = seed
         self.outcome = outcome
 
-    def pretext_tree(self):
+    def spatext_tree(self):
         renderer = pystache.Renderer()
         xml_string = renderer.render_path(self.outcome.template_filepath(),self.data)
         tree = etree.fromstring(bytes(xml_string, encoding='utf-8'))
-        tree.find(".").attrib.pop("version")
         tree.find(".").set('checkit-seed', f"{self.seed:04}")
         tree.find(".").set('checkit-slug', str(self.outcome.slug))
         tree.find(".").set('checkit-title', str(self.outcome.title))
-
-        #remove namespace
-        for elem in tree.getiterator():
-            if not(type(elem) == etree._Comment):
-                elem.tag = etree.QName(elem).localname
-        etree.cleanup_namespaces(tree)
-
         return tree
+        # #remove namespace
+        # for elem in tree.getiterator():
+        #     if not(type(elem) == etree._Comment):
+        #         elem.tag = etree.QName(elem).localname
+        # etree.cleanup_namespaces(tree)
 
-    def pretext(self):
-        return str(etree.tostring(self.pretext_tree(), pretty_print=True), encoding="UTF-8")
+    def spatext(self):
+        return str(
+            etree.tostring(self.spatext_tree(), pretty_print=True), 
+            encoding="UTF-8"
+        )
 
     def html_tree(self):
         transform = xsl_transform("html")
