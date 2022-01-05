@@ -145,7 +145,7 @@ if sys.argv[3]:
 
     # preview/build to specified JSON file
     if sys.argv[3].lower() == "preview":
-        amount = 1
+        amount = 10
     else:
         amount = 10_000
     seeds = []

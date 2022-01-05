@@ -36,16 +36,16 @@ class Outcome():
     #         "exercises": [e.dict() for e in exercises],
     #     }
 
-    def preview_exercise(self):
+    def preview_exercises(self):
         temp_dir = gettempdir()
         temp_json = os.path.join(temp_dir,"seeds.json")
         sage(self.generator_path(),temp_json,preview=True)
         with open(temp_json) as f:
-            data = json.load(f)[0]
-        return Exercise(data["values"],data["seed"],self)
+            data = json.load(f)
+        return [Exercise(d["values"],d["seed"],self) for d in data]
 
     def HTML_preview(self):
-        ex = self.preview_exercise()
+        ex = self.preview_exercises()[0]
         html = "<h2>Preview:</h2>\n"
         # html += ex.html()
         html += "\n"
@@ -63,6 +63,9 @@ class Outcome():
 
     def generate_exercises(self):
         sage(self.generator_path(),self.seeds_json_path(),preview=False)
+        self.load_exercises()
+
+    def load_exercises(self):
         with open(self.seeds_json_path()) as f:
             data_list = json.load(f)
         self._exercises = [Exercise(d["values"],d["seed"],self) for d in data_list]
@@ -71,7 +74,10 @@ class Outcome():
         try:
             return self._exercises
         except:
-            self.generate_exercises()
+            try:
+                self.load_exercises()
+            except:
+                self.generate_exercises()
             return self._exercises
         
 
