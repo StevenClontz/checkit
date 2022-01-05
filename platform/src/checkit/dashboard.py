@@ -5,7 +5,7 @@ from .bank import Bank
 import io
 from contextlib import redirect_stdout
 from . import VERSION
-import html
+from html import escape as escape_html
 
 BANK = Bank()
 
@@ -53,7 +53,7 @@ def preview_outcome(output,outcomes_dropdown):
     @output.capture(clear_output=True)
     def callback(button):
         o = outcomes_dropdown.value
-        display(Markdown(f"**Description:** {html.escape(o.description)}"))
+        display(Markdown(f"**Description:** {escape_html(o.description)}"))
         suboutput = widgets.Output()
         display(suboutput)
         with suboutput:

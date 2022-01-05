@@ -27,45 +27,14 @@ class Outcome():
             self.path
         )
 
-    def generate_exercises(self,public=False,amount=300,regenerate=False,save=True):
-        if not(regenerate):
-            try:
-                return self.__exercises
-            except:
-                pass
-        # run script to return JSON output with [amount] seeds
-        if public:
-            pub = "PUBLIC"
-        else:
-            pub = "PRIVATE"
-        sage(self.generator_path(),amount,pub)
-        print(f"Generating {amount} {pub} exercises for {self.slug}...",end=" ")
-        # returns json list of exercise objects
-        result = subprocess.run(command,capture_output=True)
-        if result.stderr:
-            print("ERROR, no exercises generated:")
-            print(result.stdout.decode())
-            print(result.stderr.decode())
-            return []
-        data_json_list = result.stdout
-        print("Done!")
-        data_list = json.loads(data_json_list)
-        exercises = [
-            Exercise(data["values"],data["seed"],self) \
-            for data in data_list
-        ]
-        if save:
-            self.__exercises = exercises
-        return exercises
-
-    def generate_dict(self,public=False,amount=300,regenerate=False):
-        exercises = self.generate_exercises(public,amount,regenerate)
-        return {
-            "title": self.title,
-            "slug": self.slug,
-            "description": self.description,
-            "exercises": [e.dict() for e in exercises],
-        }
+    # def generate_dict(self,public=False,amount=300,regenerate=False):
+    #     exercises = self.generate_exercises(public,amount,regenerate)
+    #     return {
+    #         "title": self.title,
+    #         "slug": self.slug,
+    #         "description": self.description,
+    #         "exercises": [e.dict() for e in exercises],
+    #     }
 
     def preview_exercise(self):
         temp_dir = gettempdir()
@@ -90,7 +59,7 @@ class Outcome():
         return html
     
     def seeds_json_path(self):
-        return os.path.join(self.path,"seeds.json")
+        return os.path.join(self.path,".seeds.json")
 
     def generate_exercises(self):
         sage(self.generator_path(),self.seeds_json_path(),preview=False)
