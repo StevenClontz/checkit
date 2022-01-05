@@ -12,7 +12,7 @@ class Bank():
         self.title = xml.find(f"{CHECKIT_NS}title").text
         self.url = xml.find(f"{CHECKIT_NS}url").text
         # create each outcome
-        self.outcomes = [
+        self._outcomes = [
             Outcome(
                 ele.find(f"{CHECKIT_NS}title").text,
                 ele.find(f"{CHECKIT_NS}slug").text,
@@ -23,11 +23,14 @@ class Bank():
             for ele in xml.find(f"{CHECKIT_NS}outcomes").iter(f"{CHECKIT_NS}outcome")
         ]
     
+    def outcomes(self):
+        return self._outcomes
+    
     def generate_exercises(self,public=False,amount=300,regenerate=False):
         # cache build path
         self.build_path(public,regenerate)
         # cache exercises
-        for o in self.outcomes:
+        for o in self.outcomes():
             o.generate_exercises(public,amount,regenerate)
 
     def build_path(self,public=False,regenerate=False):
@@ -50,7 +53,7 @@ class Bank():
             exs = "public exercises"
         else:
             exs = "private exercises"
-        olist = [o.generate_dict(public,amount,regenerate) for o in self.outcomes]
+        olist = [o.generate_dict(public,amount,regenerate) for o in self.outcomes()]
         return {
             "title": self.title,
             "slug": self.slug,
@@ -77,7 +80,7 @@ class Bank():
             "ratings",
         ]]
         oid_suffix = time.time()
-        for count,outcome in enumerate(self.outcomes):
+        for count,outcome in enumerate(self.outcomes()):
             outcome_csv.append(outcome.csv_row(count,oid_suffix))
         return outcome_csv
 
@@ -88,7 +91,7 @@ class Bank():
         return f"- Canvas outcome CSV written to [{build_path}]({self.build_path(public)})"
 
     def outcome_from_slug(self,outcome_slug):
-        return [x for x in self.outcomes if x.slug==outcome_slug][0]
+        return [x for x in self.outcomes() if x.slug==outcome_slug][0]
 
     def sample_for_outcome(self,outcome_slug):
         return self.outcome_from_slug(outcome_slug).generate_exercises(amount=1,regenerate=True,save=False)[0]
@@ -97,7 +100,7 @@ class Bank():
         build_path = os.path.join(self.build_path(public), f"canvas-question-bank.zip")
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-            for outcome in self.outcomes:
+            for outcome in self.outcomes():
                 zip_file.writestr(
                     f"{outcome.slug}.qti",
                     str(etree.tostring(outcome.canvas_tree(public,amount,regenerate),
@@ -116,7 +119,7 @@ class Bank():
 
     def brightspace_questiondb_tree(self,public=False,amount=300,regenerate=False):
         tree = xml_boilerplate("brightspace_questiondb")
-        for o in self.outcomes:
+        for o in self.outcomes():
             tree.find("objectbank").append(o.brightspace_tree(public,amount,regenerate).getroot())
         #print(str(etree.tostring(tree,pretty_print=True), 'utf-8'))
         return tree
@@ -150,7 +153,7 @@ class Bank():
         info_text = etree.SubElement(info,"text")
         info_text.text = self.title
         root.append(header)
-        for o in self.outcomes:
+        for o in self.outcomes():
             for q in o.moodle_xmle(public,amount,regenerate).xpath("question"):
                 root.append(q)
         return root
@@ -162,7 +165,7 @@ class Bank():
         return f"- Moodle question bank XML written to [{build_path}]({self.build_path(public)})"
 
     def write_pretext_files(self,public=False,amount=300,regenerate=False):
-        for outcome in self.outcomes:
+        for outcome in self.outcomes():
             for n,exercise in enumerate(outcome.generate_exercises(public=public,amount=amount,regenerate=regenerate)[:10]):
                 build_path = os.path.join(self.build_path(public), "pretext", f"{outcome.slug}-{n}.ptx")
                 et = etree.ElementTree(exercise.pretext_tree())
@@ -172,7 +175,7 @@ class Bank():
     def write_outcomes_boilerplate(self):
         outcomes_path = os.path.join("banks",self.slug,"outcomes")
         os.makedirs(outcomes_path,exist_ok=True)
-        for outcome in self.outcomes:
+        for outcome in self.outcomes():
             if not os.path.isfile(os.path.join(outcomes_path,f"{outcome.slug}.xml")):
                 shutil.copyfile(
                     os.path.join("xml","template_boilerplate.xml"),
