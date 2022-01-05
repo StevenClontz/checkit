@@ -69,10 +69,15 @@ class Outcome():
             except RuntimeError:
                 pass # generation is necessary
         sage(self.generator_path(),self.seeds_json_path(),preview=False)
-        self.load_exercises()
+        self.load_exercises(reload=True)
 
 
-    def load_exercises(self):
+    def load_exercises(self,reload=False):
+        if not reload:
+            try:
+                self._exercises
+            except AttributeError:
+                pass # load is necessary
         try:
             with open(self.seeds_json_path()) as f:
                 data_list = json.load(f)
