@@ -61,24 +61,30 @@ class Outcome():
     def seeds_json_path(self):
         return os.path.join(self.path,".seeds.json")
 
-    def generate_exercises(self):
+    def generate_exercises(self,regenerate=False):
+        if not regenerate:
+            try:
+                self.load_exercises()
+                return
+            except RuntimeError:
+                pass # generation is necessary
         sage(self.generator_path(),self.seeds_json_path(),preview=False)
         self.load_exercises()
 
+
     def load_exercises(self):
-        with open(self.seeds_json_path()) as f:
-            data_list = json.load(f)
-        self._exercises = [Exercise(d["values"],d["seed"],self) for d in data_list]
+        try:
+            with open(self.seeds_json_path()) as f:
+                data_list = json.load(f)
+            self._exercises = [Exercise(d["values"],d["seed"],self) for d in data_list]
+        except FileNotFoundError as e:
+            raise RuntimeError("Exercises must be generated before being loaded.") from e
     
     def exercises(self):
         try:
             return self._exercises
-        except:
-            try:
-                self.load_exercises()
-            except:
-                self.generate_exercises()
-            return self._exercises
+        except AttributeError as e:
+            raise RuntimeError("Exercises must be generated/loaded before being requested.") from e
         
 
             
