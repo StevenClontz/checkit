@@ -20,6 +20,14 @@ Apply the product rule to take derivatives.
             </description>
         </outcome>
         <outcome>
+            <title>Subtasks</title>
+            <slug>EX3</slug>
+            <path>outcomes/EX/EX3</path>
+            <description>
+Demo of using tasks and subtasks.
+            </description>
+        </outcome>
+        <outcome>
             <title>Matrix Example</title>
             <slug>MX1</slug>
             <path>outcomes/MX/MX1</path>
