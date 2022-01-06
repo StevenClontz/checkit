@@ -13,9 +13,8 @@ def run():
     menu_dropdown = widgets.Dropdown(
         options=[
             ('',''),
-            ('Preview Outcome', 'outcome'),
+            ('Outcomes', 'outcome'),
         ],
-        value='',
         description='Menu:',
     )
     submenu = widgets.Output()
@@ -38,46 +37,53 @@ def outcome_submenu():
     options = [
         (f"{o.slug}: {o.title}",o) for o in BANK.outcomes()
     ]
-    outcomes_dropdown = widgets.Dropdown(options=options)
+    outcomes_dropdown = widgets.Dropdown(options=options,
+        description='Outcome:')
     preview_button = widgets.Button(description="Create preview")
     build_button = widgets.Button(description="Generate seeds")
+    description = widgets.Output()
+    generated = widgets.Output()
     output = widgets.Output()
-    suboutput = widgets.Output()
-    outcomes_dropdown.observe(reset_outcome(output,suboutput),names='value')
-    preview_button.on_click(preview_outcome(suboutput,outcomes_dropdown))
-    build_button.on_click(build_outcome(suboutput,outcomes_dropdown))
+
+    def reset(*args,only_generated=False):
+        o = outcomes_dropdown.value
+        if not only_generated:
+            description.clear_output()
+            with description:
+                display(Markdown(f"**Description:** {escape_html(o.description)}"))
+            output.clear_output()
+        generated.clear_output()
+        with generated:
+            display(Markdown(f"*Last generated on:* `{o.generated_on()}`"))
+
+    def preview(*args):
+        o = outcomes_dropdown.value
+        output.clear_output()
+        with output:
+            display(Markdown(f"*Creating preview...*"))
+            preview = o.HTML_preview()
+            output.clear_output()
+            display(HTML(preview))
+
+    def build(*args):
+        o = outcomes_dropdown.value
+        output.clear_output()
+        with output:
+            display(Markdown("Generating 10,000 seeds..."))
+            o.generate_exercises(regenerate=True)
+        reset(only_generated=True)
+        with output:
+            display(Markdown("Done!"))
+
+    outcomes_dropdown.observe(reset,names="value")
+    preview_button.on_click(preview)
+    build_button.on_click(build)
 
     display(widgets.HBox([outcomes_dropdown,preview_button,build_button]))
+    display(description)
+    display(generated)
     display(output)
-    reset_outcome(output,suboutput)({"new":BANK.outcomes()[0]})
-
-def reset_outcome(output,suboutput):
-    @output.capture(clear_output=True)
-    def callback(v):
-        display(Markdown(f"**Description:** {escape_html(v['new'].description)}"))
-        display(Markdown(f"*Last generated on:* `{v['new'].generated_on()}`"))
-        suboutput.clear_output()
-        display(suboutput)
-    return callback
-
-def preview_outcome(output,outcomes_dropdown):
-    @output.capture(clear_output=True)
-    def callback(button):
-        o = outcomes_dropdown.value
-        display(Markdown(f"*Creating preview...*"))
-        preview = o.HTML_preview()
-        output.clear_output()
-        display(HTML(preview))
-    return callback
-
-def build_outcome(output,outcomes_dropdown):
-    @output.capture(clear_output=True)
-    def callback(button):
-        o = outcomes_dropdown.value
-        display(Markdown("Generating 10,000 seeds..."))
-        o.generate_exercises(regenerate=True)
-        display(Markdown("Done!"))
-    return callback
+    reset()
 
 
     # 
