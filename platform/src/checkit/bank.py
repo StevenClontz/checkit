@@ -48,18 +48,20 @@ class Bank():
         os.makedirs(self.__build_path, exist_ok=True)
         return self.__build_path
 
-    def to_dict(self,public=False,amount=300,regenerate=False,randomized=False):
-        olist = [o.to_dict(public,amount,regenerate,randomized) for o in self.outcomes()]
+    def to_dict(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
+        if outcomes is None:
+            outcomes = self.outcomes()
+        olist = [o.to_dict(public,amount,regenerate,randomized) for o in outcomes]
         return {
             "title": self.title,
             "url": self.url,
             "outcomes": olist,
         }
 
-    def write_json(self,public=False,amount=300,regenerate=False,randomized=False):
+    def write_json(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
         build_path = os.path.join(self.build_path(public,regenerate),f"bank.json")
         with open(build_path,'w') as f:
-            json.dump(self.to_dict(public,amount,regenerate,randomized),f)
+            json.dump(self.to_dict(public,amount,regenerate,randomized,outcomes),f)
 
     def outcome_csv_list(self):
         outcome_csv = [[
