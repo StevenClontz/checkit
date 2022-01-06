@@ -100,12 +100,10 @@ class Exercise:
         attachments.text = "1"
         return root
 
-    def dict(self):
+    def to_dict(self):
         return {
             "seed": self.seed,
-            "pretext": self.pretext(),
-            "html": self.html(),
-            "tex": self.latex(),
+            "data": self.data,
         }
 
     def print_preview(self):

@@ -7,35 +7,37 @@ from contextlib import redirect_stdout
 from . import VERSION
 from html import escape as escape_html
 
-BANK = Bank()
-
-def run():
+def run(bank=None):
+    if bank is None:
+        bank = Bank()
     menu_dropdown = widgets.Dropdown(
         options=[
             ('',''),
             ('Outcomes', 'outcome'),
+            ('Bank', 'bank'),
         ],
         description='Menu:',
     )
     submenu = widgets.Output()
-    menu_dropdown.observe(change_submenu(submenu),names='value')
-
-    display(Markdown(f"## {BANK.title}"))
+    menu_dropdown.observe(change_submenu(submenu,bank),names='value')
+    display(Markdown(f"## {bank.title}"))
     display(menu_dropdown)
     display(submenu)
     display(Markdown("---"))
     display(Markdown(f"`CheckIt Dashboard v{VERSION}`"))
 
-def change_submenu(submenu):
+def change_submenu(submenu,bank):
     @submenu.capture(clear_output=True)
     def callback(value):
         if value['new'] == 'outcome':
-            outcome_submenu()
+            outcome_submenu(bank)
+        elif value['new'] == 'bank':
+            bank_submenu(bank)
     return callback
 
-def outcome_submenu(): 
+def outcome_submenu(bank): 
     options = [
-        (f"{o.slug}: {o.title}",o) for o in BANK.outcomes()
+        (f"{o.slug}: {o.title}",o) for o in bank.outcomes()
     ]
     outcomes_dropdown = widgets.Dropdown(options=options,
         description='Outcome:')
@@ -84,6 +86,51 @@ def outcome_submenu():
     display(generated)
     display(output)
     reset()
+
+def bank_submenu(bank): 
+    options = [
+        (f"{o.slug}: {o.title}",o) for o in bank.outcomes()
+    ]
+    outcomes_select = widgets.SelectMultiple(
+        options=options,
+        value=[o[1] for o in options],
+        rows=min(6,len(options)),
+        description='Outcomes:',
+    )
+    amount_input = widgets.BoundedIntText(
+        value=300,
+        min=1,
+        max=1000,
+        step=1,
+        description='# Exercises:'
+    )
+    publicity_dropdown = widgets.Dropdown(options=[("Private",False),("Public",True)],
+        description='Publicity:')
+    build_label = widgets.Label(value="Build:")
+    viewer_button = widgets.Button(description="Viewer")
+    canvas_button = widgets.Button(description="Canvas")
+    brightspace_button = widgets.Button(description="Brightspace")
+    moodle_button = widgets.Button(description="Moodle")
+    buttons = widgets.HBox([build_label,viewer_button,canvas_button,brightspace_button,moodle_button])
+    output = widgets.Output()
+
+    def viewer(*args):
+        p = publicity_dropdown.value
+        r = not p
+        a = amount_input.value
+        output.clear_output()
+        with output:
+            display(Markdown("Building Viewer..."))
+            bank.write_json(public=p,amount=a,randomized=r)
+            display(Markdown("Done!"))
+
+    viewer_button.on_click(viewer)
+
+    display(outcomes_select)
+    display(publicity_dropdown)
+    display(amount_input)
+    display(buttons)
+    display(output)
 
 
     # 

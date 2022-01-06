@@ -2,8 +2,7 @@ from .exercise import Exercise
 from lxml import etree
 from .xml import xml_boilerplate
 from .wrapper import sage
-import subprocess, os, json
-import io
+import subprocess, os, json, io, random
 from contextlib import redirect_stdout
 from html import escape as escape_html
 from tempfile import gettempdir
@@ -21,20 +20,34 @@ class Outcome():
             self.path,
             "template.xml"
         )
+    
+    def template(self):
+        with open(self.template_filepath()) as f:
+            return f.read()
 
     def generator_path(self):
         return os.path.join(
             self.path
         )
 
-    # def generate_dict(self,public=False,amount=300,regenerate=False):
-    #     exercises = self.generate_exercises(public,amount,regenerate)
-    #     return {
-    #         "title": self.title,
-    #         "slug": self.slug,
-    #         "description": self.description,
-    #         "exercises": [e.dict() for e in exercises],
-    #     }
+    def to_dict(self,public=False,amount=300,regenerate=False,randomized=False):
+        self.generate_exercises(regenerate)
+        if public:
+            exs = self.exercises()[:1000]
+        else:
+            exs = self.exercises()[1000:]
+        if randomized:
+            indices = sorted(random.sample(range(len(exs)),amount))
+        else:
+            indices = range(amount)
+        exs = [exs[i] for i in indices]
+        return {
+            "title": self.title,
+            "slug": self.slug,
+            "description": self.description,
+            "template": self.template(),
+            "exercises": [e.to_dict() for e in exs],
+        }
 
     def preview_exercises(self):
         temp_dir = gettempdir()
@@ -86,7 +99,7 @@ class Outcome():
             self._generated_on = data['generated_on']
         except FileNotFoundError as e:
             if strict:
-                raise RuntimeError("Exercises must be generated before being loaded.") from e
+                raise RuntimeError("Exercises must be generated before being loaded in strict mode.") from e
     
     def generated_on(self):
         try:

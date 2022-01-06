@@ -40,34 +40,26 @@ class Bank():
             try:
                 return self.__build_path
             except:
-                pass
+                pass # may need to provision directories
         if public:
-            build_dir = os.path.join("docs")
+            self.__build_path = os.path.join("docs")
         else:
-            build_dir = os.path.join("builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
-        self.__build_path = os.path.join("banks",self.slug,build_dir)
+            self.__build_path = os.path.join("private-builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
         os.makedirs(self.__build_path, exist_ok=True)
-        os.makedirs(os.path.join(self.__build_path,"pretext"), exist_ok=True)
         return self.__build_path
 
-    def generate_dict(self,public=False,amount=300,regenerate=False):
-        if public:
-            exs = "public exercises"
-        else:
-            exs = "private exercises"
-        olist = [o.generate_dict(public,amount,regenerate) for o in self.outcomes()]
+    def to_dict(self,public=False,amount=300,regenerate=False,randomized=False):
+        olist = [o.to_dict(public,amount,regenerate,randomized) for o in self.outcomes()]
         return {
             "title": self.title,
-            "slug": self.slug,
             "url": self.url,
             "outcomes": olist,
         }
 
-    def write_json(self,public=False,amount=300,regenerate=False):
+    def write_json(self,public=False,amount=300,regenerate=False,randomized=False):
         build_path = os.path.join(self.build_path(public,regenerate),f"bank.json")
         with open(build_path,'w') as f:
-            json.dump(self.generate_dict(public,amount,regenerate),f)
-        return f"- CheckIt exercise bank JSON written to [{build_path}]({self.build_path(public)})"
+            json.dump(self.to_dict(public,amount,regenerate,randomized),f)
 
     def outcome_csv_list(self):
         outcome_csv = [[
