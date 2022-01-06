@@ -139,10 +139,50 @@
     </xsl:template>
 
     <xsl:template match="stx:m">
-        <span class="math math-inline">\(<xsl:value-of select="text()"/>\)</span>
+        <xsl:choose>
+            <xsl:when test="$consumer='canvas'">
+                <img>
+                    <xsl:attribute name="alt">
+                        <xsl:text>LaTeX: </xsl:text>
+                        <xsl:value-of select="normalize-space(text())"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="title">
+                        <xsl:text>LaTeX: </xsl:text>
+                        <xsl:value-of select="normalize-space(text())"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="data-latex">
+                        <xsl:value-of select="normalize-space(text())"/>
+                    </xsl:attribute>
+                </img>
+            </xsl:when>
+            <xsl:otherwise>
+                <span class="math math-inline">\(<xsl:value-of select="text()"/>\)</span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     <xsl:template match="stx:m[@style='display']|stx:me">
-        <span class="math math-display">\[<xsl:value-of select="text()"/>\]</span>
+        <xsl:choose>
+            <xsl:when test="$consumer='canvas'">
+                <br/>
+                <img>
+                    <xsl:attribute name="alt">
+                        <xsl:text>LaTeX: </xsl:text>
+                        <xsl:value-of select="normalize-space(text())"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="title">
+                        <xsl:text>LaTeX: </xsl:text>
+                        <xsl:value-of select="normalize-space(text())"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="data-latex">
+                        <xsl:value-of select="normalize-space(text())"/>
+                    </xsl:attribute>
+                </img>
+                <br/>
+            </xsl:when>
+            <xsl:otherwise>
+                <span class="math math-display">\[<xsl:value-of select="text()"/>\]</span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="stx:em">

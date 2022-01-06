@@ -66,6 +66,11 @@ class Outcome():
         for ex in exs:
             html += ex.html()
             html += "\n"
+            html += "<h3>Canvas</h3>"
+            html += "<pre>\n"
+            html += escape_html(ex.canvas())
+            html += "</pre>\n"
+            html += "\n"
             html += "<h3>SpaTeXt</h3>"
             html += "<pre>\n"
             html += escape_html(ex.spatext())
@@ -79,10 +84,6 @@ class Outcome():
             html += "<pre>\n"
             html += ex.latex()
             html += "</pre>\n"
-            # f = io.StringIO()
-            # with redirect_stdout(f):
-            #     ex.print_preview()
-            # html += escape_html(f.getvalue())
         return html
     
     def seeds_json_path(self):
@@ -128,6 +129,19 @@ class Outcome():
             raise RuntimeError("Exercises must be generated/loaded before being requested.") from e
         
 
+
+    # def canvas_ele(self):
+    #     ele = etree.fromstring(read_resource("canvas-outcome.xml"))
+    #     CNS = "{"+ele.nsmap[None]+"}"
+    #     obj_bank = ele.find(f"{CNS}objectbank")
+    #     obj_bank.set("ident",f"{self.bank.slug}_{self.slug}")
+    #     label = etree.SubElement(ele.find("*/*/*"), "fieldlabel")
+    #     label.text = "bank_title"
+    #     entry = etree.SubElement(ele.find("*/*/*"), "fieldentry")
+    #     entry.text = f"{self.bank.title} | {self.slug}: {self.title}"
+    #     for exercise in self.generate_exercises(public,amount,regenerate):
+    #         ele.find("*").append(exercise.ele())
+    #     return ele
             
 
 
