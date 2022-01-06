@@ -39,36 +39,44 @@ def outcome_submenu():
         (f"{o.slug}: {o.title}",o) for o in BANK.outcomes()
     ]
     outcomes_dropdown = widgets.Dropdown(options=options)
-    preview_button = widgets.Button(description="Generate preview")
-    build_button = widgets.Button(description="Build seeds")
+    preview_button = widgets.Button(description="Create preview")
+    build_button = widgets.Button(description="Generate seeds")
     output = widgets.Output()
-    outcomes_dropdown.observe(lambda x: output.clear_output(),names='value')
-    preview_button.on_click(preview_outcome(output,outcomes_dropdown))
-    build_button.on_click(build_outcome(output,outcomes_dropdown))
+    suboutput = widgets.Output()
+    outcomes_dropdown.observe(reset_outcome(output,suboutput),names='value')
+    preview_button.on_click(preview_outcome(suboutput,outcomes_dropdown))
+    build_button.on_click(build_outcome(suboutput,outcomes_dropdown))
 
     display(widgets.HBox([outcomes_dropdown,preview_button,build_button]))
     display(output)
+    with output:
+        display(Markdown(f"**Description:** {escape_html(BANK.outcomes()[0].description)}"))
+        display(suboutput)
+
+def reset_outcome(output,suboutput):
+    @output.capture(clear_output=True)
+    def callback(v):
+        display(Markdown(f"**Description:** {escape_html(v['new'].description)}"))
+        suboutput.clear_output()
+        display(suboutput)
+    return callback
 
 def preview_outcome(output,outcomes_dropdown):
     @output.capture(clear_output=True)
     def callback(button):
         o = outcomes_dropdown.value
-        display(Markdown(f"**Description:** {escape_html(o.description)}"))
-        suboutput = widgets.Output()
-        display(suboutput)
-        with suboutput:
-            display(Markdown(f"*Generating preview...*"))
-            preview = o.HTML_preview()
-            suboutput.clear_output()
-            display(HTML(preview))
+        display(Markdown(f"*Creating preview...*"))
+        preview = o.HTML_preview()
+        output.clear_output()
+        display(HTML(preview))
     return callback
 
 def build_outcome(output,outcomes_dropdown):
     @output.capture(clear_output=True)
     def callback(button):
         o = outcomes_dropdown.value
-        display(Markdown("Building seeds..."))
-        o.generate_exercises()
+        display(Markdown("Genereating 10,000 seeds..."))
+        o.generate_exercises(regenerate=True)
         display(Markdown("Done!"))
     return callback
 
