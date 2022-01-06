@@ -3,10 +3,10 @@
     <statement>
         <p>
             {{#alt_prompt}}
-For each of the following line equations, identify its slope.
+For each of the following line equations, identify its <em>slope</em>.
             {{/alt_prompt}}
             {{^alt_prompt}}
-Identify the slope for each of the following line equations.
+Identify the <em>slope</em> for each of the following line equations.
             {{/alt_prompt}}
         </p>
     </statement>

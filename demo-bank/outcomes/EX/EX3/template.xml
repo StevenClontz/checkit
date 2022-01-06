@@ -2,6 +2,21 @@
 <exercise xmlns="https://spatext.clontz.org" version="0.2">
     <statement>
         <p>
+<url href="https://checkit.clontz.org">It's a URL!</url>
+        </p>
+        <ul>
+            <li>
+                <p>
+Here's a short bare URL <url href="https://checkit.clontz.org/"/>.
+                </p>
+            </li>
+            <li>
+                <p>
+And a long bare URL <url href="https://checkit.clontz.org/#long-extra-string-at-end"/>.
+                </p>
+            </li>
+        </ul>
+        <p>
 This example has tasks and subtasks.
         </p>
     </statement>

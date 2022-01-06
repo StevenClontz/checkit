@@ -75,6 +75,10 @@ class Outcome():
             html += "<pre>\n"
             html += escape_html(ex.html())
             html += "</pre>\n"
+            html += "<h3>LaTeX</h3>"
+            html += "<pre>\n"
+            html += ex.latex()
+            html += "</pre>\n"
             # f = io.StringIO()
             # with redirect_stdout(f):
             #     ex.print_preview()

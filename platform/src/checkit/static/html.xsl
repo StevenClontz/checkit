@@ -6,8 +6,6 @@
 
     <xsl:output method="html" indent="yes"/>
 
-    <xsl:strip-space elements="*"/>
-
     <!-- Consumer is 'basic' HTML or an LMS: 'canvas', 'd2l', 'moodle' -->
     <xsl:param name="consumer" select="'basic'"/>
     <!-- Subset is 'statement', 'answer', or 'all' -->
@@ -15,6 +13,9 @@
 
     <!-- kill undefined elements -->
     <xsl:template match="*"/>
+
+    <!-- Normalize text() whitespace but don't completely trim beginning or end: https://stackoverflow.com/a/5044657/1607849 -->
+    <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
 
     <xsl:template match="/">
         <xsl:apply-templates select="stx:exercise"/>
@@ -123,13 +124,6 @@
         </p>
     </xsl:template>
 
-    <xsl:template match="stx:m">
-        <span class="math math-inline">\(<xsl:value-of select="text()"/>\)</span>
-    </xsl:template>
-    <xsl:template match="stx:m[@style='display']|stx:me">
-        <span class="math math-display">\[<xsl:value-of select="text()"/>\]</span>
-    </xsl:template>
-
     <xsl:template match="stx:ul">
         <ul>
             <xsl:apply-templates select="stx:li"/>
@@ -144,6 +138,13 @@
         </li>
     </xsl:template>
 
+    <xsl:template match="stx:m">
+        <span class="math math-inline">\(<xsl:value-of select="text()"/>\)</span>
+    </xsl:template>
+    <xsl:template match="stx:m[@style='display']|stx:me">
+        <span class="math math-display">\[<xsl:value-of select="text()"/>\]</span>
+    </xsl:template>
+
     <xsl:template match="stx:em">
         <b><xsl:apply-templates select="text()"/></b>
     </xsl:template>
@@ -156,10 +157,20 @@
         "<xsl:value-of select="text()"/>"
     </xsl:template>
 
-    <xsl:template match="stx:url">
+    <xsl:template match="stx:url[@href]">
         <a>
             <xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute>
-            <xsl:value-of select="text()"/>
+            <xsl:choose>
+                <xsl:when test="text()">
+                    <xsl:value-of select="text()"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="substring(@href,1,30)"/>
+                    <xsl:if test="string-length(@href) &gt; 30">
+                        <xsl:text>...</xsl:text>
+                    </xsl:if>
+                </xsl:otherwise>
+            </xsl:choose>
         </a>
     </xsl:template>
 

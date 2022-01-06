@@ -45,8 +45,8 @@ class Exercise:
         return str(etree.tostring(self.html_tree(),pretty_print=True), 'utf-8')
 
     def latex(self):
-        transform = xsl_transform("latex")
-        return str(transform(self.pretext_tree()))
+        transform = etree.XSLT(etree.fromstring(read_resource("latex.xsl")))
+        return str(transform(self.spatext_tree()))
 
     def canvas_tree(self):
         transform = xsl_transform("canvas")
