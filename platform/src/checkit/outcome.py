@@ -57,8 +57,11 @@ class Outcome():
             data = json.load(f)['seeds']
         return [Exercise(d["values"],d["seed"],self) for d in data]
 
-    def HTML_preview(self):
-        exs = self.preview_exercises()
+    def HTML_preview(self,pregenerated=False):
+        if pregenerated:
+            exs = random.sample(self.exercises(),1)
+        else:
+            exs = self.preview_exercises()
         html = "<h2>Preview:</h2>\n"
         for ex in exs:
             html += ex.html()

@@ -41,7 +41,8 @@ def outcome_submenu(bank):
     ]
     outcomes_dropdown = widgets.Dropdown(options=options,
         description='Outcome:')
-    preview_button = widgets.Button(description="Create preview")
+    preview_button = widgets.Button(description="Fresh preview")
+    seed_button = widgets.Button(description="View random seed")
     build_button = widgets.Button(description="Generate seeds")
     description = widgets.Output()
     generated = widgets.Output()
@@ -62,8 +63,17 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown(f"*Creating preview...*"))
-            preview = o.HTML_preview()
+            display(Markdown(f"*Generating fresh preview...*"))
+            preview = o.HTML_preview(pregenerated=False)
+            output.clear_output()
+            display(HTML(preview))
+
+    def seed(*args):
+        o = outcomes_dropdown.value
+        output.clear_output()
+        with output:
+            display(Markdown(f"*Selecting pregenerated seed...*"))
+            preview = o.HTML_preview(pregenerated=True)
             output.clear_output()
             display(HTML(preview))
 
@@ -79,9 +89,10 @@ def outcome_submenu(bank):
 
     outcomes_dropdown.observe(reset,names="value")
     preview_button.on_click(preview)
+    seed_button.on_click(seed)
     build_button.on_click(build)
 
-    display(widgets.HBox([outcomes_dropdown,preview_button,build_button]))
+    display(widgets.HBox([outcomes_dropdown,preview_button,seed_button,build_button]))
     display(description)
     display(generated)
     display(output)
