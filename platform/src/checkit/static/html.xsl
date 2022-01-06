@@ -8,6 +8,11 @@
 
     <xsl:strip-space elements="*"/>
 
+    <!-- Consumer is 'basic' HTML or an LMS: 'canvas', 'd2l', 'moodle' -->
+    <xsl:param name="consumer" select="'basic'"/>
+    <!-- Subset is 'statement', 'answer', or 'all' -->
+    <xsl:param name="subset" select="'all'"/>
+
     <!-- kill undefined elements -->
     <xsl:template match="*"/>
 
@@ -23,20 +28,32 @@
             <xsl:attribute name="data-checkit-slug"><xsl:value-of select="@checkit-slug"/></xsl:attribute>
             <xsl:attribute name="data-checkit-title"><xsl:value-of select="@checkit-title"/></xsl:attribute>
             <xsl:attribute name="data-checkit-seed"><xsl:value-of select="@checkit-seed"/></xsl:attribute>
-            <xsl:apply-templates select="stx:statement"/>
+            <xsl:if test="$subset='statement' or $subset='all'">
+                <xsl:apply-templates select="stx:statement"/>
+            </xsl:if>
             <xsl:choose>
                 <xsl:when test="stx:task">
-                    <ol>
-                        <xsl:apply-templates select="stx:task" mode="statement"/>
-                    </ol>
-                    <hr/>
-                    <ol>
-                        <xsl:apply-templates select="stx:task" mode="answer"/>
-                    </ol>
+                    <xsl:if test="$subset='statement' or $subset='all'">
+                        <ol>
+                            <xsl:apply-templates select="stx:task" mode="statement"/>
+                        </ol>
+                    </xsl:if>
+                    <xsl:if test="$subset='all'">
+                        <hr/>
+                    </xsl:if>
+                    <xsl:if test="$subset='answer' or $subset='all'">
+                        <ol>
+                            <xsl:apply-templates select="stx:task" mode="answer"/>
+                        </ol>
+                    </xsl:if>
                 </xsl:when>
                 <xsl:otherwise>
-                    <hr/>
-                    <xsl:apply-templates select="stx:answer"/>
+                    <xsl:if test="$subset='all'">
+                        <hr/>
+                    </xsl:if>
+                    <xsl:if test="$subset='answer' or $subset='all'">
+                        <xsl:apply-templates select="stx:answer"/>
+                    </xsl:if>
                 </xsl:otherwise>
             </xsl:choose>
         </div>
@@ -76,18 +93,26 @@
 
     <xsl:template match="stx:statement">
         <div class="checkit statement">
-            <xsl:if test="stx:title">
-                <h4><xsl:value-of select="stx:title"/></h4>
-            </xsl:if>
+            <xsl:choose>
+                <xsl:when test="stx:title">
+                    <h4><xsl:value-of select="stx:title"/></h4>
+                </xsl:when>
+                <xsl:otherwise/>
+            </xsl:choose>
             <xsl:apply-templates select="stx:p|stx:ul"/>
         </div>
     </xsl:template>
 
     <xsl:template match="stx:answer">
         <div class="checkit answer">
-            <xsl:if test="stx:title">
-                <h4><xsl:value-of select="stx:title"/></h4>
-            </xsl:if>
+            <xsl:choose>
+                <xsl:when test="stx:title">
+                    <h5><xsl:value-of select="stx:title"/></h5>
+                </xsl:when>
+                <xsl:otherwise>
+                    <h5>Brief Answer:</h5>
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:apply-templates select="stx:p|stx:ul"/>
         </div>
     </xsl:template>
@@ -113,7 +138,7 @@
     <xsl:template match="stx:li">
         <li>
             <xsl:if test="stx:title">
-                <h5><xsl:value-of select="stx:title"/></h5>
+                <h6><xsl:value-of select="stx:title"/></h6>
             </xsl:if>
             <xsl:apply-templates select="stx:p|stx:ul"/>
         </li>
