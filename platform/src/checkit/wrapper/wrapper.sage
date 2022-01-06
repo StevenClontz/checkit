@@ -1,4 +1,4 @@
-import sys,json,os
+import sys,json,os,datetime
 
 # Library of helpful functions
 class CheckIt:
@@ -157,5 +157,9 @@ if sys.argv[3]:
             seed = i
         set_random_seed(seed)
         seeds.append({"seed":int(seed),"values":json_ready(generator())})
+    data = {
+        "seeds": seeds,
+        "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    }
     with open(os.path.join(sys.argv[2]), 'w') as f:
-        json.dump(seeds, f)
+        json.dump(data, f)

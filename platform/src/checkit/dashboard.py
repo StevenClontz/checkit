@@ -49,14 +49,13 @@ def outcome_submenu():
 
     display(widgets.HBox([outcomes_dropdown,preview_button,build_button]))
     display(output)
-    with output:
-        display(Markdown(f"**Description:** {escape_html(BANK.outcomes()[0].description)}"))
-        display(suboutput)
+    reset_outcome(output,suboutput)({"new":BANK.outcomes()[0]})
 
 def reset_outcome(output,suboutput):
     @output.capture(clear_output=True)
     def callback(v):
         display(Markdown(f"**Description:** {escape_html(v['new'].description)}"))
+        display(Markdown(f"*Last generated on:* `{v['new'].generated_on()}`"))
         suboutput.clear_output()
         display(suboutput)
     return callback
@@ -75,7 +74,7 @@ def build_outcome(output,outcomes_dropdown):
     @output.capture(clear_output=True)
     def callback(button):
         o = outcomes_dropdown.value
-        display(Markdown("Genereating 10,000 seeds..."))
+        display(Markdown("Generating 10,000 seeds..."))
         o.generate_exercises(regenerate=True)
         display(Markdown("Done!"))
     return callback

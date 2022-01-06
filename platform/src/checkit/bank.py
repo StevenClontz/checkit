@@ -22,6 +22,8 @@ class Bank():
             )
             for ele in xml.find(f"{CHECKIT_NS}outcomes").iter(f"{CHECKIT_NS}outcome")
         ]
+        for o in self._outcomes:
+            o.load_exercises(strict=False)
     
     def outcomes(self):
         return self._outcomes
