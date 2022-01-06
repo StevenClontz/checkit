@@ -1,6 +1,7 @@
 from lxml import etree
 from lxml import html as lxml_html
 from .xml import xsl_transform, xml_boilerplate
+from .static import read_resource
 from latex2mathml.converter import convert
 import pystache
 import urllib
@@ -36,8 +37,8 @@ class Exercise:
         )
 
     def html_tree(self):
-        transform = xsl_transform("html")
-        tree = transform(self.pretext_tree()).getroot()
+        transform = etree.XSLT(etree.fromstring(read_resource("html.xsl")))
+        tree = transform(self.spatext_tree()).getroot()
         return tree
 
     def html(self):

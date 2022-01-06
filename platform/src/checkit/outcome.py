@@ -58,17 +58,24 @@ class Outcome():
         return [Exercise(d["values"],d["seed"],self) for d in data]
 
     def HTML_preview(self):
-        ex = self.preview_exercises()[0]
+        exs = self.preview_exercises()
         html = "<h2>Preview:</h2>\n"
-        # html += ex.html()
-        html += "\n"
-        html += "<pre>\n"
-        # f = io.StringIO()
-        # with redirect_stdout(f):
-        #     ex.print_preview()
-        # html += escape_html(f.getvalue())
-        html += escape_html(ex.spatext())
-        html += "</pre>\n"
+        for ex in exs:
+            html += ex.html()
+            html += "\n"
+            html += "<h3>SpaTeXt</h3>"
+            html += "<pre>\n"
+            html += escape_html(ex.spatext())
+            html += "</pre>\n"
+            html += "\n"
+            html += "<h3>HTML</h3>"
+            html += "<pre>\n"
+            html += escape_html(ex.html())
+            html += "</pre>\n"
+            # f = io.StringIO()
+            # with redirect_stdout(f):
+            #     ex.print_preview()
+            # html += escape_html(f.getvalue())
         return html
     
     def seeds_json_path(self):

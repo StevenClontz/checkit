@@ -11,6 +11,7 @@ f(x)={{f}}
         </p>
     </statement>
     <answer>
+        <title>Custom title for answer</title>
         <p>
             <m style="display">
 f'(x)={{dfdx}}
