@@ -36,13 +36,21 @@ class Exercise:
             encoding="UTF-8"
         )
 
-    def html_tree(self):
+    def html_tree(self,subset='all',consumer='basic'):
+        print(subset)
         transform = etree.XSLT(etree.fromstring(read_resource("html.xsl")))
-        tree = transform(self.spatext_tree()).getroot()
+        tree = transform(
+            self.spatext_tree(),
+            subset=f"'{subset}'",
+            consumer=f"'{consumer}'",
+            ).getroot()
         return tree
 
-    def html(self):
-        return str(etree.tostring(self.html_tree(),pretty_print=True), 'utf-8')
+    def html(self,subset='all',consumer='basic'):
+        return str(etree.tostring(self.html_tree(
+            subset=subset,
+            consumer=consumer
+            ),pretty_print=True), 'utf-8')
 
     def latex(self):
         transform = etree.XSLT(etree.fromstring(read_resource("latex.xsl")))
