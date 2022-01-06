@@ -2,10 +2,10 @@
 <exercise xmlns="https://spatext.clontz.org" version="0.2">
     <statement>
         <p>Consider the following system of equations:</p>
-        <p><me>{{system}}</me></p>
+        <p><m style="display">{{system}}</m></p>
         <p>Write an augmented matrix corresponding to this system.</p>
     </statement>
     <answer>
-        <p><me>{{matrix}}</me></p>
+        <p><m style="display">{{matrix}}</m></p>
     </answer>
 </exercise>

@@ -16,6 +16,6 @@ def sage(generator_path,output_path,preview=True):
             generator_path,
             output_path,
             preview_s,
-        ])
+        ], check=True)
 
     

@@ -4,18 +4,18 @@
         <p>
 Determine if each of the following piecewise functions is continuous.
         </p>
-    <statement>
+    </statement>
     {{#functions}}
         <task>
             <statement>
                 <p>
-                    <me>
+                    <m style="display">
 {{f}}(x) =
 \begin{cases}
 {{left}} &amp; x \leq 0 \\
 {{right}} &amp; x &gt; 0 \\
 \end{cases}
-                    </me>
+                    </m>
                 </p>
             </statement>
             <answer>

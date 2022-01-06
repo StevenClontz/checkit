@@ -36,7 +36,7 @@ def change_submenu(submenu):
 
 def outcome_submenu(): 
     options = [
-        (f"{o.slug}: {o.title}",o) for o in BANK.outcomes
+        (f"{o.slug}: {o.title}",o) for o in BANK.outcomes()
     ]
     outcomes_dropdown = widgets.Dropdown(options=options)
     preview_button = widgets.Button(description="Generate preview")

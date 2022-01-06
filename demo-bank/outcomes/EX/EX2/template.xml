@@ -5,16 +5,16 @@
 Explain how to find the {{d_synonym}} <m>f'(x)</m>.
         </p>
         <p>
-            <me>
+            <m style="display">
 f(x)={{f}}
-            </me>
+            </m>
         </p>
     </statement>
     <answer>
         <p>
-            <me>
+            <m style="display">
 f'(x)={{dfdx}}
-            </me>
+            </m>
         </p>
     </answer>
 </exercise>
