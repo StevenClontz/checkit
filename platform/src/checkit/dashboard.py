@@ -136,7 +136,19 @@ def bank_submenu(bank):
             bank.write_json(public=p,amount=a,randomized=r,outcomes=os)
             display(Markdown("Done!"))
 
+    def canvas(*args):
+        p = publicity_dropdown.value
+        r = not p
+        a = amount_input.value
+        os = outcomes_select.value
+        output.clear_output()
+        with output:
+            display(Markdown("Building Canvas..."))
+            bank.write_canvas_zip(public=p,amount=a,randomized=r,outcomes=os)
+            display(Markdown("Done!"))
+
     viewer_button.on_click(viewer)
+    canvas_button.on_click(canvas)
 
     display(outcomes_select)
     display(publicity_dropdown)

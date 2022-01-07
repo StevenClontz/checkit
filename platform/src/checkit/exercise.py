@@ -65,7 +65,7 @@ class Exercise:
         # set metadata
         ident = f"{self.outcome.slug}-{self.seed}"
         canvas_ele.set("ident",ident)
-        title = f"{self.outcome.slug} | {self.outcome.title} | ver. {self.seed} ({timestamp})"
+        title = f"{self.outcome.slug} | {self.outcome.title} | ver. {self.seed} (Build {timestamp})"
         canvas_ele.set("title",title)
         # fix equation images
         img_iter = chain(
@@ -79,7 +79,8 @@ class Exercise:
             img.set("src",src)
         # add timestamp to statement
         tsp = etree.SubElement(statement_ele,"p")
-        tsp.text = f"Exercise generated on {timestamp}"
+        tspsm = etree.SubElement(tsp,"small")
+        tspsm.text = f"(Build ID {timestamp})"
         tsp.set("style","color:gray;")
         # insert statement/answer
         s = canvas_ele.find(f"{CNS}presentation/{CNS}material/{CNS}mattext")
