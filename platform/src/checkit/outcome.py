@@ -59,11 +59,6 @@ class Outcome():
         for ex in exs:
             html += ex.html()
             html += "\n"
-            html += "<h3>Canvas</h3>"
-            html += "<pre>\n"
-            html += escape_html(ex.canvas())
-            html += "</pre>\n"
-            html += "\n"
             html += "<h3>SpaTeXt</h3>"
             html += "<pre>\n"
             html += escape_html(ex.spatext())

@@ -3,6 +3,19 @@ import sys,json,os,datetime
 # Library of helpful functions
 class CheckIt:
     @staticmethod
+    def load(path):
+        """
+        Changes working directory to load sage file before
+        returning to original directory. Useful for loading common
+        libraries.
+        """
+        abspath = os.path.abspath(path)
+        cwd = os.getcwd()
+        os.chdir(os.path.split(abspath)[0])
+        load(abspath)
+        os.chdir(cwd)
+
+    @staticmethod
     def vars(*latex_names, random_order=True):
         """
         Given one or more `latex_names` of strings, returns a tuple
@@ -30,6 +43,34 @@ class CheckIt:
             else:
                 new_equation += (0==-SR(term))
         return new_equation*choice([-1,1])
+
+    @staticmethod
+    def shuffled_inequality(*terms,strict=True):
+        """
+        Represents the equation sum(terms)>0 or >=0, but with terms shuffled randomly
+        to each side, and random direction of inequality
+        """
+        if choice([True,False]):
+            if strict:
+                new_equation = (SR(0)>0)
+            else:
+                new_equation = (SR(0)>=0)
+            for term in terms:
+                if choice([True,False]):
+                    new_equation += (SR(term)==0)
+                else:
+                    new_equation += (0==-SR(term))
+        else:
+            if strict:
+                new_equation = (SR(0)<0)
+            else:
+                new_equation = (SR(0)<=0)
+            for term in terms:
+                if choice([True,False]):
+                    new_equation += (-SR(term)==0)
+                else:
+                    new_equation += (0==SR(term))
+        return new_equation
 
     @staticmethod
     def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_list=[]):
