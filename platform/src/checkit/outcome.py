@@ -15,6 +15,13 @@ class Outcome():
         self.path = path
         self.description = description
         self.bank = bank
+    
+    def full_title(self,max_length=None):
+        ft = f"{self.slug}: {self.title}"
+        if (max_length is not None) and (len(ft)>max_length):
+            return ft[:max_length]+"…"
+        else:
+            return ft
 
     def template_filepath(self):
         return os.path.join(
@@ -59,6 +66,11 @@ class Outcome():
         for ex in exs:
             html += ex.html()
             html += "\n"
+            html += "<h3>Data</h3>"
+            html += "<pre>\n"
+            html += escape_html(json.dumps(ex.to_dict(),indent=4))
+            html += "</pre>\n"
+            html += "\n"
             html += "<h3>SpaTeXt</h3>"
             html += "<pre>\n"
             html += escape_html(ex.spatext())
@@ -70,7 +82,7 @@ class Outcome():
             html += "</pre>\n"
             html += "<h3>LaTeX</h3>"
             html += "<pre>\n"
-            html += ex.latex()
+            html += escape_html(ex.latex())
             html += "</pre>\n"
         return html
     
@@ -127,6 +139,7 @@ class Outcome():
             raise RuntimeError("Exercises must be generated/loaded before being requested.") from e
 
     def canvas_ele(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
+        self.generate_exercises(regenerate)
         timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
         ele = etree.fromstring(read_resource("canvas-outcome.xml"))
         CNS = "{"+ele.nsmap[None]+"}"

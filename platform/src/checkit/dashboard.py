@@ -100,12 +100,12 @@ def outcome_submenu(bank):
 
 def bank_submenu(bank): 
     options = [
-        (f"{o.slug}: {o.title}",o) for o in bank.outcomes()
+        (o.full_title(max_length=30),o) for o in bank.outcomes()
     ]
     outcomes_select = widgets.SelectMultiple(
         options=options,
         value=[o[1] for o in options],
-        rows=min(6,len(options)),
+        rows=min(6,len(options)+1),
         description='Outcomes:',
     )
     amount_input = widgets.BoundedIntText(
@@ -143,7 +143,7 @@ def bank_submenu(bank):
         os = outcomes_select.value
         output.clear_output()
         with output:
-            display(Markdown("Building Canvas..."))
+            display(Markdown(f"Building Canvas to `{bank.build_path(p)}`..."))
             bank.write_canvas_zip(public=p,amount=a,randomized=r,outcomes=os)
             display(Markdown("Done!"))
 

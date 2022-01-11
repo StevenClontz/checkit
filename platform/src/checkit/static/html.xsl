@@ -110,9 +110,9 @@
                 <xsl:when test="stx:title">
                     <h5><xsl:value-of select="stx:title"/></h5>
                 </xsl:when>
-                <xsl:otherwise>
+                <!-- <xsl:otherwise>
                     <h5>Brief Answer:</h5>
-                </xsl:otherwise>
+                </xsl:otherwise> -->
             </xsl:choose>
             <xsl:apply-templates select="stx:p|stx:ul"/>
         </div>
@@ -186,7 +186,7 @@
     </xsl:template>
 
     <xsl:template match="stx:em">
-        <b><xsl:apply-templates select="text()"/></b>
+        <b><xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/></b>
     </xsl:template>
 
     <xsl:template match="stx:c">
@@ -194,7 +194,7 @@
     </xsl:template>
 
     <xsl:template match="stx:q">
-        "<xsl:value-of select="text()"/>"
+        "<xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>"
     </xsl:template>
 
     <xsl:template match="stx:url[@href]">

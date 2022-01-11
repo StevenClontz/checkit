@@ -37,11 +37,6 @@ class Bank():
             o.generate_exercises(public,amount,regenerate)
 
     def build_path(self,public=False,regenerate=False):
-        if not(regenerate):
-            try:
-                return self.__build_path
-            except:
-                pass # may need to provision directories
         if public:
             self.__build_path = os.path.join("docs")
         else:
