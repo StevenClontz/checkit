@@ -156,7 +156,7 @@
                 </img>
             </xsl:when>
             <xsl:otherwise>
-                <span class="math math-inline">\(<xsl:value-of select="text()"/>\)</span>
+                <span class="math math-inline">\(<xsl:value-of select="normalize-space(text())"/>\)</span>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -180,7 +180,7 @@
                 <br/>
             </xsl:when>
             <xsl:otherwise>
-                <span class="math math-display">\[<xsl:value-of select="text()"/>\]</span>
+                <span class="math math-display">\[<xsl:value-of select="normalize-space(text())"/>\]</span>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -190,7 +190,7 @@
     </xsl:template>
 
     <xsl:template match="stx:c">
-        <code><xsl:value-of select="text()"/></code>
+        <code><xsl:value-of select="normalize-space(text())"/></code>
     </xsl:template>
 
     <xsl:template match="stx:q">
@@ -201,8 +201,8 @@
         <a>
             <xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute>
             <xsl:choose>
-                <xsl:when test="text()">
-                    <xsl:value-of select="text()"/>
+                <xsl:when test="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url">
+                    <xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="substring(@href,1,30)"/>

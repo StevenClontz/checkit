@@ -137,30 +137,30 @@
 
     <xsl:template match="stx:m">
         <xsl:text>\(</xsl:text>
-        <xsl:value-of select="text()"/>
+        <xsl:value-of select="normalize-space(text())"/>
         <xsl:text>\)</xsl:text>
     </xsl:template>
     <xsl:template match="stx:m[@style='display']|stx:me">
         <xsl:text>\[</xsl:text>
-        <xsl:value-of select="text()"/>
+        <xsl:value-of select="normalize-space(text())"/>
         <xsl:text>\]</xsl:text>
     </xsl:template>
 
     <xsl:template match="stx:em">
         <xsl:text>\textbf{</xsl:text>
-        <xsl:value-of select="text()"/>
+        <xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>
         <xsl:text>}</xsl:text>
     </xsl:template>
 
     <xsl:template match="stx:c">
         <xsl:text>\verb|</xsl:text>
-        <xsl:value-of select="text()"/>
+        <xsl:value-of select="normalize-space(text())"/>
         <xsl:text>|</xsl:text>
     </xsl:template>
 
     <xsl:template match="stx:q">
         <xsl:text>``</xsl:text>
-        <xsl:value-of select="text()"/>
+        <xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>
         <xsl:text>''</xsl:text>
     </xsl:template>
 
@@ -170,7 +170,7 @@
                 <xsl:text>\href{</xsl:text>
                 <xsl:value-of select="@href"/>
                 <xsl:text>}{</xsl:text>
-                <xsl:value-of select="text()"/>
+                <xsl:value-of select="normalize-space(text())"/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
