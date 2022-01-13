@@ -20,7 +20,12 @@ class Exercise:
     def spatext_ele(self):
         renderer = pystache.Renderer()
         xml_string = renderer.render_path(self.outcome.template_filepath(),self.data)
-        ele = etree.fromstring(bytes(xml_string, encoding='utf-8'))
+        try:
+            ele = etree.fromstring(bytes(xml_string, encoding='utf-8'))
+        except etree.XMLSyntaxError as e:
+            lined_xml = "\n".join([f"{i+1:04d}: {l}" for i,l in enumerate(xml_string.split("\n"))])
+            e_text = str(e)+"\n"+lined_xml
+            raise Exception(e_text) from e
         ele.find(".").set('checkit-seed', f"{self.seed:04}")
         ele.find(".").set('checkit-slug', str(self.outcome.slug))
         ele.find(".").set('checkit-title', str(self.outcome.title))

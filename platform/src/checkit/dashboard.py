@@ -64,7 +64,7 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown(f"*Generating fresh preview...*"))
-            preview = o.HTML_preview(pregenerated=False)
+            preview = o.html_preview(pregenerated=False)
             output.clear_output()
             display(HTML(preview))
 
@@ -73,7 +73,7 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown(f"*Selecting pregenerated seed...*"))
-            preview = o.HTML_preview(pregenerated=True)
+            preview = o.html_preview(pregenerated=True)
             output.clear_output()
             display(HTML(preview))
 

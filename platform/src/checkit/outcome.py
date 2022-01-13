@@ -57,7 +57,7 @@ class Outcome():
             data = json.load(f)['seeds']
         return [Exercise(d["values"],d["seed"],self) for d in data]
 
-    def HTML_preview(self,pregenerated=False):
+    def html_preview(self,pregenerated=False):
         if pregenerated:
             exs = random.sample(self.exercises(),1)
         else:
