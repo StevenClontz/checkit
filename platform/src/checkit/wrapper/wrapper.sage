@@ -3,19 +3,6 @@ import sys,json,os,datetime
 # Library of helpful functions
 class CheckIt:
     @staticmethod
-    def load(path):
-        """
-        Changes working directory to load sage file before
-        returning to original directory. Useful for loading common
-        libraries.
-        """
-        abspath = os.path.abspath(path)
-        cwd = os.getcwd()
-        os.chdir(os.path.split(abspath)[0])
-        load(abspath)
-        os.chdir(cwd)
-
-    @staticmethod
     def vars(*latex_names, random_order=True):
         """
         Given one or more `latex_names` of strings, returns a tuple
