@@ -12,9 +12,12 @@ class Outcome():
     def __init__(self, title=None, slug=None, path=None, description=None, bank=None):
         self.title = title
         self.slug = slug
-        self.path = path
+        self.relpath = path
         self.description = description
         self.bank = bank
+    
+    def abspath(self):
+        return os.path.join(self.bank.abspath(),self.relpath)
     
     def full_title(self,max_length=None):
         ft = f"{self.slug}: {self.title}"
@@ -25,7 +28,7 @@ class Outcome():
 
     def template_filepath(self):
         return os.path.join(
-            self.path,
+            self.abspath(),
             "template.xml"
         )
     
@@ -35,7 +38,8 @@ class Outcome():
 
     def generator_path(self):
         return os.path.join(
-            self.path
+            self.abspath(),
+            "generator.sage"
         )
 
     def to_dict(self,public=False,amount=300,regenerate=False,randomized=False):
@@ -52,7 +56,7 @@ class Outcome():
     def preview_exercises(self):
         temp_dir = gettempdir()
         temp_json = os.path.join(temp_dir,"seeds.json")
-        sage(self.generator_path(),temp_json,preview=True)
+        sage(self,temp_json,preview=True)
         with open(temp_json) as f:
             data = json.load(f)['seeds']
         return [Exercise(d["values"],d["seed"],self) for d in data]
@@ -87,7 +91,7 @@ class Outcome():
         return html
     
     def seeds_json_path(self):
-        return os.path.join(self.path,".seeds.json")
+        return os.path.join(self.abspath(),".seeds.json")
 
     def generate_exercises(self,regenerate=False):
         if not regenerate:
@@ -96,7 +100,7 @@ class Outcome():
                 return
             except RuntimeError:
                 pass # generation is necessary
-        sage(self.generator_path(),self.seeds_json_path(),preview=False)
+        sage(self,self.seeds_json_path(),preview=False)
         self.load_exercises(reload=True)
 
 

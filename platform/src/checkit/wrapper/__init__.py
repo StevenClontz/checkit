@@ -1,7 +1,8 @@
 import importlib.resources
 import subprocess
+from ..utils import working_directory
 
-def sage(generator_path,output_path,preview=True):
+def sage(outcome,output_path,preview=True):
     """
     Wraps generator and builds to a seeds.json file at output_path
     """
@@ -10,12 +11,13 @@ def sage(generator_path,output_path,preview=True):
     else:
         preview_s = "build"
     with importlib.resources.path("checkit.wrapper", "wrapper.sage") as wrapper_path:
-        subprocess.run([
-            "sage",
-            wrapper_path,
-            generator_path,
-            output_path,
-            preview_s,
-        ], check=True)
+        with working_directory(outcome.bank.abspath()):
+            subprocess.run([
+                "sage",
+                wrapper_path,
+                outcome.generator_path(),
+                output_path,
+                preview_s,
+            ], check=True)
 
     

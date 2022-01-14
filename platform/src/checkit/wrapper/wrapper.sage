@@ -175,14 +175,12 @@ def json_ready(obj):
     else:
         return str(latex(obj))
 
-# sage path/to/wrapper.sage path/to/generator path/to/output.json preview|build
+# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output.json preview|build
 if sys.argv[3]:
-    # load generator file as though working in its directory
+    # this script should be called from the root directory of the bank
+    # so loads in the generator file work as intended
     generator_path = sys.argv[1]
-    current_dir = os.getcwd()
-    os.chdir(generator_path)
-    load("generator.sage")
-    os.chdir(current_dir)
+    load(generator_path) # must provide generator() function
 
     # preview/build to specified JSON file
     if sys.argv[3].lower() == "preview":

@@ -6,7 +6,8 @@ from .xml import CHECKIT_NS, xml_boilerplate
 class Bank():
     def __init__(self, path="."):
         # read manifest for bank
-        xml = etree.parse(os.path.join(path,"bank.xml")).getroot()
+        self._abspath = os.path.abspath(path)
+        xml = etree.parse(os.path.join(self.abspath(),"bank.xml")).getroot()
         if xml.get("version") != "0.2":
             raise Exception("ERROR: Bank configuration doesn't match CheckIt version 0.2")
         self.title = xml.find(f"{CHECKIT_NS}title").text
@@ -26,6 +27,9 @@ class Bank():
         for o in self._outcomes:
             o.load_exercises(strict=False)
     
+    def abspath(self):
+        return self._abspath
+    
     def outcomes(self):
         return self._outcomes
     
@@ -38,9 +42,9 @@ class Bank():
 
     def build_path(self,public=False,regenerate=False):
         if public:
-            self.__build_path = os.path.join("docs")
+            self.__build_path = os.path.join(self.abspath,"docs")
         else:
-            self.__build_path = os.path.join("private-builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
+            self.__build_path = os.path.join(self.abspath,"private-builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
         os.makedirs(self.__build_path, exist_ok=True)
         return self.__build_path
 
