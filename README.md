@@ -42,6 +42,7 @@ environment.
 ```
 pyenv virtualenvs # should show `* checkit` (note the `*`)
 python -V # should show value of PYTHON_VERSION
+python -m pip install --upgrade pip
 python -m pip install -e platform[dev]
 ```
 
