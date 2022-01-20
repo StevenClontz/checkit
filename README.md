@@ -28,12 +28,20 @@ pyenv install PYTHON_VERSION
 pyenv virtualenv PYTHON_VERSION checkit
 ```
 
-Then the virtual environment for this project activates
-either automatically or manually based on
+The virtual environment for this project can be activated
+automatically in directories with a
+`.python-version` file with the contents `checkit` by following
+instructions at
 <https://github.com/pyenv/pyenv-virtualenv#activate-virtualenv>.
+Or use `pyenv activate checkit` and `pyenv deactivate` to do
+this manually.
+
+Now to install the in-development package into the virtual
+environment.
 
 ```
-pyenv local # should show `checkit`
+pyenv virtualenvs # should show `* checkit` (note the `*`)
+python -V # should show value of PYTHON_VERSION
 python -m pip install -e platform[dev]
 ```
 
