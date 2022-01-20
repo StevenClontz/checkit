@@ -42,9 +42,9 @@ class Bank():
 
     def build_path(self,public=False,regenerate=False):
         if public:
-            self.__build_path = os.path.join(self.abspath,"docs")
+            self.__build_path = os.path.join(self.abspath(),"docs")
         else:
-            self.__build_path = os.path.join(self.abspath,"private-builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
+            self.__build_path = os.path.join(self.abspath(),"private-builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
         os.makedirs(self.__build_path, exist_ok=True)
         return self.__build_path
 
