@@ -118,10 +118,10 @@ def bank_submenu(bank):
     publicity_dropdown = widgets.Dropdown(options=[("Private",False),("Public",True)],
         description='Publicity:')
     build_label = widgets.Label(value="Build:")
-    viewer_button = widgets.Button(description="Viewer")
+    viewer_button = widgets.Button(description="Viewer", disabled=True)
     canvas_button = widgets.Button(description="Canvas")
-    brightspace_button = widgets.Button(description="Brightspace")
-    moodle_button = widgets.Button(description="Moodle")
+    brightspace_button = widgets.Button(description="Brightspace", disabled=True)
+    moodle_button = widgets.Button(description="Moodle", disabled=True)
     buttons = widgets.HBox([build_label,viewer_button,canvas_button,brightspace_button,moodle_button])
     output = widgets.Output()
 
