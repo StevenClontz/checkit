@@ -1,6 +1,6 @@
 <script lang="ts">
     import {
-        UncontrolledDropdown,
+        ButtonDropdown,
         DropdownToggle,
         DropdownMenu,
         DropdownItem,
@@ -11,7 +11,7 @@
     export let outcome: Outcome | undefined = undefined;
 </script>
 
-<UncontrolledDropdown>
+<ButtonDropdown>
     <DropdownToggle caret>
         {#if outcome}
             {outcome.slug} — {outcome.title}
@@ -26,4 +26,4 @@
             </DropdownItem>
         {/each}
     </DropdownMenu>
-</UncontrolledDropdown>
+</ButtonDropdown>

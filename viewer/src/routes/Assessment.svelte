@@ -4,7 +4,7 @@
         Row,
         Col,
         Button,
-        UncontrolledDropdown,
+        ButtonDropdown,
         DropdownToggle,
         DropdownMenu,
         DropdownItem,
@@ -105,7 +105,7 @@
                     </Col>  
                     <Col xs="auto" class="mr-auto">
                         {#if generatedAssessment}
-                            <UncontrolledDropdown>
+                            <ButtonDropdown>
                                 <DropdownToggle caret>
                                     Export:
                                 </DropdownToggle>
@@ -118,7 +118,7 @@
                                         Copy LaTeX to your clipboard 📋
                                     </DropdownItem>
                                 </DropdownMenu>
-                            </UncontrolledDropdown>
+                            </ButtonDropdown>
                         {/if}
                     </Col>
                 </Row>

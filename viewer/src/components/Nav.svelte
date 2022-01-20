@@ -36,17 +36,7 @@
                 </NavLink>
             </NavItem>
         </Nav>
-        <Nav navbar class="ml-auto">
-            <NavItem class="mr-1">
-                <form class="form-inline">
-                    <FormGroup check>
-                    <Label check class="navbar-text">
-                        <Input size="" readonly={false} type="checkbox" bind:checked={$instructorEnabled} />
-                        Show instructor features
-                    </Label>
-                    </FormGroup>
-                </form>
-            </NavItem>
+        <Nav navbar class="ms-auto">
             {#if $instructorEnabled}
                 <NavItem>
                     <NavLink href="#/assessment">
@@ -54,6 +44,16 @@
                     </NavLink>
                 </NavItem>
             {/if}
+            <NavItem class="mr-1">
+                <NavLink on:click={()=>$instructorEnabled=!$instructorEnabled}>
+                    {#if $instructorEnabled}
+                        🗹
+                    {:else}
+                        ☐
+                    {/if}
+                        Show instructor features
+                </NavLink>
+            </NavItem>
         </Nav>
     </Collapse>
 </Navbar>
