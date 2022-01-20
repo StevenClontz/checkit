@@ -67,3 +67,11 @@ Of course if you really need to update the dashboard:
 ```
 git update-index --no-skip-worktree demo-bank/dashboard.ipynb
 ```
+
+And to refresh the dashboard:
+
+```
+git update-index --no-skip-worktree demo-bank/dashboard.ipynb
+git checkout demo-bank/dashboard.ipynb
+git update-index --skip-worktree demo-bank/dashboard.ipynb
+```
