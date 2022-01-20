@@ -12,10 +12,16 @@ is available in the [wiki on GitHub](https://github.com/StevenClontz/checkit/wik
 
 ### Python
 
-Development uses `pyenv` with `pyenv-virtualenv`:
+Development uses `pyenv`:
+
+<https://github.com/pyenv/pyenv>
+
+with `pyenv-virtualenv`:
+
 <https://github.com/pyenv/pyenv-virtualenv>.
+
 Run the following, replacing `PYTHON_VERSION` with the version defined in
-the `PYTHON_VERSION` file.
+the `platform/src/checkit/static/PYTHON_VERSION` file.
 
 ```
 pyenv install PYTHON_VERSION
