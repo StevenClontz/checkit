@@ -38,7 +38,7 @@
         </Nav>
         <Nav navbar class="ms-auto">
             {#if $instructorEnabled}
-                <NavItem>
+                <NavItem class="d-none d-md-block">
                     <NavLink href="#/assessment">
                         Assessment Builder
                     </NavLink>
@@ -54,6 +54,13 @@
                         Show instructor features
                 </NavLink>
             </NavItem>
+            {#if $instructorEnabled}
+                <NavItem class="d-md-none">
+                    <NavLink href="#/assessment">
+                        Assessment Builder
+                    </NavLink>
+                </NavItem>
+            {/if}
         </Nav>
     </Collapse>
 </Navbar>

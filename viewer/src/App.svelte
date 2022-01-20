@@ -1,5 +1,6 @@
 <script lang="ts">
     import 'bootstrap/dist/css/bootstrap.min.css';
+    import 'katex/dist/katex.min.css';
     import { onMount } from 'svelte';
     import { bank } from './stores/banks';
     import Router, { querystring } from 'svelte-spa-router';
