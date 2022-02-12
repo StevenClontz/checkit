@@ -5,13 +5,9 @@
         NavItem,
         NavLink,
         Nav,
-        Input,
-        FormGroup,
-        Label,
         Collapse,
         NavbarToggler,
     } from 'sveltestrap';
-    import {location} from 'svelte-spa-router';
     import { instructorEnabled } from '../stores/instructor';
 
     let isOpen = false;
