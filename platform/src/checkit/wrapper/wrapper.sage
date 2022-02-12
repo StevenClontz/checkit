@@ -178,11 +178,19 @@ if sys.argv[3]:
     for i in range(amount):
         if sys.argv[3].lower() == "preview":
             set_random_seed()
-            seed = randrange(10000)
+            seed_int = int(randrange(10000))
         else:
-            seed = i
-        set_random_seed(seed)
-        seeds.append({"seed":int(seed),"data":json_ready(generator()["data"])})
+            seed_int = int(i)
+        set_random_seed(seed_int)
+        generation = generator()
+        seed  = {"seed":seed_int,"data":json_ready(generation["data"])}
+        if "image" in generation:
+            image_obj = generation["image"]["object"]
+            directory = os.path.join(os.path.dirname(sys.argv[1]),"images")
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            image_obj.save(os.path.join(directory,f"{seed_int:04}.svg"))
+        seeds.append(seed)
     data = {
         "seeds": seeds,
         "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),
