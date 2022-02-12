@@ -44,5 +44,13 @@ Write equivalent matrices, linear systems, and vector equations.
 Example of using XML entities like &amp;amp; for &amp;
             </description>
         </outcome>
+        <outcome>
+            <title>Image Support</title>
+            <slug>IMG</slug>
+            <path>outcomes/IMG</path>
+            <description>
+Example of using an image.
+            </description>
+        </outcome>
     </outcomes>
 </bank>

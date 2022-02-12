@@ -14,8 +14,11 @@ def generator():
 
     variant = choice(["derivative", "rate of change"])
 
+
     return {
-        "f": f,
-        "dfdx": f.diff(),
-        "d_synonym": variant,
+        "data": {
+            "f": f,
+            "dfdx": f.diff(),
+            "d_synonym": variant,
+        }
     }

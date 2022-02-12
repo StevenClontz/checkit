@@ -11,11 +11,14 @@ def generator():
 
     # construct variables
     xs=choice([
-      [var("x_"+str(i+1)) for i in range(0,columns-1)],
-      [var("x"),var("y"),var("z"),var("zw",latex_name="w")][0:columns-1],
+        [var("x_"+str(i+1)) for i in range(0,columns-1)],
+        [var("x"),var("y"),var("z"),var("zw",latex_name="w")][0:columns-1],
     ])
 
+
     return {
-        "system": CheckIt.latex_system_from_matrix(A,variable_list=xs),
-        "matrix": A,
+        "data": {
+            "system": CheckIt.latex_system_from_matrix(A,variable_list=xs),
+            "matrix": A,
+        }
     }

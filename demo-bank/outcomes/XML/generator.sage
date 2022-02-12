@@ -27,4 +27,7 @@ def generator():
         'f': fs[1],
     }]
 
-    return { "functions": functions }
+
+    return {
+        "data": { "functions": functions }
+    }
