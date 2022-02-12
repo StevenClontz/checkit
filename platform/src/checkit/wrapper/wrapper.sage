@@ -182,7 +182,7 @@ if sys.argv[3]:
         else:
             seed = i
         set_random_seed(seed)
-        seeds.append({"seed":int(seed),"values":json_ready(generator())})
+        seeds.append({"seed":int(seed),"data":json_ready(generator()["data"])})
     data = {
         "seeds": seeds,
         "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),

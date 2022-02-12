@@ -59,7 +59,7 @@ class Outcome():
         sage(self,temp_json,preview=True)
         with open(temp_json) as f:
             data = json.load(f)['seeds']
-        return [Exercise(d["values"],d["seed"],self) for d in data]
+        return [Exercise(d["data"],d["seed"],self) for d in data]
 
     def html_preview(self,pregenerated=False):
         if pregenerated:
