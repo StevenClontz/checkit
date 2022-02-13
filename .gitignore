@@ -3,6 +3,7 @@
 *.sage.py
 demo-bank/private-builds
 demo-bank/docs
+demo-bank/outcomes/**/images/*
 __pycache__
 platform/build
 platform/dist
