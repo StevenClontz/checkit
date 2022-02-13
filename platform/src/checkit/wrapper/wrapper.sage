@@ -162,8 +162,8 @@ def json_ready(obj):
     else:
         return str(latex(obj))
 
-# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output.json preview|build
-if sys.argv[3]:
+# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output.json preview|build images?
+if len(sys.argv) >= 4:
     # this script should be called from the root directory of the bank
     # so loads in the generator file work as intended
     generator_path = sys.argv[1]
@@ -181,10 +181,11 @@ if sys.argv[3]:
             seed_int = int(randrange(10000))
         else:
             seed_int = int(i)
+        gen_images = (len(sys.argv) >= 5 and sys.argv[4]=="images")
         set_random_seed(seed_int)
         generation = generator()
         seed  = {"seed":seed_int,"data":json_ready(generation["data"])}
-        if "image" in generation:
+        if "image" in generation and gen_images:
             image_obj = generation["image"]["object"]
             directory = os.path.join(os.path.dirname(sys.argv[1]),"images")
             if not os.path.exists(directory):
