@@ -44,7 +44,7 @@ def outcome_submenu(bank):
     preview_button = widgets.Button(description="Fresh preview")
     seed_button = widgets.Button(description="View random seed")
     build_button = widgets.Button(description="Generate seeds")
-    images_button = widgets.Button(description="Gen seeds+images")
+    images_button = widgets.Button(description="Gen seeds+graphics")
     description = widgets.Output()
     generated = widgets.Output()
     output = widgets.Output()
@@ -92,7 +92,7 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating 10,000 seeds with images..."))
+            display(Markdown("Generating 10,000 seeds with graphics..."))
             o.generate_exercises(regenerate=True,images=True)
         reset(only_generated=True)
         with output:

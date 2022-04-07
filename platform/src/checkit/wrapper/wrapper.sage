@@ -149,6 +149,31 @@ class CheckIt:
             A.subdivide([],[columns-1])
         return A
 
+# decorator to help authors avoid confusing .data() with .get_data() in a Generator
+def provide_data(func):
+    return lambda self: func(self.get_data())
+
+# BaseGenerator class inherited by each outcome's Generator class to minimize boilerplate
+class BaseGenerator:
+    def __init__(self):
+        self.__data = None
+
+    def data(self):
+        return {}
+
+    @provide_data
+    def graphics(data):
+        return None
+    
+    def roll_data(self,seed=None):
+        if seed is not None:
+            set_random_seed(seed)
+        else:
+            set_random_seed()
+        self.__data = self.data()
+
+    def get_data(self):
+        return self.__data
 
 # converts SageMath objects into latexified strings
 # note Python numbers are latexified into strings as well
@@ -167,7 +192,8 @@ if len(sys.argv) >= 4:
     # this script should be called from the root directory of the bank
     # so loads in the generator file work as intended
     generator_path = sys.argv[1]
-    load(generator_path) # must provide generator() function
+    load(generator_path) # must provide Generator class extending BaseGenerator
+    generator = Generator()
 
     # preview/build to specified JSON file
     if sys.argv[3].lower() == "preview":
@@ -183,14 +209,14 @@ if len(sys.argv) >= 4:
             seed_int = int(i)
         gen_images = (len(sys.argv) >= 5 and sys.argv[4]=="images")
         set_random_seed(seed_int)
-        generation = generator()
-        seed  = {"seed":seed_int,"data":json_ready(generation["data"])}
-        if "image" in generation and gen_images:
-            image_obj = generation["image"]["object"]
+        generator.roll_data(seed=seed_int)
+        seed  = {"seed":seed_int,"data":json_ready(generator.get_data())}
+        graphics = generator.graphics()
+        if gen_images and graphics is not None:
             directory = os.path.join(os.path.dirname(sys.argv[1]),"images")
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            image_obj.save(os.path.join(directory,f"{seed_int:04}.svg"))
+            graphics.save(os.path.join(directory,f"{seed_int:04}.svg"))
         seeds.append(seed)
     data = {
         "seeds": seeds,

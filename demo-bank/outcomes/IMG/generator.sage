@@ -1,10 +1,13 @@
-def generator():
-    x=var("x")
-    m = randrange(-9,10)
-    b = randrange(-9,10)
-    line = m*x+b
+class Generator(BaseGenerator):
+    def data(self):
+        x=var("x")
+        m = randrange(-9,10)
+        b = randrange(-9,10)
+        line = m*x+b
+        return {
+            "line": line,
+        }
 
-    return {
-        "data": { "line": line },
-        "image": { "object": plot(line) },
-    }
+    @provide_data
+    def graphics(data):
+        return plot(data["line"])
