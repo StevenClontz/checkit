@@ -40,43 +40,40 @@ class Bank():
         for o in self.outcomes():
             o.generate_exercises(public,amount,regenerate)
 
-    def build_path(self,public=False,regenerate=False):
-        if public:
-            self.__build_path = os.path.join(self.abspath(),"docs")
-        else:
-            self.__build_path = os.path.join(self.abspath(),"private-builds",time.strftime("%Y-%m-%d_%H%M%S", time.localtime()))
+    def build_path(self,regenerate=False):
+        self.__build_path = os.path.join(self.abspath(),"docs")
         os.makedirs(self.__build_path, exist_ok=True)
         return self.__build_path
 
-    def to_dict(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
+    def to_dict(self,amount=300,regenerate=False,randomized=False,outcomes=None):
         if outcomes is None:
             outcomes = self.outcomes()
-        olist = [o.to_dict(public,amount,regenerate,randomized) for o in outcomes]
+        olist = [o.to_dict(amount,regenerate,randomized) for o in outcomes]
         return {
             "title": self.title,
             "url": self.url,
             "outcomes": olist,
         }
 
-    def write_json(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
-        build_path = os.path.join(self.build_path(public,regenerate),f"bank.json")
+    def write_json(self,amount=300,regenerate=False,randomized=False,outcomes=None):
+        build_path = os.path.join(self.build_path(regenerate),f"bank.json")
         with open(build_path,'w') as f:
-            json.dump(self.to_dict(public,amount,regenerate,randomized,outcomes),f)
+            json.dump(self.to_dict(amount,regenerate,randomized,outcomes),f)
 
-    def write_canvas_zip(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
-        if outcomes is None:
-            outcomes = self.outcomes()
-        build_path = os.path.join(self.build_path(public), f"canvas-bank.zip")
-        zip_buffer = io.BytesIO()
-        with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
-            for outcome in outcomes:
-                zip_file.writestr(
-                    f"{outcome.slug}.qti",
-                    str(etree.tostring(outcome.canvas_ele(public,amount,regenerate,randomized,outcomes),
-                                            encoding="UTF-8", xml_declaration=True),"UTF-8")
-                )
-        with open(build_path,'wb') as f:
-            f.write(zip_buffer.getvalue())
+    # def write_canvas_zip(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
+    #     if outcomes is None:
+    #         outcomes = self.outcomes()
+    #     build_path = os.path.join(self.build_path(public), f"canvas-bank.zip")
+    #     zip_buffer = io.BytesIO()
+    #     with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
+    #         for outcome in outcomes:
+    #             zip_file.writestr(
+    #                 f"{outcome.slug}.qti",
+    #                 str(etree.tostring(outcome.canvas_ele(public,amount,regenerate,randomized,outcomes),
+    #                                         encoding="UTF-8", xml_declaration=True),"UTF-8")
+    #             )
+    #     with open(build_path,'wb') as f:
+    #         f.write(zip_buffer.getvalue())
 
     # def outcome_csv_list(self):
     #     outcome_csv = [[

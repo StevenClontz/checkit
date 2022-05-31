@@ -42,9 +42,9 @@ class Outcome():
             "generator.sage"
         )
 
-    def to_dict(self,public=False,amount=300,regenerate=False,randomized=False):
+    def to_dict(self,amount=300,regenerate=False,randomized=False):
         self.generate_exercises(regenerate)
-        exs = self.exercises(public=public,amount=amount,randomized=randomized)
+        exs = self.exercises(amount=amount,randomized=randomized)
         return {
             "title": self.title,
             "slug": self.slug,
@@ -126,14 +126,11 @@ class Outcome():
         except AttributeError as e:
             return "(never generated)"
     
-    def exercises(self,public=False,amount=300,randomized=False,all=False):
+    def exercises(self,amount=300,randomized=False,all=False):
         try:
             if all:
                 return self._exercises
-            if public:
-                exs = self._exercises[:1000]
-            else:
-                exs = self._exercises[1000:]
+            exs = self._exercises[:1000]
             if randomized:
                 indices = sorted(random.sample(range(len(exs)),amount))
             else:
@@ -142,20 +139,20 @@ class Outcome():
         except AttributeError as e:
             raise RuntimeError("Exercises must be generated/loaded before being requested.") from e
 
-    def canvas_ele(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
-        self.generate_exercises(regenerate)
-        timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
-        ele = etree.fromstring(read_resource("canvas-outcome.xml"))
-        CNS = "{"+ele.nsmap[None]+"}"
-        obj_bank = ele.find(f"{CNS}objectbank")
-        obj_bank.set("ident",f"{self.bank.slug}_{self.slug}")
-        label = etree.SubElement(ele.find(f"*/*/{CNS}qtimetadatafield"), "fieldlabel")
-        label.text = "bank_title"
-        entry = etree.SubElement(ele.find(f"*/*/{CNS}qtimetadatafield"), "fieldentry")
-        entry.text = f"CheckIt | {self.bank.title} | {self.slug}: {self.title} (Build {timestamp})"
-        for exercise in self.exercises(public=public,amount=amount,randomized=randomized):
-            ele.find(f"{CNS}objectbank").append(exercise.canvas_ele())
-        return ele
+    # def canvas_ele(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
+    #     self.generate_exercises(regenerate)
+    #     timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    #     ele = etree.fromstring(read_resource("canvas-outcome.xml"))
+    #     CNS = "{"+ele.nsmap[None]+"}"
+    #     obj_bank = ele.find(f"{CNS}objectbank")
+    #     obj_bank.set("ident",f"{self.bank.slug}_{self.slug}")
+    #     label = etree.SubElement(ele.find(f"*/*/{CNS}qtimetadatafield"), "fieldlabel")
+    #     label.text = "bank_title"
+    #     entry = etree.SubElement(ele.find(f"*/*/{CNS}qtimetadatafield"), "fieldentry")
+    #     entry.text = f"CheckIt | {self.bank.title} | {self.slug}: {self.title} (Build {timestamp})"
+    #     for exercise in self.exercises(public=public,amount=amount,randomized=randomized):
+    #         ele.find(f"{CNS}objectbank").append(exercise.canvas_ele())
+    #     return ele
             
 
 
