@@ -1,23 +1,25 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<exercise xmlns="https://spatext.clontz.org" version="0.2">
-    <statement>
+<knowl mode="exercise" xmlns="https://spatext.clontz.org" version="0.2">
+    <intro>
+        <!-- {{#alt_prompt}} -->
         <p>
-            {{#alt_prompt}}
 For each of the following line equations, identify its <em>slope</em>.
-            {{/alt_prompt}}
-            {{^alt_prompt}}
-Identify the <em>slope</em> for each of the following line equations.
-            {{/alt_prompt}}
         </p>
-    </statement>
-    {{#lines}}
-        <task>
-            <statement>
-                <p><m>{{equation}}</m></p>
-            </statement>
-            <answer>
-                <p><m>{{slope}}</m></p>
-            </answer>
-        </task>
-    {{/lines}}
-</exercise>
+        <!-- {{/alt_prompt}} -->
+        <!-- {{^alt_prompt}} -->
+        <p>
+Identify the <em>slope</em> for each of the following line equations.
+        </p>
+        <!-- {{/alt_prompt}} -->
+    </intro>
+    <!-- {{#lines}} -->
+    <knowl>
+        <content>
+            <p><m>{{equation}}</m></p>
+        </content>
+        <outtro>
+            <p><m>{{slope}}</m></p>
+        </outtro>
+    </knowl>
+    <!-- {{/lines}} -->
+</knowl>

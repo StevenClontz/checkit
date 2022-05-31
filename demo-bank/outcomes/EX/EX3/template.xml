@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<exercise xmlns="https://spatext.clontz.org" version="0.2">
-    <statement>
+<knowl mode="exercise" xmlns="https://spatext.clontz.org" version="0.2">
+    <intro>
         <p>
 <url href="https://checkit.clontz.org">It's a URL!</url>
         </p>
@@ -19,44 +19,44 @@ And a long bare URL <url href="https://checkit.clontz.org/#long-extra-string-at-
         <p>
 This example has tasks and subtasks.
         </p>
-    </statement>
-    {{#first}}
-    <task>
-        <statement>
+    </intro>
+    <!-- {{#first}} -->
+    <knowl>
+        <intro>
             <p>First task.</p>
-        </statement>
-        <task>
-            <statement>
+        </intro>
+        <knowl>
+            <content>
                 <p>First subtask. <m>{{first}}</m></p>
-            </statement>
-            <answer>
+            </content>
+            <outtro>
                 <p>First subtask answer.</p>
-            </answer>
-        </task>
-        <task>
-            <statement>
+            </outtro>
+        </knowl>
+        <knowl>
+            <content>
                 <p>Second subtask. <m>{{second}}</m></p>
-            </statement>
-            <answer>
+            </content>
+            <outtro>
                 <p>Second subtask answer.</p>
-            </answer>
-        </task>
-        <task>
-            <statement>
+            </outtro>
+        </knowl>
+        <knowl>
+            <content>
                 <p>Third subtask. <m>{{third}}</m></p>
-            </statement>
-            <answer>
+            </content>
+            <outtro>
                 <p>Third subtask answer.</p>
-            </answer>
-        </task>
-    </task>
-    {{/first}}
-    <task>
-        <statement>
+            </outtro>
+        </knowl>
+    </knowl>
+    <!-- {{/first}} -->
+    <knowl>
+        <content>
             <p>Second task. <m>{{second}}</m></p>
-        </statement>
-        <answer>
+        </content>
+        <outtro>
             <p>Second task answer.</p>
-        </answer>
-    </task>
-</exercise>
+        </outtro>
+    </knowl>
+</knowl>

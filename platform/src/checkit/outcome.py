@@ -87,6 +87,10 @@ class Outcome():
             html += "<pre>\n"
             html += escape_html(ex.latex())
             html += "</pre>\n"
+            html += "<h3>PreTeXt</h3>"
+            html += "<pre>\n"
+            html += escape_html(ex.pretext())
+            html += "</pre>\n"
         return html
 
     def build_path(self):

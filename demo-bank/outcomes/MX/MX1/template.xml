@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<exercise xmlns="https://spatext.clontz.org" version="0.2">
-    <statement>
+<knowl mode="exercise" xmlns="https://spatext.clontz.org" version="0.2">
+    <content>
         <p>Consider the following system of equations:</p>
-        <p><m style="display">{{system}}</m></p>
+        <p><m mode="display">{{system}}</m></p>
         <p>Write an augmented matrix corresponding to this system.</p>
-    </statement>
-    <answer>
-        <p><m style="display">{{matrix}}</m></p>
-    </answer>
-</exercise>
+    </content>
+    <outtro>
+        <p><m mode="display">{{matrix}}</m></p>
+    </outtro>
+</knowl>

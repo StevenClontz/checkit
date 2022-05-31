@@ -1,21 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<exercise xmlns="https://spatext.clontz.org" version="0.2">
-    <statement>
+<knowl mode="exercise" xmlns="https://spatext.clontz.org" version="0.2">
+    <content>
         <p>
 Explain how to find the {{d_synonym}} <m>f'(x)</m>.
         </p>
         <p>
-            <m style="display">
+            <m mode="display">
 f(x)={{f}}
             </m>
         </p>
-    </statement>
-    <answer>
-        <title>Custom title for answer</title>
+    </content>
+    <outtro>
         <p>
-            <m style="display">
+            <m mode="display">
 f'(x)={{dfdx}}
             </m>
         </p>
-    </answer>
-</exercise>
+    </outtro>
+</knowl>

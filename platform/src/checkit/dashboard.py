@@ -21,6 +21,7 @@ def run(bank=None):
     submenu = widgets.Output()
     menu_dropdown.observe(change_submenu(submenu,bank),names='value')
     display(Markdown(f"## {bank.title}"))
+    display(HTML("<style>.stx-outtro{background-color:#ddd;}</style>"))
     display(menu_dropdown)
     display(submenu)
     display(Markdown("---"))

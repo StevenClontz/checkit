@@ -4,12 +4,7 @@
                 xmlns:stx="https://spatext.clontz.org"
                 exclude-result-prefixes="stx">
 
-    <xsl:output method="html" indent="yes"/>
-
-    <!-- Consumer is 'basic' HTML or an LMS: 'canvas', 'd2l', 'moodle' -->
-    <xsl:param name="consumer" select="'basic'"/>
-    <!-- Subset is 'statement', 'answer', or 'all' -->
-    <xsl:param name="subset" select="'all'"/>
+    <xsl:output method="html"/>
 
     <!-- kill undefined elements -->
     <xsl:template match="*"/>
@@ -18,200 +13,154 @@
     <xsl:template match="text()"><xsl:value-of select="translate(normalize-space(concat('&#x7F;',.,'&#x7F;')),'&#x7F;','')"/></xsl:template>
 
     <xsl:template match="/">
-        <xsl:apply-templates select="stx:exercise"/>
-    </xsl:template>
-
-    <xsl:template match="stx:exercise">
-        <div>
-            <xsl:attribute name="class">
-                <xsl:text>checkit exercise</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="data-checkit-slug"><xsl:value-of select="@checkit-slug"/></xsl:attribute>
-            <xsl:attribute name="data-checkit-title"><xsl:value-of select="@checkit-title"/></xsl:attribute>
-            <xsl:attribute name="data-checkit-seed"><xsl:value-of select="@checkit-seed"/></xsl:attribute>
-            <xsl:if test="$subset='statement' or $subset='all'">
-                <xsl:apply-templates select="stx:statement"/>
-            </xsl:if>
-            <xsl:choose>
-                <xsl:when test="stx:task">
-                    <xsl:if test="$subset='statement' or $subset='all'">
-                        <ol>
-                            <xsl:apply-templates select="stx:task" mode="statement"/>
-                        </ol>
-                    </xsl:if>
-                    <xsl:if test="$subset='all'">
-                        <hr/>
-                    </xsl:if>
-                    <xsl:if test="$subset='answer' or $subset='all'">
-                        <ol>
-                            <xsl:apply-templates select="stx:task" mode="answer"/>
-                        </ol>
-                    </xsl:if>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:if test="$subset='all'">
-                        <hr/>
-                    </xsl:if>
-                    <xsl:if test="$subset='answer' or $subset='all'">
-                        <xsl:apply-templates select="stx:answer"/>
-                    </xsl:if>
-                </xsl:otherwise>
-            </xsl:choose>
+        <div class="stx">
+            <xsl:apply-templates/>
         </div>
     </xsl:template>
 
-    <xsl:template match="stx:task" mode="statement">
-        <li>
-            <xsl:attribute name="class">
-                <xsl:text>checkit task</xsl:text>
-            </xsl:attribute>
-            <xsl:apply-templates select="stx:statement"/>
-            <xsl:if test="stx:task">
-                <ol>
-                    <xsl:apply-templates select="stx:task" mode="statement"/>
-                </ol>
-            </xsl:if>
-        </li>
-    </xsl:template>
-
-    <xsl:template match="stx:task" mode="answer">
-        <li>
-            <xsl:attribute name="class">
-                <xsl:text>checkit task</xsl:text>
-            </xsl:attribute>
+    <xsl:template match="stx:knowl">
+        <div class="stx-knowl">
+            <xsl:apply-templates select="stx:title[1]"/>
+            <xsl:apply-templates select="stx:intro[1]"/>
             <xsl:choose>
-                <xsl:when test="stx:task">
+                <xsl:when test="stx:knowl">
                     <ol>
-                        <xsl:apply-templates select="stx:task" mode="answer"/>
+                        <xsl:for-each select="stx:knowl">
+                            <li>
+                                <xsl:apply-templates select="."/>
+                            </li>
+                        </xsl:for-each>
                     </ol>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:apply-templates select="stx:answer"/>
+                    <xsl:apply-templates select="stx:content[1]"/>
                 </xsl:otherwise>
             </xsl:choose>
-        </li>
-    </xsl:template>
-
-    <xsl:template match="stx:statement">
-        <div class="checkit statement">
-            <xsl:choose>
-                <xsl:when test="stx:title">
-                    <h4><xsl:value-of select="stx:title"/></h4>
-                </xsl:when>
-                <xsl:otherwise/>
-            </xsl:choose>
-            <xsl:apply-templates select="stx:p|stx:ul"/>
+            <xsl:apply-templates select="stx:outtro[1]"/>
         </div>
     </xsl:template>
 
-    <xsl:template match="stx:answer">
-        <div class="checkit answer">
-            <xsl:choose>
-                <xsl:when test="stx:title">
-                    <h5><xsl:value-of select="stx:title"/></h5>
-                </xsl:when>
-                <!-- <xsl:otherwise>
-                    <h5>Brief Answer:</h5>
-                </xsl:otherwise> -->
-            </xsl:choose>
-            <xsl:apply-templates select="stx:p|stx:ul"/>
+    <xsl:template match="stx:title">
+        <h3 class="stx-title">
+            <xsl:apply-templates select="text()|stx:m|stx:q|stx:c"/>
+        </h3>
+    </xsl:template>
+
+    <xsl:template match="stx:intro">
+        <div class="stx-intro">
+            <xsl:apply-templates select="stx:p|stx:list"/>
         </div>
+    </xsl:template>
+
+    <xsl:template match="stx:content">
+        <div class="stx-content">
+            <xsl:choose>
+                <xsl:when test="ancestor::stx:knowl">
+                    <xsl:apply-templates select="stx:p|stx:list"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="stx:p|stx:list|stx:knowl"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="stx:outtro">
+        <div class="stx-outtro">
+            <xsl:apply-templates select="stx:p|stx:list"/>
+        </div>
+    </xsl:template>
+
+    <xsl:template match="stx:list">
+        <xsl:if test="stx:item">
+            <ul class="stx-list">
+                <xsl:for-each select="stx:item">
+                    <li>
+                        <xsl:apply-templates select="stx:p|stx:list"/>
+                    </li>
+                </xsl:for-each>
+            </ul>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="parseDisplay">
+        <xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url|stx:image"/>
     </xsl:template>
 
     <xsl:template match="stx:p">
         <p>
-            <xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>
+            <xsl:call-template name="parseDisplay"/>
         </p>
     </xsl:template>
 
-    <xsl:template match="stx:ul">
-        <ul>
-            <xsl:apply-templates select="stx:li"/>
-        </ul>
-    </xsl:template>
-    <xsl:template match="stx:li">
-        <li>
-            <xsl:if test="stx:title">
-                <h6><xsl:value-of select="stx:title"/></h6>
-            </xsl:if>
-            <xsl:apply-templates select="stx:p|stx:ul"/>
-        </li>
-    </xsl:template>
-
     <xsl:template match="stx:m">
-        <xsl:choose>
-            <xsl:when test="$consumer='canvas'">
-                <img>
-                    <xsl:attribute name="alt">
-                        <xsl:text>LaTeX: </xsl:text>
-                        <xsl:value-of select="normalize-space(text())"/>
-                    </xsl:attribute>
-                    <xsl:attribute name="title">
-                        <xsl:text>LaTeX: </xsl:text>
-                        <xsl:value-of select="normalize-space(text())"/>
-                    </xsl:attribute>
-                    <xsl:attribute name="data-latex">
-                        <xsl:value-of select="normalize-space(text())"/>
-                    </xsl:attribute>
-                </img>
-            </xsl:when>
-            <xsl:otherwise>
-                <span class="math math-inline">\(<xsl:value-of select="normalize-space(text())"/>\)</span>
-            </xsl:otherwise>
-        </xsl:choose>
+        <span class="math inline-math">
+            <xsl:attribute name="data-latex">
+                <xsl:value-of select="normalize-space(text())"/>
+            </xsl:attribute>
+            <xsl:text>\(</xsl:text>
+            <xsl:value-of select="normalize-space(text())"/>
+            <xsl:text>\)</xsl:text>
+        </span>
     </xsl:template>
-    <xsl:template match="stx:m[@style='display']|stx:me">
-        <xsl:choose>
-            <xsl:when test="$consumer='canvas'">
-                <br/>
-                <img>
-                    <xsl:attribute name="alt">
-                        <xsl:text>LaTeX: </xsl:text>
-                        <xsl:value-of select="normalize-space(text())"/>
-                    </xsl:attribute>
-                    <xsl:attribute name="title">
-                        <xsl:text>LaTeX: </xsl:text>
-                        <xsl:value-of select="normalize-space(text())"/>
-                    </xsl:attribute>
-                    <xsl:attribute name="data-latex">
-                        <xsl:value-of select="normalize-space(text())"/>
-                    </xsl:attribute>
-                </img>
-                <br/>
-            </xsl:when>
-            <xsl:otherwise>
-                <span class="math math-display">\[<xsl:value-of select="normalize-space(text())"/>\]</span>
-            </xsl:otherwise>
-        </xsl:choose>
+    <xsl:template match="stx:m[@mode='display']|stx:me">
+        <span class="math display-math">
+            <xsl:attribute name="data-latex">
+                <xsl:value-of select="normalize-space(text())"/>
+            </xsl:attribute>
+            <xsl:text>\[</xsl:text>
+            <xsl:value-of select="normalize-space(text())"/>
+            <xsl:text>\]</xsl:text>
+        </span>
     </xsl:template>
 
     <xsl:template match="stx:em">
-        <b><xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/></b>
+        <em>
+            <xsl:call-template name="parseDisplay"/>
+        </em>
     </xsl:template>
 
     <xsl:template match="stx:c">
-        <code><xsl:value-of select="normalize-space(text())"/></code>
+        <code>
+            <xsl:value-of select="normalize-space(text())"/>
+        </code>
     </xsl:template>
 
     <xsl:template match="stx:q">
-        "<xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>"
+        <xsl:text>"</xsl:text>
+        <xsl:call-template name="parseDisplay"/>
+        <xsl:text>"</xsl:text>
+    </xsl:template>
+
+    <xsl:template match="stx:image">
+        <img>
+            <xsl:attribute name="src">
+                <xsl:value-of select="@remote"/>
+                <xsl:text>/</xsl:text>
+                <xsl:value-of select="@source"/>
+            </xsl:attribute>
+        </img>
     </xsl:template>
 
     <xsl:template match="stx:url[@href]">
-        <a>
-            <xsl:attribute name="href"><xsl:value-of select="@href"/></xsl:attribute>
-            <xsl:choose>
-                <xsl:when test="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url">
-                    <xsl:apply-templates select="text()|stx:m|stx:me|stx:q|stx:c|stx:em|stx:url"/>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="substring(@href,1,30)"/>
-                    <xsl:if test="string-length(@href) &gt; 30">
-                        <xsl:text>...</xsl:text>
-                    </xsl:if>
-                </xsl:otherwise>
-            </xsl:choose>
-        </a>
+        <xsl:choose>
+            <xsl:when test=". != ''">
+                <a>
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="@href"/>
+                    </xsl:attribute>
+                    <xsl:call-template name="parseDisplay"/>
+                </a>
+            </xsl:when>
+            <xsl:otherwise>
+                <a>
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="@href"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="@href"/>
+                </a>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
 </xsl:stylesheet>

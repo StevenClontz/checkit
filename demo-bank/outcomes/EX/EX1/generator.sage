@@ -11,7 +11,7 @@ class Generator(BaseGenerator):
         # standard equation
         line1 = {
             'equation': (A*x+B*y==C),
-            'slope': -B/A,
+            'slope': -A/B,
         }
 
         # Genereate random line with slope m
