@@ -42,7 +42,7 @@ class Outcome():
             "generator.sage"
         )
 
-    def to_dict(self,amount=300,regenerate=False,randomized=False):
+    def to_dict(self,regenerate=False):
         self.generate_exercises(regenerate)
         exs = self.exercises(amount=amount,randomized=randomized)
         return {
@@ -54,10 +54,9 @@ class Outcome():
         }
 
     def preview_exercises(self):
-        temp_dir = gettempdir()
-        temp_json = os.path.join(temp_dir,"seeds.json")
-        sage(self,temp_json,preview=True,images=True)
-        with open(temp_json) as f:
+        preview_json = os.path.join(self.build_path(),"preview.json")
+        sage(self,preview_json,preview=True,images=True)
+        with open(os.path.join(preview_json)) as f:
             data = json.load(f)['seeds']
         return [Exercise(d["data"],d["seed"],self) for d in data]
 
@@ -89,9 +88,12 @@ class Outcome():
             html += escape_html(ex.latex())
             html += "</pre>\n"
         return html
+
+    def build_path(self):
+        return os.path.join(self.bank.abspath(),"assets",self.slug)
     
     def seeds_json_path(self):
-        return os.path.join(self.abspath(),".seeds.json")
+        return os.path.join(self.build_path(),"seeds.json")
 
     def generate_exercises(self,regenerate=False,images=False):
         if not regenerate:
@@ -126,11 +128,11 @@ class Outcome():
         except AttributeError as e:
             return "(never generated)"
     
-    def exercises(self,amount=300,randomized=False,all=False):
+    def exercises(self,all=True,amount=300,randomized=False):
         try:
+            exs = self._exercises
             if all:
-                return self._exercises
-            exs = self._exercises[:1000]
+                return exs
             if randomized:
                 indices = sorted(random.sample(range(len(exs)),amount))
             else:

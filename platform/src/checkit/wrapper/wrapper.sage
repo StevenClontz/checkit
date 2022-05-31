@@ -187,7 +187,7 @@ def json_ready(obj):
     else:
         return str(latex(obj))
 
-# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output.json preview|build images?
+# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output/seeds.json preview|build images?
 if len(sys.argv) >= 4:
     # this script should be called from the root directory of the bank
     # so loads in the generator file work as intended
@@ -199,28 +199,29 @@ if len(sys.argv) >= 4:
     if sys.argv[3].lower() == "preview":
         amount = 10
     else:
-        amount = 10_000
+        amount = 1_000
     seeds = []
     for i in range(amount):
         if sys.argv[3].lower() == "preview":
             set_random_seed()
-            seed_int = int(randrange(10000))
+            seed_int = int(randrange(1_000))
         else:
             seed_int = int(i)
         gen_images = (len(sys.argv) >= 5 and sys.argv[4]=="images")
-        set_random_seed(seed_int)
         generator.roll_data(seed=seed_int)
         seed  = {"seed":seed_int,"data":json_ready(generator.get_data())}
-        graphics = generator.graphics()
-        if gen_images and graphics is not None:
-            directory = os.path.join(os.path.dirname(sys.argv[1]),"images")
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-            graphics.save(os.path.join(directory,f"{seed_int:04}.svg"))
+        if gen_images:
+            graphics = generator.graphics()
+            if graphics is not None:
+                directory = os.path.join(os.path.dirname(sys.argv[2]))
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                graphics.save(os.path.join(directory,f"{seed_int:04}.png"))
         seeds.append(seed)
     data = {
         "seeds": seeds,
         "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
+    os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
     with open(os.path.join(sys.argv[2]), 'w') as f:
         json.dump(data, f)

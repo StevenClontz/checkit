@@ -65,7 +65,8 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown(f"*Generating fresh preview...*"))
-            preview = o.html_preview(pregenerated=False)
+        preview = o.html_preview(pregenerated=False)
+        with output:
             output.clear_output()
             display(HTML(preview))
 
@@ -82,8 +83,8 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating 10,000 seeds..."))
-            o.generate_exercises(regenerate=True)
+            display(Markdown("Generating 1,000 seeds..."))
+        o.generate_exercises(regenerate=True)
         reset(only_generated=True)
         with output:
             display(Markdown("Done!"))
@@ -92,8 +93,8 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating 10,000 seeds with graphics..."))
-            o.generate_exercises(regenerate=True,images=True)
+            display(Markdown("Generating 1,000 seeds with graphics... (this can take some time)"))
+        o.generate_exercises(regenerate=True,images=True)
         reset(only_generated=True)
         with output:
             display(Markdown("Done!"))
