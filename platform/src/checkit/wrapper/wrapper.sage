@@ -157,6 +157,7 @@ def provide_data(func):
 class BaseGenerator:
     def __init__(self):
         self.__data = None
+        self.__seed = None
 
     def data(self):
         return {}
@@ -166,13 +167,16 @@ class BaseGenerator:
         return None
     
     def roll_data(self,seed=None):
-        if seed is not None:
-            set_random_seed(seed)
-        else:
+        if seed is None:
             set_random_seed()
+            seed = randrange(1000)
+        self.__seed = seed
+        set_random_seed(seed)
         self.__data = self.data()
 
     def get_data(self):
+        data = self.__data
+        data["__seed__"] = f"{self.__seed:04}"
         return self.__data
 
 # converts SageMath objects into latexified strings

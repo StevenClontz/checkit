@@ -4,6 +4,9 @@
         <p>
 Find a function for the shown line.
         </p>
+        <p>
+            <image source="assets/IMG/{{__seed__}}.png"/>
+        </p>
     </content>
     <outtro>
         <p><m>y={{line}}</m></p>
