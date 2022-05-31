@@ -13,8 +13,8 @@ def run(bank=None):
     menu_dropdown = widgets.Dropdown(
         options=[
             ('',''),
-            ('Outcomes', 'outcome'),
-            ('Bank', 'bank'),
+            ('Author/edit outcomes', 'outcome'),
+            ('Manage bank', 'bank'),
         ],
         description='Menu:',
     )
