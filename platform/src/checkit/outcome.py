@@ -44,7 +44,7 @@ class Outcome():
 
     def to_dict(self,regenerate=False):
         self.generate_exercises(regenerate)
-        exs = self.exercises(amount=amount,randomized=randomized)
+        exs = self.exercises()
         return {
             "title": self.title,
             "slug": self.slug,
@@ -94,7 +94,9 @@ class Outcome():
         return html
 
     def build_path(self):
-        return os.path.join(self.bank.abspath(),"assets",self.slug)
+        p = os.path.join(self.bank.abspath(),"assets",self.slug)
+        os.makedirs(p, exist_ok=True)
+        return p
     
     def seeds_json_path(self):
         return os.path.join(self.build_path(),"seeds.json")

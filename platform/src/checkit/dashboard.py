@@ -113,121 +113,43 @@ def outcome_submenu(bank):
     display(output)
     reset()
 
-def bank_submenu(bank): 
-    options = [
-        (o.full_title(max_length=30),o) for o in bank.outcomes()
-    ]
-    outcomes_select = widgets.SelectMultiple(
-        options=options,
-        value=[o[1] for o in options],
-        rows=min(6,len(options)+1),
-        description='Outcomes:',
-    )
-    amount_input = widgets.BoundedIntText(
-        value=300,
-        min=1,
-        max=1000,
-        step=1,
-        description='# Exercises:'
-    )
-    publicity_dropdown = widgets.Dropdown(options=[("Private",False),("Public",True)],
-        description='Publicity:')
+def bank_submenu(bank):
     build_label = widgets.Label(value="Build:")
-    viewer_button = widgets.Button(description="Viewer", disabled=True)
-    canvas_button = widgets.Button(description="Canvas")
-    brightspace_button = widgets.Button(description="Brightspace", disabled=True)
-    moodle_button = widgets.Button(description="Moodle", disabled=True)
-    buttons = widgets.HBox([build_label,viewer_button,canvas_button,brightspace_button,moodle_button])
+    json_button = widgets.Button(description="Bank from cache")
+    json_regen_button = widgets.Button(description="Regenerated bank")
+    buttons = widgets.HBox([build_label,json_button,json_regen_button])
     output = widgets.Output()
+    generated = widgets.Output()
 
-    def viewer(*args):
-        p = publicity_dropdown.value
-        r = not p
-        a = amount_input.value
-        os = outcomes_select.value
+    def reset(*args):
         output.clear_output()
         with output:
-            display(Markdown("Building Viewer..."))
-            bank.write_json(public=p,amount=a,randomized=r,outcomes=os)
+            display(Markdown(f"*Last built on:* `{bank.generated_on()}`"))
+
+    def json(*args):
+        generated.clear_output()
+        with generated:
+            display(Markdown("Building bank from pregenerated outcomes..."))
+        bank.write_json()
+        reset()
+        with generated:
             display(Markdown("Done!"))
 
-    def canvas(*args):
-        p = publicity_dropdown.value
-        r = not p
-        a = amount_input.value
-        os = outcomes_select.value
-        output.clear_output()
-        with output:
-            display(Markdown(f"Building Canvas to `{bank.build_path(p)}`..."))
-            bank.write_canvas_zip(public=p,amount=a,randomized=r,outcomes=os)
+    def json_regen(*args):
+        generated.clear_output()
+        with generated:
+            display(Markdown("Regenerating all outcomes (no graphics) and building bank..."))
+        bank.write_json(regenerate=True)
+        reset()
+        with generated:
             display(Markdown("Done!"))
 
-    viewer_button.on_click(viewer)
-    canvas_button.on_click(canvas)
+    json_button.on_click(json)
+    json_regen_button.on_click(json_regen)
 
-    display(outcomes_select)
-    display(publicity_dropdown)
-    display(amount_input)
     display(buttons)
     display(output)
+    display(generated)
+    reset()
 
 
-    # 
-    # bank_slugs = [f for f in listdir('banks') if not path.isfile(path.join('banks', f))]
-    # bank_slugs.sort()
-    # bank_dropdown_options = ['']+bank_slugs
-    # bank_dropdown = widgets.Dropdown(options=bank_dropdown_options)
-    # build_button = widgets.Button(description="Build bank files")
-    # build_amount_widget = widgets.BoundedIntText(
-    #     value=300,
-    #     min=1,
-    #     max=1000,
-    #     step=1,
-    #     description='Count:',
-    # )
-    # build_public_dropdown = widgets.Dropdown(options=[("Non-public",False),("Public",True)])
-
-    # def bank_dropdown_callback(c=None):
-    #     bank_output.clear_output()
-    #     if bank_dropdown.value != bank_dropdown_options[0]:
-    #         f = io.StringIO()
-    #         with redirect_stdout(f):
-    #             bank = Bank(bank_dropdown.value)
-    #         bank_errors = f.getvalue()
-    #         boilerplate_button = widgets.Button(description="Create missing outcome files",layout=widgets.Layout(width="auto"))
-    #         def write_boilerplate(c=None):
-    #             bank.write_outcomes_boilerplate()
-    #             boilerplate_button.description = boilerplate_button.description + " - Done!"
-    #         boilerplate_button.on_click(write_boilerplate)
-    #         bank_suboutput = widgets.Output()
-    #         def build_bank(c=None):
-    #             bank_suboutput.clear_output()
-    #             with bank_suboutput:
-    #                 bank.generate_exercises(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=True)
-    #                 print("Now building all output formats...")
-    #                 f = io.StringIO()
-    #                 with redirect_stdout(f):
-    #                     bank.build(public=build_public_dropdown.value,amount=build_amount_widget.value,regenerate=False)
-    #                 display(Markdown(f.getvalue()))
-    #         build_button.on_click(build_bank)
-    #         outcomes_dropdown = widgets.Dropdown(options=[(f"{o.slug}: {o.title}",o) for o in bank.outcomes])
-    #         def preview_outcome(c=None):
-    #             bank_suboutput.clear_output()
-    #             with bank_suboutput:
-    #                 display(HTML(f"<strong>Description:</strong>" +
-    #                              f"<em>{outcomes_dropdown.value.description}</em>"))
-    #                 display(HTML(outcomes_dropdown.value.HTML_preview()))
-    #         outcome_button = widgets.Button(description="Preview exercise")
-    #         outcome_button.on_click(preview_outcome)
-    #         with bank_output:
-    #             display(Markdown(f'### {bank.title}'))
-    #             display(HTML(bank_errors))
-    #             display(boilerplate_button)
-    #             display(widgets.HBox([build_button,build_public_dropdown,build_amount_widget]))
-    #             display(widgets.HBox([outcome_button,outcomes_dropdown]))
-    #             display(bank_suboutput)
-    # bank_dropdown.observe(bank_dropdown_callback,names='value')
-
-    # display(Markdown("### Select a bank directory"))
-    # display(bank_dropdown)
-    # display(bank_output)

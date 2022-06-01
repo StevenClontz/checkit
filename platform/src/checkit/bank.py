@@ -1,5 +1,5 @@
 from lxml import etree
-import os, time, json, zipfile, io, csv, shutil
+import os, time, json, zipfile, io, csv, shutil, datetime
 from .outcome import Outcome
 from .xml import CHECKIT_NS, xml_boilerplate
 
@@ -33,32 +33,36 @@ class Bank():
     def outcomes(self):
         return self._outcomes
     
-    def generate_exercises(self,public=False,amount=300,regenerate=False):
-        # cache build path
-        self.build_path(public,regenerate)
-        # cache exercises
+    def generate_exercises(self,regenerate=False,images=False):
         for o in self.outcomes():
-            o.generate_exercises(public,amount,regenerate)
+            o.generate_exercises(regenerate=regenerate,images=images)
 
-    def build_path(self,regenerate=False):
-        self.__build_path = os.path.join(self.abspath(),"docs")
-        os.makedirs(self.__build_path, exist_ok=True)
-        return self.__build_path
+    def build_path(self):
+        p = os.path.join(self.abspath(),"docs")
+        os.makedirs(p, exist_ok=True)
+        return p
 
-    def to_dict(self,amount=300,regenerate=False,randomized=False,outcomes=None):
-        if outcomes is None:
-            outcomes = self.outcomes()
-        olist = [o.to_dict(amount,regenerate,randomized) for o in outcomes]
+    def to_dict(self,regenerate=False):
+        olist = [o.to_dict(regenerate=regenerate) for o in self.outcomes()]
         return {
             "title": self.title,
             "url": self.url,
+            "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "outcomes": olist,
         }
 
-    def write_json(self,amount=300,regenerate=False,randomized=False,outcomes=None):
-        build_path = os.path.join(self.build_path(regenerate),f"bank.json")
+    def write_json(self,regenerate=False):
+        build_path = os.path.join(self.build_path(),f"bank.json")
         with open(build_path,'w') as f:
-            json.dump(self.to_dict(amount,regenerate,randomized,outcomes),f)
+            json.dump(self.to_dict(regenerate=regenerate),f)
+    
+    def generated_on(self):
+        try:
+            with open(os.path.join(self.build_path(),f"bank.json"),'r') as f:
+                return json.load(f)["generated_on"]
+        except:
+            return "(never generated)"
+
 
     # def write_canvas_zip(self,public=False,amount=300,regenerate=False,randomized=False,outcomes=None):
     #     if outcomes is None:
