@@ -146,6 +146,9 @@
             <xsl:attribute name="source">
                 <xsl:value-of select="@source"/>
             </xsl:attribute>
+            <xsl:attribute name="description">
+                <xsl:value-of select="@description"/>
+            </xsl:attribute>
         </image>
     </xsl:template>
 

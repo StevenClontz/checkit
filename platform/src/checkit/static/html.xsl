@@ -139,6 +139,9 @@
                 <xsl:text>/</xsl:text>
                 <xsl:value-of select="@source"/>
             </xsl:attribute>
+            <xsl:attribute name="alt">
+                <xsl:value-of select="@description"/>
+            </xsl:attribute>
         </img>
     </xsl:template>
 

@@ -5,7 +5,9 @@
 Find a function for the shown line.
         </p>
         <p>
-            <image source="assets/IMG/{{__seed__}}.png"/>
+            <image
+                source="assets/IMG1/{{__seed__}}.png"
+                description="Line with intercept {{intercept}} and slope {{slope}}."/>
         </p>
     </content>
     <outtro>

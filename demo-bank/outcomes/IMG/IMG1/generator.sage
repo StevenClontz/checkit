@@ -6,6 +6,8 @@ class Generator(BaseGenerator):
         line = m*x+b
         return {
             "line": line,
+            "slope": m,
+            "intercept": b,
         }
 
     @provide_data
