@@ -1,5 +1,4 @@
 <script lang="ts">
-    import Pagination from '../components/Pagination.svelte';
     import Exercise from '../components/Exercise.svelte';
     import type { Params } from '../types';
     import { Button, Row, Col } from 'sveltestrap';
@@ -15,7 +14,6 @@
 
     $: outcome = $bank.outcomes.find((o)=>o.slug==params.outcomeSlug);
     $: version = versionStringToInt(params.exerciseVersion);
-    $: pages = Math.min(20,outcome.exercises.length)
     let seed = versionStringToInt(params.exerciseVersion);
     let outcomeSlug = params.outcomeSlug;
     $: if (outcomeSlug !== params.outcomeSlug) {
@@ -47,35 +45,18 @@
         {outcome.description}
     </p>
     
-    {#if $querystring=="embed" }
-        <p class="d-none d-sm-block">
-            <Pagination
-                label="Version:"
-                keyboardControl
-                bind:page={seed}
-                {pages}/>
-        </p>
-        <p class="d-block d-sm-none">
-            <Pagination minimal bind:page={seed} {pages}/>
-        </p>
-        <p>
-            <Button color="secondary" outline on:click={toggleCodeCell}>
-                Show/Hide Code Cell
-            </Button>
-        </p>
-    {:else}
     <Row>
         <Col xs="auto">
-            <p class="d-none d-sm-block">
-                <Pagination
-                    label="Version:"
-                    keyboardControl
-                    bind:page={seed}
-                    {pages}/>
-            </p>
-            <p class="d-block d-sm-none">
-                <Pagination minimal bind:page={seed} {pages}/>
-            </p>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="versionSelect">Version</label>
+                <select class="form-select" label="versionSelect" bind:value={seed}>
+                    {#each Array(20) as _, i}
+                        <option value={i}>
+                            {i+1}
+                        </option>
+                    {/each}
+                </select>
+            </div>
         </Col>
         <Col xs="auto">
             <p>
@@ -110,7 +91,6 @@
             </Col>
         {/if}
     </Row>
-    {/if}
     
     <div class='mt-2'>
         <Exercise {outcome} {seed} embedded={$querystring=="embed"}/>
