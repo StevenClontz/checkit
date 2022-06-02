@@ -25,7 +25,7 @@
         {:else if node.nodeName.toLowerCase() == "q"}
             "<svelte:self nodes={node.childNodes}/>"
         {:else if node.nodeName.toLowerCase() == "image"}
-            <img src={imageSrc(node)} alt={node.getAttribute('description')}/>
+            <img style="max-width:100%" src={imageSrc(node)} alt={node.getAttribute('description')}/>
         {:else if node.nodeName.toLowerCase() == "url"}
             <a href={node.getAttribute("href")}>
                 {#if node.textContent.trim()===''}

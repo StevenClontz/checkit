@@ -5,11 +5,48 @@ import {isOpen as codeCellIsOpen} from '../stores/codecell';
 import katex from 'katex';
 
 import Mustache from 'mustache';
+// @ts-ignore
+import latexXsl from '../spatext/xsl/latex.xsl?raw'
+// @ts-ignore
+import htmlXsl from '../spatext/xsl/html.xsl?raw'
+// @ts-ignore
+import ptxXsl from '../spatext/xsl/pretext.xsl?raw'
+
+const parser = new DOMParser()
 
 export const outcomeToStx = (o:Outcome,seed:number) => {
-    let stxString:string = Mustache.render(o.template, o.exercises[seed]['data'])
-    const parser = new DOMParser()
-    return parser.parseFromString(stxString, "application/xml").querySelector(":scope")
+    const stxString:string = Mustache.render(o.template, o.exercises[seed]['data'])
+    if (parser.parseFromString(stxString, "application/xml").querySelector('parsererror')) {
+        let knowl = document.createElement("knowl")
+        knowl.insertAdjacentHTML("afterbegin","<content><p>Error parsing template.</p></content>")
+        return knowl
+    }
+    let stxElement = parser.parseFromString(stxString, "application/xml").querySelector(":scope")
+    stxElement.querySelectorAll("image").forEach(image => {
+        image.setAttribute("remote", `${location.protocol}//${location.host}${location.pathname}`)
+    });
+    return stxElement
+}
+
+export const stxToLatex = (e:Element) => {
+    const transform = new XSLTProcessor()
+    const xslDom = parser.parseFromString(latexXsl, "application/xml")
+    transform.importStylesheet(xslDom)
+    return transform.transformToDocument(e).querySelector(":scope").textContent.trim()
+}
+
+export const stxToHtml = (e:Element) => {
+    const transform = new XSLTProcessor()
+    const xslDom = parser.parseFromString(htmlXsl, "application/xml")
+    transform.importStylesheet(xslDom)
+    return transform.transformToDocument(e).querySelector("div.stx").outerHTML.trim()
+}
+
+export const stxToPtx = (e:Element) => {
+    const transform = new XSLTProcessor()
+    const xslDom = parser.parseFromString(ptxXsl, "application/xml")
+    transform.importStylesheet(xslDom)
+    return transform.transformToDocument(e).querySelector(':scope').outerHTML.trim()
 }
 
 export const toggleCodeCell = () => {codeCellIsOpen.update(x=>!x)}

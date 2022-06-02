@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { afterUpdate } from 'svelte';
-    import type { Exercise, Outcome } from '../types';
+    import type { Outcome } from '../types';
     import { instructorEnabled } from '../stores/instructor';
     import { Nav, NavItem, NavLink, Row, Col } from 'sveltestrap';
-    import { parseMath, outcomeToStx } from '../utils';
-    import Knowl from './spatext/Elements/Knowl.svelte';
+    import { outcomeToStx, stxToHtml, stxToLatex, stxToPtx } from '../utils';
+    import Knowl from '../spatext/Elements/Knowl.svelte';
 
     export let embedded:Boolean = false;
 
@@ -14,13 +13,19 @@
     export let statementOnly: boolean=false;
 
 
-    const modes = ['display', 'edit', 'html', 'embed', 'tex', 'pretext']
+    const modes = ['display', 'edit', 'html', 'embed', 'latex', 'pretext']
     const modeLabels = ['Display', 'Edit Template', 'HTML', 'Embed (HTML)', 'LaTeX', 'PreTeXt']
     let mode = "display";
     const changeMode = (m:string) => (e:Event) => {
         e.preventDefault();
         mode = m;
     }
+    let embed:string
+    $: embed = `<iframe title="Iframe CheckIt Outcome"
+    width="800"
+    height="450"
+    src="${location.protocol}//${location.host}${location.pathname}#/bank/${outcome.slug}/${page+1}/?embed">
+</iframe>`
 </script>
 
 {#if !statementOnly && !embedded}
@@ -39,8 +44,6 @@
                 {/each}
             </Nav>
         </div>
-    {:else}
-        <hr/>
     {/if}
 {/if}
 
@@ -54,24 +57,20 @@
         {:else if mode == "edit"}
             <Row>
                 <Col sm="6">
-                    <textarea style="width:100%;height:20em" bind:value={outcome.template}/>
+                    <textarea bind:value={outcome.template}/>
                 </Col>
                 <Col sm="6">
                     <Knowl knowl={outcomeToStx(outcome,page)}/>
                 </Col>
             </Row>
         {:else if mode == "html"}
-            <pre class="pre-scrollable"><code>html</code></pre>
-        {:else if mode == "tex"}
-            <pre class="pre-scrollable"><code>tex</code></pre>
+            <textarea readonly value={stxToHtml(outcomeToStx(outcome,page))}/>
+        {:else if mode == "latex"}
+            <textarea readonly value={stxToLatex(outcomeToStx(outcome,page))}/>
         {:else if mode == "pretext"}
-            <pre class="pre-scrollable"><code>pretext</code></pre>
+            <textarea readonly value={stxToPtx(outcomeToStx(outcome,page))}/>
         {:else if mode == "embed"}
-            <pre class="pre-scrollable"><code>&lt;iframe title="Iframe CheckIt Outcome"
-    width="800"
-    height="450"
-    src="{location.protocol}//{location.host}{location.pathname}#/bank/{outcome.slug}/{page+1}/?embed"&gt;
-&lt;/iframe&gt;</code></pre>
+            <textarea readonly value={embed}/>
         {:else}
             Invalid mode.
         {/if}
@@ -80,13 +79,15 @@
 {/if}
 
 <style>
-    pre {
-        border: 1px #ddd solid;
-        background-color: #eee;
-        padding: 4px;
-        border-radius: 5px;
-    }
     .navtabs {
         margin-bottom: 1em;
+    }
+    textarea {
+        width:100%;
+        height:25em;
+        font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+    }
+    textarea[readonly] {
+        background-color: #eee;
     }
 </style>
