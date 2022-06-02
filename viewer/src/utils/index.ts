@@ -38,12 +38,47 @@ export const outcomeToLatex = (o:Outcome,seed:number) => {
     return transform.transformToDocument(e).querySelector(":scope").textContent.trim()
 }
 
-export const outcomeToHtml = (o:Outcome,seed:number) => {
+export const outcomeToHtml = (o:Outcome,seed:number,canvasMath=false,solutions:'show'|'hide'|'only'='show') => {
     const e = outcomeToStx(o,seed)
     const transform = new XSLTProcessor()
     const xslDom = parser.parseFromString(htmlXsl, "application/xml")
     transform.importStylesheet(xslDom)
-    return transform.transformToDocument(e).querySelector("div.stx").outerHTML.trim()
+    let ele = transform.transformToDocument(e).querySelector("div.stx")
+    if (canvasMath) {
+        ele.querySelectorAll(".math[data-latex]").forEach((math)=>{
+            const imageMath = document.createElement('img');
+            imageMath.setAttribute(
+                "src",
+                `https://canvas.instructure.com/equation_images/${encodeURIComponent(encodeURIComponent(math.getAttribute("data-latex")))}`
+            )
+            imageMath.setAttribute(
+                "alt",
+                `LaTeX formula: ${math.getAttribute("data-latex")}`
+            )
+            imageMath.setAttribute(
+                "title",
+                `LaTeX formula: ${math.getAttribute("data-latex")}`
+            )
+            imageMath.style.padding = "5px"
+            imageMath.style.border = "solid 1px #ddd"
+            imageMath.style.borderRadius = "5px"
+            math.parentElement.replaceChild(imageMath,math)
+        })
+    }
+    if (solutions=="hide") {
+        ele.querySelectorAll('.stx-outtro').forEach((outtro)=>{
+            outtro.parentElement.removeChild(outtro)
+        })
+    }
+    if (solutions=="only") {
+        ele.querySelectorAll('.stx-intro').forEach((intro)=>{
+            intro.parentElement.removeChild(intro)
+        })
+        ele.querySelectorAll('.stx-content').forEach((content)=>{
+            content.parentElement.removeChild(content)
+        })
+    }
+    return ele.outerHTML.trim()
 }
 
 export const outcomeToPtx = (o:Outcome,seed:number) => {

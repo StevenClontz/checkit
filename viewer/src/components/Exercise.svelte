@@ -25,6 +25,9 @@
     height="450"
     src="${location.protocol}//${location.host}${location.pathname}#/bank/${outcome.slug}/${seed+1}/?embed">
 </iframe>`
+
+    // let canvasMath = false
+    // let canvasSolutions:'show'|'hide'|'only' = 'show'
 </script>
 
 {#if !statementOnly && !embedded}
@@ -64,6 +67,13 @@
             </Row>
         {:else if mode == "html"}
             <textarea readonly value={outcomeToHtml(outcome,seed)}/>
+            <!-- <input type="checkbox" bind:checked={canvasMath}/>
+            <select bind:value={canvasSolutions}>
+                {#each ['show','hide','only'] as opt}
+                    <option value={opt}>{opt}</option>
+                {/each}
+            </select>
+            {@html outcomeToHtml(outcome,seed,canvasMath,canvasSolutions)} -->
         {:else if mode == "latex"}
             <textarea readonly value={outcomeToLatex(outcome,seed)}/>
         {:else if mode == "pretext"}
