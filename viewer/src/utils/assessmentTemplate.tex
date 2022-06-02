@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      Customize Header                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\assessmentTitle}{
+CheckIt Assessment
+}
+\newcommand{\assessmentVersion}{
+Version {{{version}}}
+}
+\newcommand{\assessmentInstructions}{
+Do not use any unapproved aids while taking this assessment.
+Read each question carefully and be sure to show all work
+in the space provided.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\usepackage{amsfonts,amssymb,amsmath,amsthm}
+\setcounter{MaxMatrixCols}{50}
+\usepackage{hyperref}
+\let\oldhref\href\renewcommand{\href}[2]{\oldhref{#1}{#2}\footnote{\url{#1}}}
+\usepackage[margin=1in,tmargin=2in,headheight=84pt]{geometry}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Name: \underline{\hspace{2.5in}}\\ID: \underline{\hspace{2.5in}}
+
+\vspace{2.5em}}
+\chead{\vspace{2.5em}
+
+\fbox{\fbox{\parbox{6in}{\centering\assessmentInstructions}}}}
+\lhead{\assessmentTitle \hspace{2em} \assessmentVersion
+
+\vspace{2.5em}}
+\rfoot{Page \thepage\ of \pageref{LastPage}}
+\setlength{\headheight}{80pt}
+\renewcommand{\headrulewidth}{0pt}
+
+
+\begin{document}
+
+\begin{enumerate}
+
+% {{#exercises}}
+
+\item {{{latex}}}
+
+\newpage
+
+% {{/exercises}}
+
+\end{enumerate}
+
+\end{document}

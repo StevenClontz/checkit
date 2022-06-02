@@ -11,6 +11,8 @@ import latexXsl from '../spatext/xsl/latex.xsl?raw'
 import htmlXsl from '../spatext/xsl/html.xsl?raw'
 // @ts-ignore
 import ptxXsl from '../spatext/xsl/pretext.xsl?raw'
+// @ts-ignore
+import assessmentTemplate from './assessmentTemplate.tex?raw'
 
 const parser = new DOMParser()
 
@@ -86,78 +88,28 @@ export const parseMath = (html:string) => {
 }
 
 export const getRandomAssessmentFromSlugs = (bank:Bank,slugs:string[]) => {
-    const assessmentPrefix = `
-\\documentclass[11pt]{exam}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                        Edit settings                        %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\\newcommand{\\assessmentTitle}{
-CheckIt Assessment
-}
-\\newcommand{\\assessmentVersion}{
-Version ${Date.now()}
-}
-\\newcommand{\\assessmentInstructions}{
-Do not use any unapproved aids while taking this assessment.
-Read each question carefully and be sure to show all work
-in the space provided.
-}
-%\\printanswers % uncomment to show answers
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-\\usepackage{amsfonts,amssymb,amsmath,amsthm}
-\\setcounter{MaxMatrixCols}{50}
-\\usepackage{enumerate}
-\\usepackage{graphicx}
-\\usepackage{caption}
-\\pagestyle{headandfoot}
-\\firstpageheader{\\assessmentTitle \\hspace{2em} \\assessmentVersion}{}{Name: \\underline{\\hspace{2.5in}}\\\\ID: \\underline{\\hspace{2.5in}}}
-\\runningheader{\\assessmentTitle}{}{Page \\thepage\\ of \\numpages}
-\\runningheadrule
-\\firstpagefooter{}{}{}
-\\runningfooter{}{}{}
-\\renewcommand{\\solutiontitle}{\\noindent\\textbf{Answer:}}
-\\newenvironment{exercise}[3]{\\question}{\\vfill}
-\\newenvironment{exerciseStatement}{}{}
-\\newenvironment{exerciseAnswer}{\\begin{solution}}{\\end{solution}}
-
-\\begin{document}
-
-\\begin{center}
-\\fbox{\\fbox{\\parbox{6in}{\\centering\\assessmentInstructions}}}
-\\end{center}
-
-\\begin{questions}
-
-`
-    const assessmentSuffix = `
-
-\\end{questions}
-
-\\end{document}
-`
-        let assessment: Assessment = {
-            "latex": "",
-            "exercises": [],
-        }
-        assessment.latex = assessmentPrefix
-        slugs.forEach( (slug,i) => {
-            let o = getOutcomeFromSlug(bank,slug)
-            if (o) {
-                let seed = Math.floor(Math.random() * o.exercises.length);
-                let e = sample(o.exercises)
-                assessment.latex = assessment.latex + "\n\n" + e.tex
-                assessment.latex = assessment.latex + "\n\n\\newpage\n\n"
-                assessment.exercises = [...assessment.exercises, {outcome:o,seed:seed}]
-            }
-        })
-        assessment.latex = assessment.latex + assessmentSuffix
-        assessment.latex = assessment.latex.trim()
-        return assessment
+    let assessment: Assessment = {
+        "latex": "",
+        "exercises": [],
     }
+    slugs.forEach( (slug) => {
+        let o = getOutcomeFromSlug(bank,slug)
+        if (o) {
+            // pull random seed besides first public 20
+            let seed = Math.floor(Math.random() * (o.exercises.length-20))+20;
+            assessment.latex = assessment.latex + "\n\n" + outcomeToLatex(o,seed)
+            assessment.latex = assessment.latex + "\n\n\\newpage\n\n"
+            assessment.exercises = [...assessment.exercises, {outcome:o,seed:seed}]
+        }
+    })
+    assessment.latex = Mustache.render(
+        assessmentTemplate, 
+        {
+            "version": Date.now(),
+            "exercises": assessment.exercises.map((e)=>{
+                return {"latex": outcomeToLatex(e.outcome,e.seed)}
+            })
+        }
+    )
+    return assessment
+}

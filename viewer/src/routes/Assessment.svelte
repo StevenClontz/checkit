@@ -75,20 +75,6 @@
                     Clicking "Generate" will choose a random exercise assessing
                     each outcome.
                 </p>
-                {#if generatedAssessment}
-                    <form bind:this={latexForm}>
-                        <p>
-                            <em>Source code:</em>
-                            <textarea
-                                name="snip"
-                                class="form-control text-monospace"
-                                rows="4"
-                                readonly
-                                value={generatedAssessment.latex}
-                            />
-                        </p>
-                    </form>
-                {/if}
                 <Row class="mb-2">
                     <Col xs="auto" class="ml-auto">
                         <Button
@@ -123,11 +109,29 @@
                     </Col>
                 </Row>
                 {#if generatedAssessment}
-                    <h3>Preview</h3>
-                    {#each generatedAssessment.exercises as exercise,i}
-                        <h4>Exercise {i+1}</h4>
-                        <Exercise outcome={exercise.outcome} seed={exercise.seed} statementOnly/>
-                    {/each}
+                    <Row>
+                        <Col sm="4">
+                            <form bind:this={latexForm}>
+                                <p>
+                                    <em>Source code:</em>
+                                    <textarea
+                                        name="snip"
+                                        class="form-control text-monospace"
+                                        rows="20"
+                                        readonly
+                                        value={generatedAssessment.latex}
+                                    />
+                                </p>
+                            </form>
+                        </Col>
+                        <Col sm="8">
+                            <h3>Preview</h3>
+                            {#each generatedAssessment.exercises as exercise,i}
+                                <h4>Exercise {i+1}</h4>
+                                <Exercise outcome={exercise.outcome} seed={exercise.seed} statementOnly/>
+                            {/each}
+                        </Col>
+                    </Row>
                 {/if}
             </Col>
         </Row>
