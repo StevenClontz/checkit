@@ -1,7 +1,12 @@
 <script lang="ts">
-    import type { Params, Outcome, Bank as BankType } from '../types';
+    import type { Outcome, Bank } from '../types';
+    import {
+        Container,
+        Button,
+    } from 'sveltestrap';
+    import JSZip from 'jszip';
+    import FileSaver from 'file-saver';
     import { bank } from '../stores/banks';
-    import Bank from './Bank.svelte';
     import Mustache from 'mustache';
 
     import {outcomeToHtml} from '../utils/index'
@@ -11,9 +16,7 @@
     // @ts-ignore
     import canvasOutcomeXml from '../templates/canvasOutcomeXml.xml?raw'
 
-
-    export let params:Params;
-    const toManifest = (b:BankType) => {
+    const toManifest = (b:Bank) => {
         return Mustache.render(canvasManifest, {
             "title": b.title,
             "id": Date.now(),
@@ -40,27 +43,34 @@
     const toXml = (o:Outcome) => {
         return Mustache.render(canvasOutcomeXml, toXmlContext(o))
     }
+    let working = false
+    const zipUp = () => {
+        working = true
+        const zip = new JSZip()
+        zip.file('imsmanifest.xml', toManifest($bank))
+        $bank.outcomes.forEach((o)=>zip.file(`${o.slug}.xml`,toXml(o)))
+        zip.generateAsync({ type: 'blob' }).then(function (content) {
+            working=false
+            FileSaver.saveAs(content, 'canvasBank.zip')
+        });
+    }
 </script>
 
-<Bank {params}>
-    <div>
-        <textarea readonly value={toManifest($bank)}/>
-    </div>
-    {#each $bank.outcomes as o}
-        <div>
-            {o.slug}
-            <textarea readonly value={toXml(o)}/>
-        </div>
-    {/each}
-</Bank>
+<main>
+    <Container>
+        <h1 class="display-4">☑️It Export to LMS</h1>
+        <p>
+            <Button on:click={zipUp} disabled={working} color="primary">
+                {#if working}
+                    Exporting...
+                {:else}
+                    Export to LMS
+                {/if}
+            </Button>
+        </p>
+    </Container>
+</main>
 
 <style>
-    textarea {
-        width:100%;
-        height:25em;
-        font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
-    }
-    textarea[readonly] {
-        background-color: #eee;
-    }
+    h1 { margin-top:0.5em }
 </style>

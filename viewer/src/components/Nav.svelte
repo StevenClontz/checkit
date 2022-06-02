@@ -35,6 +35,11 @@
         <Nav navbar class="ms-auto">
             {#if $instructorEnabled}
                 <NavItem class="d-none d-md-block">
+                    <NavLink href="#/export">
+                        LMS Export
+                    </NavLink>
+                </NavItem>
+                <NavItem class="d-none d-md-block">
                     <NavLink href="#/assessment">
                         Assessment Builder
                     </NavLink>
@@ -51,6 +56,11 @@
                 </NavLink>
             </NavItem>
             {#if $instructorEnabled}
+                <NavItem class="d-md-none">
+                    <NavLink href="#/export">
+                        LMS Export
+                    </NavLink>
+                </NavItem>
                 <NavItem class="d-md-none">
                     <NavLink href="#/assessment">
                         Assessment Builder
