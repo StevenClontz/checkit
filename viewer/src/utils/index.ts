@@ -12,7 +12,7 @@ import htmlXsl from '../spatext/xsl/html.xsl?raw'
 // @ts-ignore
 import ptxXsl from '../spatext/xsl/pretext.xsl?raw'
 // @ts-ignore
-import assessmentTemplate from './assessmentTemplate.tex?raw'
+import assessmentTemplate from '../templates/assessmentTemplate.tex?raw'
 
 const parser = new DOMParser()
 
