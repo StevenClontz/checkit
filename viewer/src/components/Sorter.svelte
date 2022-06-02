@@ -19,9 +19,3 @@
 {#if array.length > 0}
     <DragDropList bind:data={ddArray} {removesItems}/>
 {/if}
-
-<style>
-    :global(*) {
-        color: black;
-    }
-</style>

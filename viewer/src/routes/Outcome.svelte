@@ -16,14 +16,14 @@
     $: outcome = $bank.outcomes.find((o)=>o.slug==params.outcomeSlug);
     $: version = versionStringToInt(params.exerciseVersion);
     $: pages = Math.min(20,outcome.exercises.length)
-    let page = versionStringToInt(params.exerciseVersion);
+    let seed = versionStringToInt(params.exerciseVersion);
     let outcomeSlug = params.outcomeSlug;
     $: if (outcomeSlug !== params.outcomeSlug) {
-        page = version;
+        seed = version;
         outcomeSlug = params.outcomeSlug;
     }
-    $: if (page !== version) {
-        push(`/bank/${params.outcomeSlug}/${page+1}/${$querystring ? "?"+$querystring : ""}`);
+    $: if (seed !== version) {
+        push(`/bank/${params.outcomeSlug}/${seed+1}/${$querystring ? "?"+$querystring : ""}`);
     }
     $: countInAssessment = $assessmentOutcomeSlugs.filter(slug=>slug==outcome.slug).length
     const addToAssessment = () => {
@@ -52,11 +52,11 @@
             <Pagination
                 label="Version:"
                 keyboardControl
-                bind:page={page}
+                bind:page={seed}
                 {pages}/>
         </p>
         <p class="d-block d-sm-none">
-            <Pagination minimal bind:page={page} {pages}/>
+            <Pagination minimal bind:page={seed} {pages}/>
         </p>
         <p>
             <Button color="secondary" outline on:click={toggleCodeCell}>
@@ -70,11 +70,11 @@
                 <Pagination
                     label="Version:"
                     keyboardControl
-                    bind:page={page}
+                    bind:page={seed}
                     {pages}/>
             </p>
             <p class="d-block d-sm-none">
-                <Pagination minimal bind:page={page} {pages}/>
+                <Pagination minimal bind:page={seed} {pages}/>
             </p>
         </Col>
         <Col xs="auto">
@@ -113,6 +113,6 @@
     {/if}
     
     <div class='mt-2'>
-        <Exercise {outcome} {page} embedded={$querystring=="embed"}/>
+        <Exercise {outcome} {seed} embedded={$querystring=="embed"}/>
     </div>
 </Bank>

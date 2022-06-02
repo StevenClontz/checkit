@@ -28,21 +28,24 @@ export const outcomeToStx = (o:Outcome,seed:number) => {
     return stxElement
 }
 
-export const stxToLatex = (e:Element) => {
+export const outcomeToLatex = (o:Outcome,seed:number) => {
+    const e = outcomeToStx(o,seed)
     const transform = new XSLTProcessor()
     const xslDom = parser.parseFromString(latexXsl, "application/xml")
     transform.importStylesheet(xslDom)
     return transform.transformToDocument(e).querySelector(":scope").textContent.trim()
 }
 
-export const stxToHtml = (e:Element) => {
+export const outcomeToHtml = (o:Outcome,seed:number) => {
+    const e = outcomeToStx(o,seed)
     const transform = new XSLTProcessor()
     const xslDom = parser.parseFromString(htmlXsl, "application/xml")
     transform.importStylesheet(xslDom)
     return transform.transformToDocument(e).querySelector("div.stx").outerHTML.trim()
 }
 
-export const stxToPtx = (e:Element) => {
+export const outcomeToPtx = (o:Outcome,seed:number) => {
+    const e = outcomeToStx(o,seed)
     const transform = new XSLTProcessor()
     const xslDom = parser.parseFromString(ptxXsl, "application/xml")
     transform.importStylesheet(xslDom)
@@ -140,22 +143,21 @@ in the space provided.
 \\end{document}
 `
         let assessment: Assessment = {
-            "tex": "",
+            "latex": "",
             "exercises": [],
         }
-        assessment.tex = assessmentPrefix
+        assessment.latex = assessmentPrefix
         slugs.forEach( (slug,i) => {
             let o = getOutcomeFromSlug(bank,slug)
             if (o) {
+                let seed = Math.floor(Math.random() * o.exercises.length);
                 let e = sample(o.exercises)
-                assessment.tex = assessment.tex + "\n\n" + e.tex
-                if (i%2===1) {
-                    assessment.tex = assessment.tex + "\n\n\\newpage\n\n"
-                }
-                assessment.exercises = [...assessment.exercises, e]
+                assessment.latex = assessment.latex + "\n\n" + e.tex
+                assessment.latex = assessment.latex + "\n\n\\newpage\n\n"
+                assessment.exercises = [...assessment.exercises, {outcome:o,seed:seed}]
             }
         })
-        assessment.tex = assessment.tex + assessmentSuffix
-        assessment.tex = assessment.tex.trim()
+        assessment.latex = assessment.latex + assessmentSuffix
+        assessment.latex = assessment.latex.trim()
         return assessment
     }

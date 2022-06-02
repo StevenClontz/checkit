@@ -10,12 +10,12 @@
         DropdownItem,
     } from 'sveltestrap';
     import OutcomeDropdown from '../components/dropdowns/Outcome.svelte';
-    import Exercise from '../components/Exercise.svelte';
     import Sorter from '../components/Sorter.svelte';
     import { assessmentOutcomeSlugs, instructorEnabled } from '../stores/instructor';
     import { bank } from '../stores/banks';
     import { getOutcomeFromSlug, getRandomAssessmentFromSlugs } from '../utils';
     import type { Assessment } from '../types';
+    import Exercise from '../components/Exercise.svelte'
 
     $instructorEnabled = true
     $assessmentOutcomeSlugs = $assessmentOutcomeSlugs.filter(s=>getOutcomeFromSlug($bank,s)!==undefined)
@@ -84,7 +84,7 @@
                                 class="form-control text-monospace"
                                 rows="4"
                                 readonly
-                                value={generatedAssessment.tex}
+                                value={generatedAssessment.latex}
                             />
                         </p>
                     </form>
@@ -114,7 +114,7 @@
                                         Open PDF using Overleaf.com
                                     </DropdownItem>
                                     <DropdownItem
-                                        on:click={copyToClipboard(generatedAssessment.tex)}>
+                                        on:click={copyToClipboard(generatedAssessment.latex)}>
                                         Copy LaTeX to your clipboard 📋
                                     </DropdownItem>
                                 </DropdownMenu>
@@ -126,7 +126,7 @@
                     <h3>Preview</h3>
                     {#each generatedAssessment.exercises as exercise,i}
                         <h4>Exercise {i+1}</h4>
-                        <!-- <Exercise {exercise} statementOnly/> -->
+                        <Exercise outcome={exercise.outcome} seed={exercise.seed} statementOnly/>
                     {/each}
                 {/if}
             </Col>

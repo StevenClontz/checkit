@@ -19,7 +19,11 @@ export type Params = {
     outcomeSlug: string;
     exerciseVersion: string;
 }
+type AssessmentExercise = {
+    outcome: Outcome
+    seed: number
+}
 export type Assessment = {
-    exercises: Exercise[]
-    tex: string
+    exercises: AssessmentExercise[]
+    latex: string
 }
