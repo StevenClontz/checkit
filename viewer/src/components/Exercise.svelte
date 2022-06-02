@@ -12,8 +12,8 @@
     export let statementOnly: boolean=false;
 
 
-    const modes = ['display', 'edit', 'html', 'embed', 'latex', 'pretext']
-    const modeLabels = ['Display', 'Edit Template', 'HTML', 'Embed (HTML)', 'LaTeX', 'PreTeXt']
+    const modes = ['display', 'edit', 'embed', 'html', 'latex', 'pretext']
+    const modeLabels = ['Display', 'Edit Template', 'Embed HTML', 'Raw HTML', 'LaTeX', 'PreTeXt']
     let mode = "display";
     const changeMode = (m:string) => (e:Event) => {
         e.preventDefault();
