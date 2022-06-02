@@ -31,6 +31,12 @@
         {/if}
         {#if !outcome}
             <p>Homepage: <a href={$bank.url}>{$bank.url}</a></p>
+            <p>
+                Bank generated on:
+                <date datetime={$bank.generated_on}>
+                    {new Date(Date.parse($bank.generated_on)).toDateString()}
+                </date>
+            </p>
         {/if}
         <slot/>
     </Container>

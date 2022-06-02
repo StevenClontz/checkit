@@ -1,22 +1,19 @@
 export type Bank = {
     title: string;
-    slug: string;
     url: string;
+    generated_on: string;
     outcomes: Array<Outcome>;
 }
 export type Outcome = {
     title: string;
     slug: string;
     description: string;
-    alignment: string;
+    template: string;
     exercises: Array<Exercise>;
 }
 export type Exercise = {
     seed: number;
-    qti: string;
-    pretext: string;
-    tex: string;
-    html: string;
+    data: Object;
 }
 export type Params = {
     outcomeSlug: string;

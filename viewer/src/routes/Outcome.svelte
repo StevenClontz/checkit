@@ -11,19 +11,11 @@
 
     export let params:Params;
 
-    const toggleAnswer = () => hiddenAnswer = !hiddenAnswer;
-    const handleKeydown = (e:KeyboardEvent) => {
-        if (e.key === " ") {
-            toggleAnswer()
-        }
-    }
     const versionStringToInt = (vs:string) => parseInt(vs)-1
 
     $: outcome = $bank.outcomes.find((o)=>o.slug==params.outcomeSlug);
     $: version = versionStringToInt(params.exerciseVersion);
-    $: exercise = outcome.exercises[version]
     $: pages = Math.min(20,outcome.exercises.length)
-    let hiddenAnswer = true; 
     let page = versionStringToInt(params.exerciseVersion);
     let outcomeSlug = params.outcomeSlug;
     $: if (outcomeSlug !== params.outcomeSlug) {
@@ -48,8 +40,6 @@
     }
 </script>
 
-<svelte:window on:keydown={handleKeydown}/>
-
 <Bank {params}>
     
     {#if $querystring=="embed"}<h5>{outcomeSlug} — {outcome.title}</h5>{/if}
@@ -69,12 +59,8 @@
             <Pagination minimal bind:page={page} {pages}/>
         </p>
         <p>
-            Show/Hide:
-            <Button color="info" outline on:click={toggleAnswer}>
-                Answer
-            </Button>
             <Button color="secondary" outline on:click={toggleCodeCell}>
-                Code Cell
+                Show/Hide Code Cell
             </Button>
         </p>
     {:else}
@@ -93,12 +79,8 @@
         </Col>
         <Col xs="auto">
             <p>
-                Show/Hide:
-                <Button color="info" outline on:click={toggleAnswer}>
-                    Answer
-                </Button>
                 <Button color="secondary" outline on:click={toggleCodeCell}>
-                    Code Cell
+                    Show/Hide Code Cell
                 </Button>
             </p>
         </Col>
@@ -131,6 +113,6 @@
     {/if}
     
     <div class='mt-2'>
-        <Exercise {hiddenAnswer} {exercise} {outcome} {page} embedded={$querystring=="embed"}/>
+        <Exercise {outcome} {page} embedded={$querystring=="embed"}/>
     </div>
 </Bank>

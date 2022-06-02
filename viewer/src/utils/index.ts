@@ -1,8 +1,16 @@
-import type {Bank, Assessment} from '../types';
+import type {Bank, Assessment, Outcome} from '../types';
 
 import {isOpen as codeCellIsOpen} from '../stores/codecell';
 
 import katex from 'katex';
+
+import Mustache from 'mustache';
+
+export const outcomeToStx = (o:Outcome,seed:number) => {
+    let stxString:string = Mustache.render(o.template, o.exercises[seed]['data'])
+    const parser = new DOMParser()
+    return parser.parseFromString(stxString, "application/xml").querySelector(":scope")
+}
 
 export const toggleCodeCell = () => {codeCellIsOpen.update(x=>!x)}
 

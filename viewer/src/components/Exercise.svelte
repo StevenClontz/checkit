@@ -3,34 +3,16 @@
     import type { Exercise, Outcome } from '../types';
     import { instructorEnabled } from '../stores/instructor';
     import { Nav, NavItem, NavLink, Row, Col } from 'sveltestrap';
-    import { parseMath } from '../utils';
+    import { parseMath, outcomeToStx } from '../utils';
+    import Knowl from './spatext/Elements/Knowl.svelte';
 
     export let embedded:Boolean = false;
 
-    export let outcome: Outcome = 
-        {title: 'unknown', slug: 'unknown', exercises: [], description: 'unknown', alignment: 'unknown'};
-    export let exercise: Exercise;
+    export let outcome: Outcome;
+    // export let exercise: Exercise;
     export let page = 0;
-    export let hiddenAnswer: boolean=true;
     export let statementOnly: boolean=false;
 
-
-
-    let exerciseDiv: Element;
-    const decorateAnswer = () => {
-        if (exerciseDiv) {
-            for (let e of exerciseDiv.getElementsByClassName("exercise-answer")) {
-                e.classList.add("alert");
-                e.classList.add("alert-info");
-                if (hiddenAnswer || statementOnly) {
-                    e.classList.add("d-none");
-                } else {
-                    e.classList.remove("d-none");
-                }
-            }
-        }
-    }
-    afterUpdate(decorateAnswer);
 
     const modes = ['display', 'html', 'embed', 'tex', 'pretext']
     const modeLabels = ['Display', 'HTML', 'Embed (HTML)', 'LaTeX', 'PreTeXt']
@@ -63,18 +45,18 @@
 {/if}
 
 {#if embedded }
-    <div bind:this={exerciseDiv}>{@html parseMath(exercise.html)}</div>
+    <Knowl knowl={outcomeToStx(outcome,page)}/>
 {:else}
 <Row>
     <Col sm={{ size: 10, offset: 1 }}>
         {#if mode == "display"}
-            <div bind:this={exerciseDiv}>{@html parseMath(exercise.html)}</div>
+            <Knowl knowl={outcomeToStx(outcome,page)}/>
         {:else if mode == "html"}
-            <pre class="pre-scrollable"><code>{exercise.html}</code></pre>
+            <pre class="pre-scrollable"><code>html</code></pre>
         {:else if mode == "tex"}
-            <pre class="pre-scrollable"><code>{exercise.tex}</code></pre>
+            <pre class="pre-scrollable"><code>tex</code></pre>
         {:else if mode == "pretext"}
-            <pre class="pre-scrollable"><code>{exercise.pretext}</code></pre>
+            <pre class="pre-scrollable"><code>pretext</code></pre>
         {:else if mode == "embed"}
             <pre class="pre-scrollable"><code>&lt;iframe title="Iframe CheckIt Outcome"
     width="800"

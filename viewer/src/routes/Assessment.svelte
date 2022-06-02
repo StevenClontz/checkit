@@ -126,7 +126,7 @@
                     <h3>Preview</h3>
                     {#each generatedAssessment.exercises as exercise,i}
                         <h4>Exercise {i+1}</h4>
-                        <Exercise {exercise} statementOnly/>
+                        <!-- <Exercise {exercise} statementOnly/> -->
                     {/each}
                 {/if}
             </Col>
