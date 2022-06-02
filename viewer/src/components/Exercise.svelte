@@ -14,8 +14,8 @@
     export let statementOnly: boolean=false;
 
 
-    const modes = ['display', 'html', 'embed', 'tex', 'pretext']
-    const modeLabels = ['Display', 'HTML', 'Embed (HTML)', 'LaTeX', 'PreTeXt']
+    const modes = ['display', 'edit', 'html', 'embed', 'tex', 'pretext']
+    const modeLabels = ['Display', 'Edit Template', 'HTML', 'Embed (HTML)', 'LaTeX', 'PreTeXt']
     let mode = "display";
     const changeMode = (m:string) => (e:Event) => {
         e.preventDefault();
@@ -51,6 +51,15 @@
     <Col sm={{ size: 10, offset: 1 }}>
         {#if mode == "display"}
             <Knowl knowl={outcomeToStx(outcome,page)}/>
+        {:else if mode == "edit"}
+            <Row>
+                <Col sm="6">
+                    <textarea style="width:100%;height:20em" bind:value={outcome.template}/>
+                </Col>
+                <Col sm="6">
+                    <Knowl knowl={outcomeToStx(outcome,page)}/>
+                </Col>
+            </Row>
         {:else if mode == "html"}
             <pre class="pre-scrollable"><code>html</code></pre>
         {:else if mode == "tex"}
