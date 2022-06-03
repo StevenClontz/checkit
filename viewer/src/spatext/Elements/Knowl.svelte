@@ -16,7 +16,7 @@
     let partLabel:string
     let knowlLabel:string
     $: if (isInExercise(knowl)) {
-        outtroLabel = "solution"
+        outtroLabel = "answer"
         partLabel = "Task"
         knowlLabel = "Exercise"
     } else {
@@ -34,7 +34,7 @@
             if (base!="") {
                 base = base+"."
             }
-            let siblings = [...parentPart.querySelectorAll("knowl")]
+            let siblings = [...parentPart.querySelectorAll(":scope > knowl")]
             return base + (siblings.indexOf(p)+1).toString()
         }
     }
