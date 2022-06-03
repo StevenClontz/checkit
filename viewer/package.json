@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host --base=/20400c63-d85c-4e22-8da2-7dd7d6a9b480/port/3000/",
-    "build": "vite build",
+    "build": "vite build --base=./",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
