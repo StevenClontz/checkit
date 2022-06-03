@@ -1,0 +1,20 @@
+{
+  "name": "CheckIt: Free and open randomized exercises",
+  "short_name": "CheckIt",
+  "description": "☑️It: Free and open randomized exercises for practice and assessment.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
