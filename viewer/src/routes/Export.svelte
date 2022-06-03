@@ -1,8 +1,11 @@
 <script lang="ts">
-    import type { Outcome, Bank } from '../types';
+    import type { Outcome } from '../types';
     import {
         Container,
+        Row,
+        Col,
         Button,
+        FormGroup, Label, Input
     } from 'sveltestrap';
     import JSZip from 'jszip';
     import FileSaver from 'file-saver';
@@ -67,24 +70,45 @@
 
 <main>
     <Container>
-        <h1 class="display-4">☑️It Export to LMS</h1>
-        <p>
-            <select class="form-select" label="versionSelect" bind:value={questionType}>
-                <option value="essay">
-                    Essay response
-                </option>
-                <option value="upload">
-                    File upload
-                </option>
-            </select>
-            <Button on:click={zipUp} disabled={working} color="primary">
-                {#if working}
-                    Exporting...
-                {:else}
-                    Export to Canvas
-                {/if}
-            </Button>
-        </p>
+        <Row>
+            <Col>
+                <h1 class="display-4">☑️It Export to LMS</h1>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <FormGroup>
+                    <Label>Customize bank title</Label>
+                    <Input type="text" bind:value={$bank.title} />
+                </FormGroup>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <h3>Canvas <small>(Question Banks / Classic Quizzes)</small></h3>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <select class="form-select" label="versionSelect" bind:value={questionType}>
+                    <option value="essay">
+                        Essay response
+                    </option>
+                    <option value="upload">
+                        File upload
+                    </option>
+                </select>
+            </Col>
+            <Col>
+                <Button on:click={zipUp} disabled={working} color="primary">
+                    {#if working}
+                        Exporting...
+                    {:else}
+                        Export to Canvas
+                    {/if}
+                </Button>
+            </Col>
+        </Row>
     </Container>
 </main>
 
