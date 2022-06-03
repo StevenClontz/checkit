@@ -39,9 +39,9 @@
             "title": o.title,
             "id": id,
             questionType: true,
-            "exercises": Array.from(Array(50)).map((_, i) => {
+            "exercises": Array.from(Array(900)).map((_, i) => {
                 return {
-                    "seed": i+50,
+                    "seed": i+100,
                     "generated_on": new Date(Date.now()).toISOString(),
                     "question": outcomeToHtml(o,i,true,"hide"),
                     "answer": outcomeToHtml(o,i,true,"only"),
@@ -58,13 +58,16 @@
     function zipUp() {
         id = Date.now()
         working = true
-        const zip = new JSZip()
-        zip.file('imsmanifest.xml', toManifest())
-        $bank.outcomes.forEach((o)=>zip.file(`${o.slug}.xml`, toXml(o)))
-        zip.generateAsync({ type: 'blob' }).then(function (content) {
-            working=false
-            FileSaver.saveAs(content, 'canvasBank.zip')
-        });
+        // hax to update DOM before locking browser for build
+        setTimeout(()=>{
+            const zip = new JSZip()
+            zip.file('imsmanifest.xml', toManifest())
+            $bank.outcomes.forEach((o)=>zip.file(`${o.slug}.xml`, toXml(o)))
+            zip.generateAsync({ type: 'blob' }).then(function (content) {
+                working=false
+                FileSaver.saveAs(content, 'canvasBank.zip')
+            })
+        },50)
     }
 </script>
 
