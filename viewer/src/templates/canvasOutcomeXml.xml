@@ -1,39 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
-  <assessment title="{{slug}}">
-    <section ident="root_section">
-      <!-- {{#exercises}} -->
-      <item title="{{slug}} | {{title}} | ver. {{seed}} (Build {{generated_on}})">
-        <itemmetadata>
-          <qtimetadata>
-            <qtimetadatafield>
-              <fieldlabel>question_type</fieldlabel>
-              <fieldentry>{{question_type}}</fieldentry>
-            </qtimetadatafield>
-          </qtimetadata>
-        </itemmetadata>
-        <presentation>
-          <material>
-            <mattext texttype="text/html">
+<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
+  <objectbank ident="{{id}}-{{slug}}">
+    <qtimetadata>
+        <qtimetadatafield>
+          <fieldlabel>bank_title</fieldlabel>
+          <fieldentry>CheckIt | {{bank}} (Build {{id}}) | {{slug}}: {{title}}</fieldentry>
+        </qtimetadatafield>
+    </qtimetadata>
+    <!-- {{#exercises}} -->
+    <item title="{{slug}} ver. {{seed}}">
+      <itemmetadata>
+        <qtimetadata>
+          <qtimetadatafield>
+            <fieldlabel>question_type</fieldlabel>
+            <fieldentry>
+              <!-- {{#essay}} -->
+              essay_question
+              <!-- {{/essay}} -->
+              <!-- {{#upload}} -->
+              file_upload_question
+              <!-- {{/upload}} -->
+            </fieldentry>
+          </qtimetadatafield>
+        </qtimetadata>
+      </itemmetadata>
+      <presentation>
+        <material>
+          <mattext texttype="text/html">
 {{question}}
 &lt;p style="color:gray;"&gt;&lt;small&gt;(Generated for student on {{generated_on}})&lt;/small&gt;&lt;/p&gt;
-</mattext>
+          </mattext>
+        </material>
+        <!-- {{#essay}} -->
+        <response_str ident="response1" rcardinality="Single">
+          <render_fib>
+            <response_label ident="answer1" rshuffle="No"/>
+          </render_fib>
+        </response_str>
+        <!-- {{/essay}} -->
+      </presentation>
+      <itemfeedback ident="general_fb">
+        <flow_mat>
+          <material>
+            <mattext texttype="text/html">{{answer}}</mattext>
           </material>
-        </presentation>
-        <resprocessing>
-          <respcondition continue="Yes">
-            <displayfeedback feedbacktype="Response" linkrefid="general_fb"/>
-          </respcondition>
-        </resprocessing>
-        <itemfeedback ident="general_fb">
-          <flow_mat>
-            <material>
-              <mattext texttype="text/html">{{answer}}</mattext>
-            </material>
-          </flow_mat>
-        </itemfeedback>
-      </item>
-      <!-- {{/exercises}} -->
-    </section>
-  </assessment>
+        </flow_mat>
+      </itemfeedback>
+    </item>
+    <!-- {{/exercises}} -->
+  </objectbank>
 </questestinterop>

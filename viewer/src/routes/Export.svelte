@@ -16,39 +16,48 @@
     // @ts-ignore
     import canvasOutcomeXml from '../templates/canvasOutcomeXml.xml?raw'
 
-    const toManifest = (b:Bank) => {
+    let id:number
+
+    let questionType:"essay"|"upload"="upload"
+
+    const toManifest = () => {
         return Mustache.render(canvasManifest, {
-            "title": b.title,
-            "id": Date.now(),
-            "slugs": b.outcomes.map((o)=>{
+            "title": $bank.title,
+            "id": id,
+            "slugs": $bank.outcomes.map((o)=>{
                 return {"slug":o.slug}
             })
         })
     }
     const toXmlContext = (o:Outcome) => {
-        return {
+        let ctx = {
             "slug": o.slug,
+            "bank": $bank.title,
             "title": o.title,
-            "question_type": "file_upload_question", //essay_question
-            "exercises": Array.from(Array(20)).map((_, i) => {
+            "id": id,
+            questionType: true,
+            "exercises": Array.from(Array(50)).map((_, i) => {
                 return {
-                    "seed": i,
+                    "seed": i+50,
                     "generated_on": new Date(Date.now()).toISOString(),
                     "question": outcomeToHtml(o,i,true,"hide"),
                     "answer": outcomeToHtml(o,i,true,"only"),
                 }
             })
         }
+        ctx[questionType] = true
+        return ctx
     }
     const toXml = (o:Outcome) => {
         return Mustache.render(canvasOutcomeXml, toXmlContext(o))
     }
     let working = false
-    const zipUp = () => {
+    function zipUp() {
+        id = Date.now()
         working = true
         const zip = new JSZip()
-        zip.file('imsmanifest.xml', toManifest($bank))
-        $bank.outcomes.forEach((o)=>zip.file(`${o.slug}.xml`,toXml(o)))
+        zip.file('imsmanifest.xml', toManifest())
+        $bank.outcomes.forEach((o)=>zip.file(`${o.slug}.xml`, toXml(o)))
         zip.generateAsync({ type: 'blob' }).then(function (content) {
             working=false
             FileSaver.saveAs(content, 'canvasBank.zip')
@@ -60,11 +69,19 @@
     <Container>
         <h1 class="display-4">☑️It Export to LMS</h1>
         <p>
+            <select class="form-select" label="versionSelect" bind:value={questionType}>
+                <option value="essay">
+                    Essay response
+                </option>
+                <option value="upload">
+                    File upload
+                </option>
+            </select>
             <Button on:click={zipUp} disabled={working} color="primary">
                 {#if working}
                     Exporting...
                 {:else}
-                    Export to LMS
+                    Export to Canvas
                 {/if}
             </Button>
         </p>
