@@ -2,16 +2,11 @@
 *.sage-jupyter2
 *.sage.py
 __pycache__
+*.egg-info
 dashboard/build
 dashboard/dist
-*.egg-info
-.seeds.json
 
 # demo bank
 demo-bank
 !demo-bank/bank.xml
 !demo-bank/outcomes
-
-# viewer
-viewer/node_modules/
-viewer/public/build/
