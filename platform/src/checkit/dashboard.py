@@ -1,9 +1,6 @@
 from IPython.display import display, Markdown, HTML
 import ipywidgets as widgets
-from os import listdir, path
 from .bank import Bank
-import io
-from contextlib import redirect_stdout
 from . import VERSION
 from html import escape as escape_html
 
@@ -151,5 +148,3 @@ def bank_submenu(bank):
     display(output)
     display(generated)
     reset()
-
-
