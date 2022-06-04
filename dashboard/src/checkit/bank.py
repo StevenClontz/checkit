@@ -1,5 +1,6 @@
 from lxml import etree
-import os, json, datetime
+import os, json, datetime, zipfile, shutil, glob
+from . import static
 from .outcome import Outcome
 from .xml import CHECKIT_NS
 
@@ -56,6 +57,23 @@ class Bank():
         build_path = os.path.join(self.build_path(),f"bank.json")
         with open(build_path,'w') as f:
             json.dump(self.to_dict(regenerate=regenerate),f)
+
+    def build_viewer(self):
+        build_path = os.path.join(self.abspath(),"docs")
+        if os.path.exists(build_path) and os.path.isdir(build_path):
+            shutil.rmtree(build_path)
+        os.makedirs(build_path)
+        archive = zipfile.ZipFile(static.open_resource("viewer.zip"))
+        archive.extractall(build_path)
+        shutil.copyfile(os.path.join(self.build_path(),"bank.json"),os.path.join(build_path,"bank.json"))
+        # copy images
+        for o in self.outcomes():
+            images = glob.glob(f"{o.build_path()}/*.png")
+            if len(images) > 0:
+                docs_path = os.path.join("docs","assets",o.slug)
+                os.makedirs(docs_path,exist_ok=True)
+                for i in images:
+                    shutil.copyfile(i,os.path.join(docs_path,i.split("/")[-1]))
 
     def generated_on(self):
         try:
