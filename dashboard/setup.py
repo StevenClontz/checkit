@@ -10,11 +10,11 @@ with open("src/checkit/static/PYTHON_VERSION", "r") as vf:
     PYTHON_VERSION = vf.read().strip()
 
 setuptools.setup(
-    name="checkit-platform",
+    name="checkit-dashboard",
     version=VERSION,
     author="Steven Clontz",
     author_email="steven.clontz@gmail.com",
-    description="Platform for authoring/disseminating randomized exercises",
+    description="Dashboard for authoring/disseminating randomized exercises",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/stevenclontz/checkit",

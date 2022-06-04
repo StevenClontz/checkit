@@ -4,8 +4,8 @@
 demo-bank/docs
 demo-bank/assets
 __pycache__
-platform/build
-platform/dist
+dashboard/build
+dashboard/dist
 *.egg-info
 .seeds.json
 
