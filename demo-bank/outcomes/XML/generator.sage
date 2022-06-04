@@ -28,7 +28,7 @@ class Generator(BaseGenerator):
             'f': fs[1],
         }]
 
-
+        shuffle(functions)
         return {
             "functions": functions,
         }
