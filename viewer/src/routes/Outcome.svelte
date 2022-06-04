@@ -36,6 +36,10 @@
             ...$assessmentOutcomeSlugs.slice(i + 1)
         ]
     }
+
+    const changeSeed = (diff:number) => {
+        seed = Math.max(0,Math.min(19,seed+diff))
+    }
 </script>
 
 <Bank {params}>
@@ -49,6 +53,7 @@
         <Col xs="auto">
             <div class="input-group mb-3">
                 <label class="input-group-text" for="versionSelect">Version</label>
+                <button class="btn btn-dark" on:click={()=>changeSeed(-1)}>&laquo;</button>
                 <select class="form-select" label="versionSelect" bind:value={seed}>
                     {#each Array(20) as _, i}
                         <option value={i}>
@@ -56,6 +61,7 @@
                         </option>
                     {/each}
                 </select>
+                <button class="btn btn-dark" on:click={()=>changeSeed(+1)}>&raquo;</button>
             </div>
         </Col>
         <Col xs="auto">
