@@ -40,6 +40,7 @@ setuptools.setup(
         'lxml',
         'latex2mathml',
         'pystache',
+        'click',
     ],
     extras_require={
         'dev': [

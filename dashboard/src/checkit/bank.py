@@ -46,6 +46,7 @@ class Bank():
         olist = [o.to_dict(regenerate=regenerate) for o in self.outcomes()]
         return {
             "title": self.title,
+            "slug": self.slug,
             "url": self.url,
             "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "outcomes": olist,
@@ -55,7 +56,7 @@ class Bank():
         build_path = os.path.join(self.build_path(),f"bank.json")
         with open(build_path,'w') as f:
             json.dump(self.to_dict(regenerate=regenerate),f)
-    
+
     def generated_on(self):
         try:
             with open(os.path.join(self.build_path(),f"bank.json"),'r') as f:
