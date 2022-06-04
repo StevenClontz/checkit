@@ -38,7 +38,7 @@ class Bank():
             o.generate_exercises(regenerate=regenerate,images=images)
 
     def build_path(self):
-        p = os.path.join(self.abspath(),"docs")
+        p = os.path.join(self.abspath(),"assets")
         os.makedirs(p, exist_ok=True)
         return p
 
