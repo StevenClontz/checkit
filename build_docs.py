@@ -1,16 +1,18 @@
 import os, subprocess, glob, shutil
 from checkit.utils import working_directory
+from checkit.bank import Bank
+import dashboard.update_viewer
 
-with working_directory("viewer"):
-    print("building viewer...")
-    subprocess.run("npm run build".split(" "))
+with working_directory("dashboard"):
+    print("updating viewer & dashboard")
+    dashboard.update_viewer.main()
 
-for f in glob.glob("docs/demo/assets/index.*.*"):
-    print(f"removing {f}")
-    os.remove(f)
+with working_directory("demo-bank"):
+    bank = Bank()
+    print("generating bank data")
+    bank.write_json()
+    print("building bank viewer")
+    bank.build_viewer()
 
 print("copying viewer")
-shutil.copytree("viewer/dist","docs/demo",dirs_exist_ok=True)
-
-print("copying bank")
-shutil.copyfile("demo-bank/docs/bank.json", "docs/demo/bank.json")
+shutil.copytree("demo-bank/docs","docs/demo",dirs_exist_ok=True)

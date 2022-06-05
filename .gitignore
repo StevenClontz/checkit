@@ -5,6 +5,7 @@ __pycache__
 *.egg-info
 dashboard/build
 dashboard/dist
+viewer.zip
 
 # demo bank
 demo-bank
