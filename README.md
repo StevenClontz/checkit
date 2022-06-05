@@ -53,6 +53,19 @@ the dashboard:
 python -m ipykernel install --user --name=checkit --display-name "CheckIt Platform"
 ```
 
+### Build & deploy package
+
+Make sure versions are set as intended! Then...
+
+```
+cd dashboard
+python update_viewer.py
+rm -rf dist/*
+python -m build
+python -m twine upload dist/*
+```
+
+
 ## Demo Bank
 
 To be able to use the dashboard in the demo bank without affecting the Git repo,
