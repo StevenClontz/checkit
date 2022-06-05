@@ -1,12 +1,12 @@
 import setuptools
 
-with open("src/checkit/static/README.md", "r", encoding="utf-8") as fh:
+with open("checkit/static/README.md", "r", encoding="utf-8") as fh:
     LONG_DESCRIPTION = fh.read()
 
-with open("src/checkit/static/VERSION", "r") as vf:
+with open("checkit/static/VERSION", "r") as vf:
     VERSION = vf.read().strip()
 
-with open("src/checkit/static/PYTHON_VERSION", "r") as vf:
+with open("checkit/static/PYTHON_VERSION", "r") as vf:
     PYTHON_VERSION = vf.read().strip()
 
 setuptools.setup(
@@ -28,7 +28,6 @@ setuptools.setup(
     ],
     python_requires=f">={PYTHON_VERSION}",
     packages=setuptools.find_packages(),
-    package_dir={'':'src'},
     package_data={
         "checkit": [
             "static/*", 

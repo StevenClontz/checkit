@@ -15,7 +15,7 @@ def main():
         )
         os.remove(os.path.join(temporary_directory,"bank.json"))
         shutil.make_archive(
-            os.path.join('src','checkit','static','viewer'),
+            os.path.join('checkit','static','viewer'),
             'zip',
             temporary_directory,
         )
