@@ -15,4 +15,6 @@ with working_directory("demo-bank"):
     bank.build_viewer()
 
 print("copying viewer")
-shutil.copytree("demo-bank/docs","docs/demo",dirs_exist_ok=True)
+if os.path.exists("docs/demo"):
+    shutil.rmtree("docs/demo")
+shutil.copytree("demo-bank/docs","docs/demo")
