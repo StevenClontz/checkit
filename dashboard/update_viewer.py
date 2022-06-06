@@ -13,7 +13,7 @@ def main():
             temporary_directory,
             dirs_exist_ok=True,
         )
-        os.remove(os.path.join(temporary_directory,"bank.json"))
+        os.remove(os.path.join(temporary_directory,"assets","bank.json"))
         shutil.make_archive(
             os.path.join('checkit','static','viewer'),
             'zip',

@@ -89,7 +89,7 @@ class Outcome():
         return html
 
     def build_path(self):
-        p = os.path.join(self.bank.build_path(),self.slug)
+        p = os.path.join(self.bank.build_path(),self.slug,"generated")
         os.makedirs(p, exist_ok=True)
         return p
     

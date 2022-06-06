@@ -1,16 +1,34 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <knowl mode="exercise" xmlns="https://spatext.clontz.org" version="0.2">
-    <content>
-        <p>
-Find a function for the shown line.
-        </p>
-        <p>
-            <image
-                source="assets/IMG1/{{__seed__}}.png"
-                description="Line with intercept {{intercept}} and slope {{slope}}."/>
-        </p>
-    </content>
-    <outtro>
-        <p><m>y={{line}}</m></p>
-    </outtro>
+    <!-- {{#lines}} -->
+    <knowl>
+        <!-- {{#findfunction}} -->
+        <content>
+            <p>
+Write an equation whose graph is shown in the following image.
+            </p>
+            <p>
+                <image
+                    source="assets/IMG1/generated/{{__seed__}}/{{filename}}.png"
+                    description="Line with intercept {{intercept}} and slope {{slope}}."/>
+            </p>
+        </content>
+        <outtro>
+            <p><m>y={{line}}</m></p>
+        </outtro>
+        <!-- {{/findfunction}} -->
+        <!-- {{#todraw}} -->
+        <content>
+            <p>Sketch <m>y={{line}}</m>.</p>
+        </content>
+        <outtro>
+            <p>
+                <image
+                    source="assets/IMG1/generated/{{__seed__}}/{{filename}}.png"
+                    description="Line with intercept {{intercept}} and slope {{slope}}."/>
+            </p>
+        </outtro>
+        <!-- {{/todraw}} -->
+    </knowl>
+    <!-- {{/lines}} -->
 </knowl>

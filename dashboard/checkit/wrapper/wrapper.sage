@@ -220,7 +220,11 @@ if len(sys.argv) >= 4:
                 directory = os.path.join(os.path.dirname(sys.argv[2]))
                 if not os.path.exists(directory):
                     os.makedirs(directory)
-                graphics.save(os.path.join(directory,f"{seed_int:04}.png"))
+                for filename in graphics:
+                    seed_path = os.path.join(directory,f"{seed_int:04}")
+                    if not os.path.exists(seed_path):
+                        os.makedirs(seed_path)
+                    graphics[filename].save(os.path.join(seed_path,f"{filename}.png"))
         seeds.append(seed)
     data = {
         "seeds": seeds,

@@ -139,8 +139,10 @@ def bank_submenu(bank):
         generated.clear_output()
         with generated:
             display(Markdown("Building bank from pregenerated outcomes..."))
-        bank.write_json()
-        bank.build_viewer()
+        with generated:
+            bank.write_json()
+        with generated:
+            bank.build_viewer()
         reset()
         with generated:
             display(Markdown("Done!"))
@@ -149,8 +151,10 @@ def bank_submenu(bank):
         generated.clear_output()
         with generated:
             display(Markdown("Regenerating all outcomes (no graphics) and building bank..."))
-        bank.write_json(regenerate=True)
-        bank.build_viewer()
+        with generated:
+            bank.write_json(regenerate=True)
+        with generated:
+            bank.build_viewer()
         reset()
         with generated:
             display(Markdown("Done!"))
