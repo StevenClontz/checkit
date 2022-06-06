@@ -1,2 +1,1 @@
-from . import static
-VERSION = static.read_resource('VERSION').strip()
+VERSION = '0.2.0.dev1'
