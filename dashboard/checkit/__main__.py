@@ -25,6 +25,9 @@ def main(directory):
     for filename in ["dashboard.ipynb","bank.xml"]:
         with open(os.path.join(directory,filename),"w") as f:
             f.write(static.read_resource(filename))
+    # copy gitignore
+    with open(os.path.join(directory,".gitignore"),"w") as f:
+        f.write(static.read_resource("gitignore.txt"))
     # generate requirements.txt
     with open(os.path.join(directory,"requirements.txt"),"w") as f:
         f.write(f"checkit-dashboard == {VERSION}")
