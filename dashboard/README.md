@@ -1,3 +1,3 @@
 # CheckIt Dashboard
 
-Learn more at <https://checkit.clontz.org>
+Learn more at <https://github.com/StevenClontz/checkit>
