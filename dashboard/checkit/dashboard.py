@@ -4,6 +4,13 @@ from .bank import Bank
 from . import VERSION
 from html import escape as escape_html
 
+class modifiedOutput(widgets.Output):
+    """
+    https://github.com/jupyter-widgets/ipywidgets/issues/3208#issuecomment-1070836153
+    """
+    def __exit__(self, *args, **kwargs):
+        super().__exit__(*args, **kwargs)
+
 def run(bank=None):
     if bank is None:
         bank = Bank()
@@ -43,9 +50,9 @@ def outcome_submenu(bank):
     seed_button = widgets.Button(description="View random seed")
     build_button = widgets.Button(description="Generate seeds")
     images_button = widgets.Button(description="Gen seeds+graphics")
-    description = widgets.Output()
-    generated = widgets.Output()
-    output = widgets.Output()
+    description = modifiedOutput()
+    generated = modifiedOutput()
+    output = modifiedOutput()
 
     def reset(*args,only_generated=False):
         o = outcomes_dropdown.value
@@ -63,7 +70,8 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown(f"*Generating fresh preview...*"))
-        preview = o.html_preview(pregenerated=False)
+        with output:
+            preview = o.html_preview(pregenerated=False)
         with output:
             output.clear_output()
             display(HTML(preview))
@@ -73,7 +81,9 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown(f"*Selecting pregenerated seed...*"))
+        with output:
             preview = o.html_preview(pregenerated=True)
+        with output:
             output.clear_output()
             display(HTML(preview))
 
@@ -82,7 +92,8 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown("Generating 1,000 seeds..."))
-        o.generate_exercises(regenerate=True)
+        with output:
+            o.generate_exercises(regenerate=True)
         reset(only_generated=True)
         with output:
             display(Markdown("Done!"))
@@ -92,7 +103,8 @@ def outcome_submenu(bank):
         output.clear_output()
         with output:
             display(Markdown("Generating 1,000 seeds with graphics... (this can take some time)"))
-        o.generate_exercises(regenerate=True,images=True)
+        with output:
+            o.generate_exercises(regenerate=True,images=True)
         reset(only_generated=True)
         with output:
             display(Markdown("Done!"))
@@ -115,8 +127,8 @@ def bank_submenu(bank):
     json_button = widgets.Button(description="Bank from cache")
     json_regen_button = widgets.Button(description="Regenerated bank")
     buttons = widgets.HBox([build_label,json_button,json_regen_button])
-    output = widgets.Output()
-    generated = widgets.Output()
+    output = modifiedOutput()
+    generated = modifiedOutput()
 
     def reset(*args):
         output.clear_output()

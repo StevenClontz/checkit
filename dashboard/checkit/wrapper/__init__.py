@@ -1,5 +1,5 @@
 import importlib.resources
-import subprocess
+import subprocess, os
 from ..utils import working_directory
 
 def sage(outcome,output_path,preview=True,images=False):
@@ -10,6 +10,8 @@ def sage(outcome,output_path,preview=True,images=False):
         preview_s = "preview"
     else:
         preview_s = "build"
+    if not os.path.isfile(outcome.generator_path()):
+        raise FileNotFoundError(outcome.generator_path())
     with importlib.resources.path("checkit.wrapper", "wrapper.sage") as wrapper_path:
         with working_directory(outcome.bank.abspath()):
             cmds = [
@@ -22,5 +24,3 @@ def sage(outcome,output_path,preview=True,images=False):
             if images:
                 cmds += ["images"]
             subprocess.run(cmds,check=True)
-
-    
