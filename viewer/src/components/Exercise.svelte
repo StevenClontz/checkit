@@ -59,7 +59,8 @@
         {:else if mode == "edit"}
             <Row>
                 <Col sm="6">
-                    <textarea bind:value={outcome.template}/>
+                    <p><textarea bind:value={outcome.template}/></p>
+                    <p><textarea readonly value={JSON.stringify(outcome.exercises[seed]['data'], null, 2)}/></p>
                 </Col>
                 <Col sm="6">
                     <Knowl knowl={outcomeToStx(outcome,seed)}/>
