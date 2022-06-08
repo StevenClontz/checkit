@@ -17,10 +17,15 @@ import assessmentTemplate from '../templates/assessmentTemplate.tex?raw'
 const parser = new DOMParser()
 
 export const outcomeToStx = (o:Outcome,seed:number) => {
-    const stxString:string = Mustache.render(o.template, o.exercises[seed]['data'])
+    let stxString:string
+    try {
+        stxString = Mustache.render(o.template, o.exercises[seed]['data'])
+    } catch (error) {
+        stxString = "<knowl><content><p><em>ERROR:</em> Mustache template could not be parsed.</p></content></knowl>"
+    }
     if (parser.parseFromString(stxString, "application/xml").querySelector('parsererror')) {
         let knowl = document.createElement("knowl")
-        knowl.insertAdjacentHTML("afterbegin","<content><p>Error parsing template.</p></content>")
+        knowl.insertAdjacentHTML("afterbegin","<content><p><em>ERROR:</em> XML could not be parsed.</p></content>")
         return knowl
     }
     let stxElement = parser.parseFromString(stxString, "application/xml").querySelector(":scope")
