@@ -49,43 +49,35 @@
     {/if}
 {/if}
 
-{#if embedded }
+{#if embedded || mode == "display"}
     <Knowl knowl={outcomeToStx(outcome,seed)}/>
-{:else}
-<Row>
-    <Col sm={{ size: 10, offset: 1 }}>
-        {#if mode == "display"}
+{:else if mode == "edit"}
+    <Row>
+        <Col sm="6">
+            <p><textarea bind:value={outcome.template}/></p>
+            <p><textarea readonly value={JSON.stringify(outcome.exercises[seed]['data'], null, 2)}/></p>
+        </Col>
+        <Col sm="6">
             <Knowl knowl={outcomeToStx(outcome,seed)}/>
-        {:else if mode == "edit"}
-            <Row>
-                <Col sm="6">
-                    <p><textarea bind:value={outcome.template}/></p>
-                    <p><textarea readonly value={JSON.stringify(outcome.exercises[seed]['data'], null, 2)}/></p>
-                </Col>
-                <Col sm="6">
-                    <Knowl knowl={outcomeToStx(outcome,seed)}/>
-                </Col>
-            </Row>
-        {:else if mode == "html"}
-            <textarea readonly value={outcomeToHtml(outcome,seed)}/>
-            <!-- <input type="checkbox" bind:checked={canvasMath}/>
-            <select bind:value={canvasSolutions}>
-                {#each ['show','hide','only'] as opt}
-                    <option value={opt}>{opt}</option>
-                {/each}
-            </select>
-            {@html outcomeToHtml(outcome,seed,canvasMath,canvasSolutions)} -->
-        {:else if mode == "latex"}
-            <textarea readonly value={outcomeToLatex(outcome,seed)}/>
-        {:else if mode == "pretext"}
-            <textarea readonly value={outcomeToPtx(outcome,seed)}/>
-        {:else if mode == "embed"}
-            <textarea readonly value={embed}/>
-        {:else}
-            Invalid mode.
-        {/if}
-    </Col>
-</Row>
+        </Col>
+    </Row>
+{:else if mode == "html"}
+    <textarea readonly value={outcomeToHtml(outcome,seed)}/>
+    <!-- <input type="checkbox" bind:checked={canvasMath}/>
+    <select bind:value={canvasSolutions}>
+        {#each ['show','hide','only'] as opt}
+            <option value={opt}>{opt}</option>
+        {/each}
+    </select>
+    {@html outcomeToHtml(outcome,seed,canvasMath,canvasSolutions)} -->
+{:else if mode == "latex"}
+    <textarea readonly value={outcomeToLatex(outcome,seed)}/>
+{:else if mode == "pretext"}
+    <textarea readonly value={outcomeToPtx(outcome,seed)}/>
+{:else if mode == "embed"}
+    <textarea readonly value={embed}/>
+{:else}
+    Invalid mode.
 {/if}
 
 <style>
