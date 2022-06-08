@@ -21,8 +21,8 @@ def main(directory):
     for filename in ["template.xml","generator.sage"]:
         with open(os.path.join(example_outcome_dir,filename),"w") as f:
             f.write(static.read_resource(filename))
-    # copy dashboard notebook and bank manifest
-    for filename in ["dashboard.ipynb","bank.xml"]:
+    # copy dashboard notebook, bank manifest, README
+    for filename in ["dashboard.ipynb","bank.xml","README.md"]:
         with open(os.path.join(directory,filename),"w") as f:
             f.write(static.read_resource(filename))
     # copy gitignore
