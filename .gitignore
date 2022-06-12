@@ -8,6 +8,7 @@ dashboard/dist
 viewer.zip
 
 # demo bank
-demo-bank
-!demo-bank/bank.xml
-!demo-bank/outcomes
+demo-bank/**/generated
+demo-bank/assets/bank.json
+demo-bank/dashboard.ipynb
+demo-bank/docs
