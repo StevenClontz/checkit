@@ -21,14 +21,16 @@
 
     let id:number
 
+    let selectedOutcomeSlugs = $bank.outcomes.map(o=>o.slug)
+
     let questionType:"essay"|"upload"="upload"
 
     const toManifest = () => {
         return Mustache.render(canvasManifest, {
             "title": $bank.title,
             "id": id,
-            "slugs": $bank.outcomes.map((o)=>{
-                return {"slug":o.slug}
+            "slugs": selectedOutcomeSlugs.map((s)=>{
+                return {"slug":s}
             })
         })
     }
@@ -51,7 +53,8 @@
         ctx[questionType] = true
         return ctx
     }
-    const toXml = (o:Outcome) => {
+    const toXml = (s:string) => {
+        const o = $bank.outcomes.find((o)=>o.slug==s)
         return Mustache.render(canvasOutcomeXml, toXmlContext(o))
     }
     let working = false
@@ -62,7 +65,7 @@
         setTimeout(()=>{
             const zip = new JSZip()
             zip.file('imsmanifest.xml', toManifest())
-            $bank.outcomes.forEach((o)=>zip.file(`${o.slug}.xml`, toXml(o)))
+            selectedOutcomeSlugs.forEach((s)=>zip.file(`${s}.xml`, toXml(s)))
             zip.generateAsync({ type: 'blob' }).then(function (content) {
                 working=false
                 FileSaver.saveAs(content, 'canvasBank.zip')
@@ -84,6 +87,24 @@
                     <Label>Customize bank title</Label>
                     <Input type="text" bind:value={$bank.title} />
                 </FormGroup>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <FormGroup>
+                    <Label>Select outcomes to export</Label>
+                    <select class="form-select" multiple aria-label="multiple select outcomes" bind:value={selectedOutcomeSlugs}>
+                        {#each $bank.outcomes as o}
+                            <option value={o.slug}>{o.slug}: {o.title}</option>
+                        {/each}
+                    </select>
+                </FormGroup>
+                <Button size='sm' color="info" on:click={()=>selectedOutcomeSlugs=$bank.outcomes.map((o)=>o.slug)}>
+                    Select all outcomes
+                </Button>
+                <Button size='sm' outline color="warning" on:click={()=>selectedOutcomeSlugs=[]}>
+                    Unselect all outcomes
+                </Button>
             </Col>
         </Row>
         <Row>
@@ -117,4 +138,5 @@
 
 <style>
     h1 { margin-top:0.5em }
+    select[multiple] { resize:vertical }
 </style>
