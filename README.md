@@ -71,26 +71,7 @@ python -m build
 python -m twine upload dist/*
 ```
 
+### Updating docs
 
-## Demo Bank
+Just `python build_docs.py`.
 
-To be able to use the dashboard in the demo bank without affecting the Git repo,
-run 
-
-```
-git update-index --skip-worktree demo-bank/dashboard.ipynb
-```
-
-Of course if you really need to update the dashboard:
-
-```
-git update-index --no-skip-worktree demo-bank/dashboard.ipynb
-```
-
-And to refresh the dashboard:
-
-```
-git update-index --no-skip-worktree demo-bank/dashboard.ipynb
-git checkout demo-bank/dashboard.ipynb
-git update-index --skip-worktree demo-bank/dashboard.ipynb
-```
