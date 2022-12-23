@@ -21,9 +21,11 @@
 
     let id:number
 
-    let selectedOutcomeSlugs = $bank.outcomes.map(o=>o.slug)
+    let selectedOutcomeSlugs:Array<string> = []
 
     let questionType:"essay"|"upload"="upload"
+
+    let lms:"canvas"|"brightspace"|"moodle"="canvas"
 
     const toManifest = () => {
         return Mustache.render(canvasManifest, {
@@ -79,6 +81,11 @@
         <Row>
             <Col>
                 <h1 class="display-4">☑️It Export to LMS</h1>
+                <div class="alert alert-warning">
+LMS Export works best in Chrome. Exporting several outcomes at once may
+lock up your browser or cause the build to fail, so exporting a few
+outcomes at a time is advised.
+                </div>
             </Col>
         </Row>
         <Row>
@@ -91,6 +98,7 @@
         </Row>
         <Row>
             <Col>
+                <div class="mb-3">
                 <FormGroup>
                     <Label>Select outcomes to export</Label>
                     <select class="form-select" multiple aria-label="multiple select outcomes" bind:value={selectedOutcomeSlugs}>
@@ -99,20 +107,29 @@
                         {/each}
                     </select>
                 </FormGroup>
-                <Button size='sm' color="info" on:click={()=>selectedOutcomeSlugs=$bank.outcomes.map((o)=>o.slug)}>
+                <!-- <Button size='sm' color="info" on:click={()=>selectedOutcomeSlugs=$bank.outcomes.map((o)=>o.slug)}>
                     Select all outcomes
                 </Button>
                 <Button size='sm' outline color="warning" on:click={()=>selectedOutcomeSlugs=[]}>
                     Unselect all outcomes
-                </Button>
+                </Button> -->
+                </div>
             </Col>
         </Row>
         <Row>
             <Col>
-                <h3>Canvas <small>(Question Banks / Classic Quizzes)</small></h3>
+                <select class="form-select" label="lmsSelect" bind:value={lms}>
+                    <option value="canvas">
+                        Canvas
+                    </option>
+                    <option value="brightspace" disabled>
+                        D2L Brightspace (coming soon)
+                    </option>
+                    <option value="moodle" disabled>
+                        Moodle (coming soon)
+                    </option>
+                </select>
             </Col>
-        </Row>
-        <Row>
             <Col>
                 <select class="form-select" label="versionSelect" bind:value={questionType}>
                     <option value="essay">
@@ -128,7 +145,7 @@
                     {#if working}
                         Exporting...
                     {:else}
-                        Export to Canvas
+                        Export
                     {/if}
                 </Button>
             </Col>
