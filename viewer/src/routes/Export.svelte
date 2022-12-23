@@ -17,7 +17,9 @@
     // @ts-ignore
     import canvasManifest from '../templates/canvasManifest.xml?raw'
     // @ts-ignore
-    import canvasOutcomeXml from '../templates/canvasOutcomeXml.xml?raw'
+    import canvasOutcome from '../templates/canvasOutcome.xml?raw'
+    // @ts-ignore
+    import moodleBank from '../templates/moodleBank.xml?raw'
 
     let id:number
 
@@ -27,7 +29,7 @@
 
     let lms:"canvas"|"brightspace"|"moodle"="canvas"
 
-    const toManifest = () => {
+    const toCanvasManifest = () => {
         return Mustache.render(canvasManifest, {
             "title": $bank.title,
             "id": id,
@@ -36,13 +38,12 @@
             })
         })
     }
-    const toXmlContext = (o:Outcome) => {
+    const toCanvasOutcomeContext = (o:Outcome) => {
         let ctx = {
             "slug": o.slug,
             "bank": $bank.title,
             "title": o.title,
             "id": id,
-            questionType: true,
             "exercises": Array.from(Array(900)).map((_, i) => {
                 return {
                     "seed": i+100,
@@ -55,23 +56,59 @@
         ctx[questionType] = true
         return ctx
     }
-    const toXml = (s:string) => {
+    const toCanvasOutcome = (s:string) => {
         const o = $bank.outcomes.find((o)=>o.slug==s)
-        return Mustache.render(canvasOutcomeXml, toXmlContext(o))
+        return Mustache.render(canvasOutcome, toCanvasOutcomeContext(o))
+    }
+    const toMoodle = () => {
+        console.log(selectedOutcomeSlugs)
+        console.log($bank.outcomes)
+        let ctx = {
+            "id": id,
+            "bank": $bank.title,
+            questionType: true,
+            "outcomes": selectedOutcomeSlugs.map(s => {
+                let o = $bank.outcomes.find(o => o.slug == s)
+                return {
+                    "slug": o.slug,
+                    "title": o.title,
+                    "exercises": Array.from(Array(900)).map((_, i) => {
+                        return {
+                            "seed": i+100,
+                            "generated_on": new Date(Date.now()).toISOString(),
+                            "question": outcomeToHtml(o,i,true,"hide"),
+                            "answer": outcomeToHtml(o,i,true,"only"),
+                        }
+                    })
+                }
+            })
+        }
+        return Mustache.render(moodleBank, ctx)
     }
     let working = false
-    function zipUp() {
+    function exportToLms() {
         id = Date.now()
         working = true
         // hax to update DOM before locking browser for build
         setTimeout(()=>{
-            const zip = new JSZip()
-            zip.file('imsmanifest.xml', toManifest())
-            selectedOutcomeSlugs.forEach((s)=>zip.file(`${s}.xml`, toXml(s)))
-            zip.generateAsync({ type: 'blob' }).then(function (content) {
+            if (lms=="canvas") {
+                const zip = new JSZip()
+                zip.file('imsmanifest.xml', toCanvasManifest())
+                selectedOutcomeSlugs.forEach((s)=>zip.file(`${s}.xml`, toCanvasOutcome(s)))
+                zip.generateAsync({ type: 'blob' }).then(function (content) {
+                    working=false
+                    FileSaver.saveAs(content, 'canvasBank.zip')
+                })
+            } else if (lms=="moodle") {
+                console.log('foo')
+                let renderedBank = toMoodle()
+                let blob = new Blob([renderedBank], {type: "text/plain;charset=utf-8"});
+                FileSaver.saveAs(blob, 'moodleBank.xml')
                 working=false
-                FileSaver.saveAs(content, 'canvasBank.zip')
-            })
+                console.log('bar')
+                console.log(renderedBank)
+                console.log(moodleBank)
+            }
         },50)
     }
 </script>
@@ -125,8 +162,8 @@ outcomes at a time is advised.
                     <option value="brightspace" disabled>
                         D2L Brightspace (coming soon)
                     </option>
-                    <option value="moodle" disabled>
-                        Moodle (coming soon)
+                    <option value="moodle">
+                        Moodle
                     </option>
                 </select>
             </Col>
@@ -141,7 +178,7 @@ outcomes at a time is advised.
                 </select>
             </Col>
             <Col>
-                <Button on:click={zipUp} disabled={working} color="primary">
+                <Button on:click={exportToLms} disabled={working} color="primary">
                     {#if working}
                         Exporting...
                     {:else}
