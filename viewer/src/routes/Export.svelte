@@ -48,8 +48,8 @@
                 return {
                     "seed": i+100,
                     "generated_on": new Date(Date.now()).toISOString(),
-                    "question": outcomeToHtml(o,i,true,"hide"),
-                    "answer": outcomeToHtml(o,i,true,"only"),
+                    "question": outcomeToHtml(o,i,"canvas","hide"),
+                    "answer": outcomeToHtml(o,i,"canvas","only"),
                 }
             })
         }
@@ -61,8 +61,6 @@
         return Mustache.render(canvasOutcome, toCanvasOutcomeContext(o))
     }
     const toMoodle = () => {
-        console.log(selectedOutcomeSlugs)
-        console.log($bank.outcomes)
         let ctx = {
             "id": id,
             "bank": $bank.title,
@@ -76,8 +74,8 @@
                         return {
                             "seed": i+100,
                             "generated_on": new Date(Date.now()).toISOString(),
-                            "question": outcomeToHtml(o,i,true,"hide"),
-                            "answer": outcomeToHtml(o,i,true,"only"),
+                            "question": outcomeToHtml(o,i,"default","hide"),
+                            "answer": outcomeToHtml(o,i,"default","only"),
                         }
                     })
                 }
@@ -100,14 +98,10 @@
                     FileSaver.saveAs(content, 'canvasBank.zip')
                 })
             } else if (lms=="moodle") {
-                console.log('foo')
                 let renderedBank = toMoodle()
                 let blob = new Blob([renderedBank], {type: "text/plain;charset=utf-8"});
                 FileSaver.saveAs(blob, 'moodleBank.xml')
                 working=false
-                console.log('bar')
-                console.log(renderedBank)
-                console.log(moodleBank)
             }
         },50)
     }
