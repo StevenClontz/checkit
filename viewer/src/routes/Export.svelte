@@ -151,13 +151,14 @@ outcomes at a time is advised.
             <Col>
                 <select class="form-select" label="lmsSelect" bind:value={lms}>
                     <option value="canvas">
-                        Canvas
-                    </option>
-                    <option value="brightspace" disabled>
-                        D2L Brightspace (coming soon)
+                        Canvas (Classic Quizzes)
                     </option>
                     <option value="moodle">
                         Moodle
+                    </option>
+                    <option disabled>---</option>
+                    <option value="brightspace" disabled>
+                        D2L Brightspace (coming soon)
                     </option>
                 </select>
             </Col>

@@ -51,23 +51,14 @@ export const outcomeToHtml = (o:Outcome,seed:number,mathMode:'default'|'canvas',
     let ele = transform.transformToDocument(e).querySelector("div.stx")
     if (mathMode == 'canvas') {
         ele.querySelectorAll(".math[data-latex]").forEach((math)=>{
-            const imageMath = document.createElement('img');
-            imageMath.setAttribute(
-                "src",
-                `https://canvas.instructure.com/equation_images/${encodeURIComponent(encodeURIComponent(math.getAttribute("data-latex")))}`
+            katex.render(
+                math.getAttribute("data-latex"),
+                math,
+                {
+                    output: 'mathml',
+                    displayMode: math.classList.contains("display-math")
+                }
             )
-            imageMath.setAttribute(
-                "alt",
-                `LaTeX formula: ${math.getAttribute("data-latex")}`
-            )
-            imageMath.setAttribute(
-                "title",
-                `LaTeX formula: ${math.getAttribute("data-latex")}`
-            )
-            imageMath.style.padding = "5px"
-            imageMath.style.border = "solid 1px #ddd"
-            imageMath.style.borderRadius = "5px"
-            math.parentElement.replaceChild(imageMath,math)
         })
     }
     if (solutions=="hide") {
