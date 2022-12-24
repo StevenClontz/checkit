@@ -42,6 +42,7 @@
         let ctx = {
             "slug": o.slug,
             "bank": $bank.title,
+            "bankSlug": $bank.slug,
             "title": o.title,
             "id": id,
             "exercises": Array.from(Array(900)).map((_, i) => {
@@ -64,6 +65,7 @@
         let ctx = {
             "id": id,
             "bank": $bank.title,
+            "bankSlug": $bank.slug,
             questionType: true,
             "outcomes": selectedOutcomeSlugs.map(s => {
                 let o = $bank.outcomes.find(o => o.slug == s)

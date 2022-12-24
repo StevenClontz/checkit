@@ -3,10 +3,10 @@
   <question type="category">
     <!-- folder for storing the questions-->
     <category>
-      <text>$course$/top/checkit/{{id}}</text>
+      <text>$course$/top/checkit/{{bankSlug}}/{{id}}</text>
     </category>
     <info> <!-- Name for the category-->
-      <text>{{bank}} ({{id}})</text>
+      <text>CheckIt {{bankSlug}} (Build {{id}}) | {{bank}}</text>
     </info>
   </question>
 
@@ -14,10 +14,10 @@
       <question type="category">
         <!-- folder for storing the questions-->
         <category>
-          <text>$course$/top/checkit/{{id}}/{{slug}}</text>
+          <text>$course$/top/checkit/{{bankSlug}}/{{id}}/{{slug}}</text>
         </category>
         <info> <!-- Name for the category-->
-          <text>{{slug}} | {{bank}}: {{title}} ({{id}})</text>
+          <text>CheckIt {{bankSlug}} {{slug}} (Build {{id}}) | {{bank}}: {{title}}</text>
         </info>
       </question>
 

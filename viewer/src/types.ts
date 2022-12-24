@@ -1,6 +1,7 @@
 export type Bank = {
     title: string;
     url: string;
+    slug: string;
     generated_on: string;
     outcomes: Array<Outcome>;
 }

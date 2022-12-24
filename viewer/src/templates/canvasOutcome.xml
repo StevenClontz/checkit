@@ -6,7 +6,7 @@
     <qtimetadata>
         <qtimetadatafield>
           <fieldlabel>bank_title</fieldlabel>
-          <fieldentry>CheckIt | {{bank}} (Build {{id}}) | {{slug}}: {{title}}</fieldentry>
+          <fieldentry>CheckIt {{bankSlug}} {{slug}} (Build {{id}}) | {{bank}}: {{title}}</fieldentry>
         </qtimetadatafield>
     </qtimetadata>
     <!-- {{#exercises}} -->
