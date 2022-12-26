@@ -43,13 +43,17 @@ export const outcomeToLatex = (o:Outcome,seed:number) => {
     return transform.transformToDocument(e).querySelector(":scope").textContent.trim()
 }
 
-export const outcomeToHtml = (o:Outcome,seed:number,mathMode:'default'|'canvas',solutions:'show'|'hide'|'only'='show') => {
+export const outcomeToHtml = (
+    o:Outcome,seed:number,
+    mathMode:'default'|'canvas'|'brightspace'='default',
+    solutions:'show'|'hide'|'only'='show'
+) => {
     const e = outcomeToStx(o,seed)
     const transform = new XSLTProcessor()
     const xslDom = parser.parseFromString(htmlXsl, "application/xml")
     transform.importStylesheet(xslDom)
     let ele = transform.transformToDocument(e).querySelector("div.stx")
-    if (mathMode == 'canvas') {
+    if (mathMode == 'canvas' || mathMode == 'brightspace') {
         ele.querySelectorAll(".math[data-latex]").forEach((math)=>{
             katex.render(
                 math.getAttribute("data-latex"),

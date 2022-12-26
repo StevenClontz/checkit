@@ -19,6 +19,10 @@
     // @ts-ignore
     import canvasOutcome from '../templates/canvasOutcome.xml?raw'
     // @ts-ignore
+    import brightspaceManifest from '../templates/brightspaceManifest.xml?raw'
+    // @ts-ignore
+    import brightspaceBank from '../templates/brightspaceBank.xml?raw'
+    // @ts-ignore
     import moodleBank from '../templates/moodleBank.xml?raw'
 
     let id:number
@@ -46,11 +50,12 @@
             "title": o.title,
             "id": id,
             "exercises": Array.from(Array(900)).map((_, i) => {
+                let seed=i+100
                 return {
-                    "seed": i+100,
+                    "seed": seed,
                     "generated_on": new Date(Date.now()).toISOString(),
-                    "question": outcomeToHtml(o,i,"canvas","hide"),
-                    "answer": outcomeToHtml(o,i,"canvas","only"),
+                    "question": outcomeToHtml(o,seed,"canvas","hide"),
+                    "answer": outcomeToHtml(o,seed,"canvas","only"),
                 }
             })
         }
@@ -60,6 +65,40 @@
     const toCanvasOutcome = (s:string) => {
         const o = $bank.outcomes.find((o)=>o.slug==s)
         return Mustache.render(canvasOutcome, toCanvasOutcomeContext(o))
+    }
+    const toBrightspaceManifest = () => {
+        return Mustache.render(brightspaceManifest, {
+            "title": $bank.title,
+            "id": id,
+            "slugs": selectedOutcomeSlugs.map((s)=>{
+                return {"slug":s}
+            })
+        })
+    }
+    const toBrightspaceBank = () => {
+        let ctx = {
+            "id": id,
+            "bank": $bank.title,
+            "bankSlug": $bank.slug,
+            questionType: true,
+            "outcomes": selectedOutcomeSlugs.map(s => {
+                let o = $bank.outcomes.find(o => o.slug == s)
+                return {
+                    "slug": o.slug,
+                    "title": o.title,
+                    "exercises": Array.from(Array(900)).map((_, i) => {
+                        let seed = i+100
+                        return {
+                            "seed": seed,
+                            "generated_on": new Date(Date.now()).toISOString(),
+                            "question": outcomeToHtml(o,seed,"default","hide"),
+                            "answer": outcomeToHtml(o,seed,"default","only"),
+                        }
+                    })
+                }
+            })
+        }
+        return Mustache.render(brightspaceBank, ctx)
     }
     const toMoodle = () => {
         let ctx = {
@@ -73,11 +112,12 @@
                     "slug": o.slug,
                     "title": o.title,
                     "exercises": Array.from(Array(900)).map((_, i) => {
+                        let seed=i+100
                         return {
                             "seed": i+100,
                             "generated_on": new Date(Date.now()).toISOString(),
-                            "question": outcomeToHtml(o,i,"default","hide"),
-                            "answer": outcomeToHtml(o,i,"default","only"),
+                            "question": outcomeToHtml(o,seed,"default","hide"),
+                            "answer": outcomeToHtml(o,seed,"default","only"),
                         }
                     })
                 }
@@ -98,6 +138,14 @@
                 zip.generateAsync({ type: 'blob' }).then(function (content) {
                     working=false
                     FileSaver.saveAs(content, 'canvasBank.zip')
+                })
+            } else if (lms=="brightspace") {
+                const zip = new JSZip()
+                zip.file('imsmanifest.xml', toBrightspaceManifest())
+                zip.file('questiondb.xml', toBrightspaceBank())
+                zip.generateAsync({ type: 'blob' }).then(function (content) {
+                    working=false
+                    FileSaver.saveAs(content, 'brightspaceBank.zip')
                 })
             } else if (lms=="moodle") {
                 let renderedBank = toMoodle()
@@ -155,27 +203,28 @@ outcomes at a time is advised.
                     <option value="canvas">
                         Canvas (Classic Quizzes)
                     </option>
+                    <option value="brightspace">
+                        D2L Brightspace
+                    </option>
                     <option value="moodle">
                         Moodle
                     </option>
-                    <option disabled>---</option>
-                    <option value="brightspace" disabled>
-                        D2L Brightspace (coming soon)
-                    </option>
                 </select>
             </Col>
+            {#if lms=='canvas'}
+                <Col>
+                    <select class="form-select" label="versionSelect" bind:value={questionType}>
+                        <option value="essay">
+                            Essay response
+                        </option>
+                        <option value="upload">
+                            File upload
+                        </option>
+                    </select>
+                </Col>
+            {/if}
             <Col>
-                <select class="form-select" label="versionSelect" bind:value={questionType}>
-                    <option value="essay">
-                        Essay response
-                    </option>
-                    <option value="upload">
-                        File upload
-                    </option>
-                </select>
-            </Col>
-            <Col>
-                <Button on:click={exportToLms} disabled={working} color="primary">
+                <Button block on:click={exportToLms} disabled={working} color="primary">
                     {#if working}
                         Exporting...
                     {:else}

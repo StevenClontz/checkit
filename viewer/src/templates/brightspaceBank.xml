@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<questestinterop xmlns:d2l_2p0="http://desire2learn.com/xsd/d2lcp_v2p0">
+    <objectbank>
+    <!-- {{#outcomes}} -->
+        <section
+            title="CheckIt {{bankSlug}} {{slug}} (Build {{id}}) | {{bank}}: {{title}}">
+            <presentation_material>
+                <flow_mat>
+                    <flow_mat>
+                        <material>
+                            <mattext texttype="text/html">{{description}}</mattext>
+                        </material>
+                    </flow_mat>
+                </flow_mat>
+            </presentation_material>
+            <sectionproc_extension>
+                <d2l_2p0:display_section_name>yes</d2l_2p0:display_section_name>
+                <d2l_2p0:display_section_line>no</d2l_2p0:display_section_line>
+                <d2l_2p0:type_display_section>1</d2l_2p0:type_display_section>
+            </sectionproc_extension>
+            <!-- {{#exercises}} -->
+            <item>
+            <itemmetadata>
+                <qtimetadata>
+                <qti_metadatafield>
+                    <fieldlabel>qmd_questiontype</fieldlabel>
+                    <fieldentry>Long Answer</fieldentry>
+                </qti_metadatafield>
+                <qti_metadatafield>
+                    <fieldlabel>qmd_weighting</fieldlabel>
+                    <fieldentry>1.000000000</fieldentry>
+                </qti_metadatafield>
+                </qtimetadata>
+            </itemmetadata>
+            <itemproc_extension>
+                <d2l_2p0:difficulty>1</d2l_2p0:difficulty>
+                <d2l_2p0:isbonus>no</d2l_2p0:isbonus>
+                <d2l_2p0:ismandatory>no</d2l_2p0:ismandatory>
+            </itemproc_extension>
+            <presentation>
+                <flow>
+                <material>
+                    <mattext texttype="text/html">{{question}}</mattext>
+                </material>
+                <response_extension>
+                    <d2l_2p0:has_signed_comments>no</d2l_2p0:has_signed_comments>
+                    <d2l_2p0:has_htmleditor>yes</d2l_2p0:has_htmleditor>
+                    <d2l_2p0:has_fileupload>yes</d2l_2p0:has_fileupload>
+                </response_extension>
+                <response_str
+                rcardinality="Multiple">
+                    <render_fib columns="100" fibtype="String" prompt="Box"
+                    rows="15">
+                    <response_label>
+                        <material>
+                        <mattext texttype="text/plain" />
+                        </material>
+                    </response_label>
+                    </render_fib>
+                </response_str>
+                </flow>
+            </presentation>
+            <answer_key>
+                <answer_key_material>
+                <flow_mat>
+                    <material>
+                    <mattext texttype="text/html">{{answer}}</mattext>
+                    </material>
+                </flow_mat>
+                </answer_key_material>
+            </answer_key>
+            </item>
+            <!-- {{/exercises}} -->
+        </section>
+    <!-- {{/outcomes}} -->
+    </objectbank>
+</questestinterop>
