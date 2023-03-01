@@ -60,13 +60,16 @@ class CheckIt:
         return new_equation
 
     @staticmethod
-    def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_list=[]):
+    def latex_system_from_matrix(matrix, variables="x", alpha_mode=False, variable_list=None):
         # Augment with zero vector if not already augmented
         if not matrix.subdivisions()[1]:
             matrix=matrix.augment(zero_vector(QQ, len(matrix.rows())), subdivide=true)
         num_vars = matrix.subdivisions()[1][0]
         # Start using requested variables
-        system_vars = variable_list
+        if variable_list is None:
+            system_vars = []
+        else:
+            system_vars = variable_list
         # Conveniently add xyzwv if requested
         if alpha_mode:
             system_vars += list(var("x y z w v"))
