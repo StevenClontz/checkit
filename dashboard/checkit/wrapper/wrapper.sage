@@ -194,8 +194,8 @@ def json_ready(obj):
     else:
         return str(latex(obj))
 
-# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output/seeds.json preview|build images?
-if len(sys.argv) >= 4:
+# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output/seeds.json preview|build amount images?
+if len(sys.argv) >= 5:
     # this script should be called from the root directory of the bank
     # so loads in the generator file work as intended
     generator_path = sys.argv[1]
@@ -206,7 +206,7 @@ if len(sys.argv) >= 4:
     if sys.argv[3].lower() == "preview":
         amount = 10
     else:
-        amount = 1_000
+        amount = Integer(sys.argv[4])
     seeds = []
     for i in range(amount):
         if sys.argv[3].lower() == "preview":
@@ -214,7 +214,7 @@ if len(sys.argv) >= 4:
             seed_int = int(randrange(1_000))
         else:
             seed_int = int(i)
-        gen_images = (len(sys.argv) >= 5 and sys.argv[4]=="images")
+        gen_images = (len(sys.argv) >= 6 and sys.argv[5]=="images")
         generator.roll_data(seed=seed_int)
         seed  = {"seed":seed_int,"data":json_ready(generator.get_data())}
         if gen_images:
