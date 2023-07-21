@@ -50,7 +50,8 @@ class Outcome():
 
     def preview_exercises(self):
         preview_json = os.path.join(self.build_path(),"preview.json")
-        sage(self,preview_json,preview=True,images=True)
+        # hardcode: previews generate 10 seeds
+        sage(self,preview_json,amount=10,preview=True,images=True)
         with open(os.path.join(preview_json)) as f:
             data = json.load(f)['seeds']
         return [Exercise(d["data"],d["seed"],self) for d in data]
@@ -96,14 +97,14 @@ class Outcome():
     def seeds_json_path(self):
         return os.path.join(self.build_path(),"seeds.json")
 
-    def generate_exercises(self,amount,regenerate=False,images=False):
+    def generate_exercises(self,amount=1000,regenerate=False,images=False):
         if not regenerate:
             try:
                 self.load_exercises()
                 return
             except RuntimeError:
                 pass # generation is necessary
-        sage(self,self.seeds_json_path(),amount,preview=False,images=images)
+        sage(self,self.seeds_json_path(),amount=amount,preview=False,images=images)
         self.load_exercises(reload=True)
 
 
