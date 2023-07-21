@@ -92,7 +92,7 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating %s seeds..."%amount_box.value))
+            display(Markdown(f"Generating {amount_box.value} seeds..."))
         with output:
             o.generate_exercises(amount=amount_box.value,regenerate=True)
         reset(only_generated=True)
@@ -103,7 +103,7 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating %s seeds with graphics... (this can take some time)"%amount_box.value))
+            display(Markdown(f"Generating {amount_box.value} seeds with graphics... (this can take some time)"))
         with output:
             o.generate_exercises(amount=amount_box.value,regenerate=True,images=True)
         reset(only_generated=True)
