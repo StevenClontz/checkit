@@ -50,6 +50,7 @@ def outcome_submenu(bank):
     seed_button = widgets.Button(description="View random seed")
     build_button = widgets.Button(description="Generate seeds")
     images_button = widgets.Button(description="Gen seeds+graphics")
+    amount_box = widgets.IntText(value = 1000)
     description = modifiedOutput()
     generated = modifiedOutput()
     output = modifiedOutput()
@@ -91,9 +92,9 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating 1,000 seeds..."))
+            display(Markdown(f"Generating {amount_box.value} seeds..."))
         with output:
-            o.generate_exercises(regenerate=True)
+            o.generate_exercises(amount=amount_box.value,regenerate=True)
         reset(only_generated=True)
         with output:
             display(Markdown("Done!"))
@@ -102,9 +103,9 @@ def outcome_submenu(bank):
         o = outcomes_dropdown.value
         output.clear_output()
         with output:
-            display(Markdown("Generating 1,000 seeds with graphics... (this can take some time)"))
+            display(Markdown(f"Generating {amount_box.value} seeds with graphics... (this can take some time)"))
         with output:
-            o.generate_exercises(regenerate=True,images=True)
+            o.generate_exercises(amount=amount_box.value,regenerate=True,images=True)
         reset(only_generated=True)
         with output:
             display(Markdown("Done!"))
@@ -117,6 +118,7 @@ def outcome_submenu(bank):
 
     display(outcomes_dropdown)
     display(widgets.HBox([preview_button,seed_button,build_button,images_button]))
+    display(widgets.HBox([widgets.Label(value="Generate how many seeds? "), amount_box]))
     display(description)
     display(generated)
     display(output)
