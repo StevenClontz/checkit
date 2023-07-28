@@ -51,7 +51,7 @@ class Outcome():
     def preview_exercises(self):
         preview_json = os.path.join(self.build_path(),"preview.json")
         # hardcode: previews generate 10 seeds
-        sage(self,preview_json,amount=10,preview=True,images=True)
+        sage(self,preview_json,preview=True,images=True)
         with open(os.path.join(preview_json)) as f:
             data = json.load(f)['seeds']
         return [Exercise(d["data"],d["seed"],self) for d in data]
