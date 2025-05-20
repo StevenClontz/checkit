@@ -4,7 +4,7 @@ from checkit.utils import working_directory
 def main():
     with working_directory("../demo-bank"):
         print("building bank...")
-        subprocess.run("python -m checkit build".split(" "))
+        subprocess.run("python -m checkit generate".split(" "))
 
     with working_directory("../viewer"):
         print("building viewer...")
