@@ -1,7 +1,9 @@
 import click
+from trogon import tui
 import os
 from . import static, VERSION, bank
 
+@tui()
 @click.group(
     short_help="CheckIt command line interface",)
 def main():
