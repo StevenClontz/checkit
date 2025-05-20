@@ -31,6 +31,12 @@ def new(directory):
     for filename in ["template.xml","generator.sage"]:
         with open(os.path.join(example_outcome_dir,filename),"w") as f:
             f.write(static.read_resource(filename))
+    # copy devcontainer stuff
+    devcontainer_dir = os.path.join(directory, ".devcontainer")
+    os.makedirs(devcontainer_dir)
+    for filename in ["setup.sh","devcontainer.json"]:
+        with open(os.path.join(devcontainer_dir,filename),"w") as f:
+            f.write(static.read_resource(filename))
     # copy dashboard notebook, bank manifest, README
     for filename in ["bank.xml","README.md"]:
         with open(os.path.join(directory,filename),"w") as f:

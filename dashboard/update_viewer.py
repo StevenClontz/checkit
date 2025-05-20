@@ -12,7 +12,7 @@ def main():
 
     print('zipping up viewer')
     with tempfile.TemporaryDirectory() as temporary_directory:
-        copied_directory = shutil.copytree(
+        shutil.copytree(
             os.path.join('..','viewer','dist'),
             temporary_directory,
             dirs_exist_ok=True,

@@ -12,3 +12,6 @@ demo-bank/**/generated
 demo-bank/assets/bank.json
 demo-bank/dashboard.ipynb
 demo-bank/docs
+
+# default new bank
+new-checkit-bank

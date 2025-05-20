@@ -37,6 +37,7 @@ class Bank():
     
     def generate_exercises(self,regenerate=False,images=False,amount=1_000):
         for o in self.outcomes():
+            print(f"Generating {amount} exercises for outcome {o.slug}")
             o.generate_exercises(regenerate=regenerate,images=images,amount=amount)
 
     def build_path(self):

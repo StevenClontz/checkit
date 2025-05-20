@@ -18,10 +18,4 @@ echo 'conda activate sage' >> ~/.bashrc
 eval "$('conda' 'shell.bash' 'hook' 2> /dev/null)"
 conda activate sage
 
-
-## everything else
-
-python -m pip install --upgrade pip
-python -m pip install -e ./dashboard[dev]
-cd viewer
-npm install .
+python -m pip install -r requirements.txt
