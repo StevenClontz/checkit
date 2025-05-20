@@ -1,10 +1,18 @@
 import click
 import os
-from . import static, VERSION
+from . import static, VERSION, bank
 
-@click.command()
+@click.group(
+    short_help="CheckIt command line interface",)
+def main():
+    pass
+
+# checkit new
+@main.command(
+    short_help="Generates boilerplate for using the CheckIt Dashboard to author a new bank.",
+)
 @click.argument('directory', default='new-checkit-bank')
-def main(directory):
+def new(directory):
     """
     Generates boilerplate for using the CheckIt Dashboard
     to author a new bank.
@@ -22,7 +30,7 @@ def main(directory):
         with open(os.path.join(example_outcome_dir,filename),"w") as f:
             f.write(static.read_resource(filename))
     # copy dashboard notebook, bank manifest, README
-    for filename in ["dashboard.ipynb","bank.xml","README.md"]:
+    for filename in ["bank.xml","README.md"]:
         with open(os.path.join(directory,filename),"w") as f:
             f.write(static.read_resource(filename))
     # copy gitignore
@@ -32,6 +40,15 @@ def main(directory):
     with open(os.path.join(directory,"requirements.txt"),"w") as f:
         f.write(f"checkit-dashboard == {VERSION}")
     print(f"Successfully created new CheckIt bank in `{directory}`")
+
+
+# checkit build
+@main.command(
+    short_help="build bank",
+)
+def build():
+    bank.Bank().write_json()
+
 
 if __name__ == "__main__":
     main()
