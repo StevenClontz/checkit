@@ -23,17 +23,16 @@ def new(directory):
     try:
         os.makedirs(directory)
     except FileExistsError:
-        print(f"Error creating new bank: directory `{directory}` already exists")
-        return
+        print(f"Warning: directory `{directory}` already exists")
     # copy sample outcome template/generator
     example_outcome_dir = os.path.join(directory,'outcomes','EX1')
-    os.makedirs(example_outcome_dir)
+    os.makedirs(example_outcome_dir, exist_ok=True)
     for filename in ["template.xml","generator.sage"]:
         with open(os.path.join(example_outcome_dir,filename),"w") as f:
             f.write(static.read_resource(filename))
     # copy devcontainer stuff
     devcontainer_dir = os.path.join(directory, ".devcontainer")
-    os.makedirs(devcontainer_dir)
+    os.makedirs(devcontainer_dir, exist_ok=True)
     for filename in ["setup.sh","devcontainer.json"]:
         with open(os.path.join(devcontainer_dir,filename),"w") as f:
             f.write(static.read_resource(filename))
