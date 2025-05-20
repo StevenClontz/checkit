@@ -48,8 +48,36 @@ def new(directory):
 @main.command(
     short_help="generate bank json",
 )
-def generate():
-    bank.Bank().write_json()
+@click.option(
+    "-a",
+    "--amount",
+    default=1_000,
+    help="Amount of exercises to generate.",
+)
+@click.option(
+    "-r",
+    "--regenerate",
+    is_flag=True,
+    help="Force regeneration of previously generated seeds.",
+)
+@click.option(
+    "-i",
+    "--images",
+    is_flag=True,
+    help="Generate images.",
+)
+@click.option(
+    "-o",
+    "--outcome",
+    default="ALL",
+    help="Outcome to generate. \"ALL\" generates all outcomes",
+)
+def generate(amount,regenerate,images,outcome):
+    b = bank.Bank()
+    if outcome != "ALL":
+        b._outcomes = [o for o in b._outcomes if o.slug.lower() == outcome.lower()]
+    b.generate_exercises(regenerate=regenerate,images=images,amount=amount)
+    b.write_json()
 
 # checkit viewer
 @main.command(

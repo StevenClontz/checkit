@@ -35,9 +35,9 @@ class Bank():
     def outcomes(self):
         return self._outcomes
     
-    def generate_exercises(self,regenerate=False,images=False):
+    def generate_exercises(self,regenerate=False,images=False,amount=1_000):
         for o in self.outcomes():
-            o.generate_exercises(regenerate=regenerate,images=images)
+            o.generate_exercises(regenerate=regenerate,images=images,amount=amount)
 
     def build_path(self):
         p = os.path.join(self.abspath(),"assets")
