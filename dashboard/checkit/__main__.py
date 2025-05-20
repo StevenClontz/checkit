@@ -44,12 +44,19 @@ def new(directory):
     print(f"Successfully created new CheckIt bank in `{directory}`")
 
 
-# checkit build
+# checkit generate
 @main.command(
-    short_help="build bank",
+    short_help="generate bank json",
 )
-def build():
+def generate():
     bank.Bank().write_json()
+
+# checkit viewer
+@main.command(
+    short_help="generate bank viewer",
+)
+def viewer():
+    bank.Bank().build_viewer()
 
 
 if __name__ == "__main__":

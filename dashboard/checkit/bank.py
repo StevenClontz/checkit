@@ -1,5 +1,6 @@
 from lxml import etree
-import os, json, datetime, zipfile, shutil, glob
+import os, json, datetime, zipfile, shutil
+from pathlib import Path
 from . import static
 from .outcome import Outcome
 from .xml import CHECKIT_NS
@@ -59,14 +60,14 @@ class Bank():
             json.dump(self.to_dict(regenerate=regenerate),f)
 
     def build_viewer(self):
-        build_path = os.path.join(self.abspath(),"docs")
-        if os.path.exists(build_path) and os.path.isdir(build_path):
-            shutil.rmtree(build_path)
-        os.makedirs(build_path)
+        docs_path = Path(self.abspath()) / "docs"
+        if docs_path.exists() and docs_path.is_dir():
+            shutil.rmtree(docs_path)
+        docs_path.mkdir()
         archive = zipfile.ZipFile(static.open_resource("viewer.zip"))
-        archive.extractall(build_path)
+        archive.extractall(docs_path)
         # copy assets
-        shutil.copytree(self.build_path(),os.path.join("docs","assets"), dirs_exist_ok=True)
+        shutil.copytree(self.build_path(), docs_path / "assets", dirs_exist_ok=True)
 
     def generated_on(self):
         try:
