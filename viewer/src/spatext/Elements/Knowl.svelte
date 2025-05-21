@@ -95,7 +95,7 @@
         border-width: 1px;
         border-radius: 5px;
         border-style: solid;
-        padding: 0 1em;
+        padding: 0.5em 1em;
         margin: 1em 0;
     }
     .top-knowl {
@@ -103,7 +103,7 @@
         border-width: 1px;
         border-radius: 5px;
         border-style: solid;
-        padding: 0 1em;
+        padding: 0.5em 1em;
         margin: 1em 0;
     }
 </style>
