@@ -13,7 +13,8 @@
         "workbench.editorAssociations": {
           "README.md": "vscode.markdown.preview.editor"
         },
-        "files.eol": "\n"
+        "files.eol": "\n",
+        "svelte.enable-ts-plugin": true
       },
       "extensions": [
         "streetsidesoftware.code-spell-checker",
