@@ -1,29 +1,28 @@
 class Generator(BaseGenerator):
     def data(self):
         x=var("x")
+
         m = randrange(-9,10)
         b = randrange(-9,10)
         line = m*x+b
-        lines = [{
+        findfunction_line = {
             "line": line,
             "slope": m,
             "intercept": b,
-            "findfunction": True,
-            "filename": "find",
-        }]
+        }
+
         m = randrange(-9,10)
         b = randrange(-9,10)
         line = m*x+b
-        lines += [{
+        todraw_line = {
             "line": line,
             "slope": m,
             "intercept": b,
-            "todraw": True,
-            "filename": "todraw",
-        }]
-        shuffle(lines)
+        }
+
         return {
-            "lines": lines,
+            "findfunction_line": findfunction_line,
+            "todraw_line": todraw_line,
         }
 
     @provide_data
@@ -39,6 +38,6 @@ class Generator(BaseGenerator):
         `f"{filename_string}.png}"`.
         """
         return {
-            line_data["filename"]: plot(line_data["line"])
-            for line_data in data["lines"]
+            "find": plot(data["findfunction_line"]["line"]),
+            "draw": plot(data["todraw_line"]["line"]),
         }
