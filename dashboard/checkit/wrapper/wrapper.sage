@@ -210,6 +210,8 @@ if len(sys.argv) >= 4:
     # preview/build to specified JSON file
     seeds = []
     for i in range(amount):
+        if i > 0 and (i % 50) == 0:
+            print(f"Generating seed {i}")
         if random:
             set_random_seed()
             seed_int = int(randrange(1_000))
