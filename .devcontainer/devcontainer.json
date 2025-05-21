@@ -18,7 +18,8 @@
       "extensions": [
         "streetsidesoftware.code-spell-checker",
         "lov3.sagemath-enhanced",
-        "ms-python.python"
+        "ms-python.python",
+        "svelte.svelte-vscode"
       ]
     }
   }
