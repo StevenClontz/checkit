@@ -96,14 +96,14 @@ class Outcome():
     def seeds_json_path(self):
         return os.path.join(self.build_path(),"seeds.json")
 
-    def generate_exercises(self,regenerate=False,images=False):
+    def generate_exercises(self,regenerate=False,images=False,amount=1_000):
         if not regenerate:
             try:
                 self.load_exercises()
                 return
             except RuntimeError:
                 pass # generation is necessary
-        sage(self,self.seeds_json_path(),preview=False,images=images)
+        sage(self,self.seeds_json_path(),preview=False,images=images,amount=amount)
         self.load_exercises(reload=True)
 
 

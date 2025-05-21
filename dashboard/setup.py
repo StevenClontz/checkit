@@ -8,6 +8,7 @@ setup(
         "lxml",
         "latex2mathml",
         "pystache",
+        "trogon",
         "click",
     ],
 )

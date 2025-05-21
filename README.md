@@ -16,48 +16,10 @@ is available in the [wiki on GitHub](https://github.com/StevenClontz/checkit/wik
 
 ## Package Development
 
-### Python
-
-Development uses `pyenv`:
-
-<https://github.com/pyenv/pyenv>
-
-with `pyenv-virtualenv`:
-
-<https://github.com/pyenv/pyenv-virtualenv>.
-
-Run the following, replacing `PYTHON_VERSION` with the version defined in
-the `platform/src/checkit/static/PYTHON_VERSION` file.
-
-```
-pyenv install PYTHON_VERSION
-pyenv virtualenv PYTHON_VERSION checkit
-```
-
-The virtual environment for this project can be activated
-automatically in directories with a
-`.python-version` file with the contents `checkit` by following
-instructions at
-<https://github.com/pyenv/pyenv-virtualenv#activate-virtualenv>.
-Or use `pyenv activate checkit` and `pyenv deactivate` to do
-this manually.
-
-Now to install the in-development package into the virtual
-environment.
-
-```
-pyenv virtualenvs # should show `* checkit` (note the `*`)
-python -V # should show value of PYTHON_VERSION
-python -m pip install --upgrade pip
-python -m pip install -e dashboard[dev]
-```
-
-To enable this virtual environment for use as a Jupyter kernel for
-the dashboard:
-
-```
-python -m ipykernel install --user --name=checkit --display-name "CheckIt Platform"
-```
+All dependencies are installed automatically when using a Codespace.
+On GitHub, click "Code", select "Codespaces", then click "Create codespace on main".
+For local installation, run `.devcontainer/setup.sh` and refer to
+`.devcontainer/devcontainer.json` for other configurations.
 
 ### Build & deploy package
 

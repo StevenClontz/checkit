@@ -6,7 +6,7 @@
   </metadata>
   <resources>
     <!-- {{#slugs}} -->
-    <resource identifier="{{id}}-{{slug}}" type="imsqti_xmlv1p2">
+    <resource identifier="{{id}}-{{slug}}" type="associatedcontent/imscc_xmlv1p1/learning-application-resource" href="{{slug}}.xml">
       <file href="{{slug}}.xml"/>
     </resource>
     <!-- {{/slugs}} -->

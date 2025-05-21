@@ -194,33 +194,35 @@ def json_ready(obj):
     else:
         return str(latex(obj))
 
-# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output/seeds.json preview|build images?
+# this script should be called from the root directory of the bank
+# so loads in the generator file work as intended
+# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output/seeds.json 1000 random? images?
 if len(sys.argv) >= 4:
-    # this script should be called from the root directory of the bank
-    # so loads in the generator file work as intended
     generator_path = sys.argv[1]
+    seeds_path = sys.argv[2]
+    amount = int(sys.argv[3])
+    random = (len(sys.argv) >= 5 and sys.argv[4].lower() == "random")
+    gen_images = (len(sys.argv) >= 6 and sys.argv[5].lower()=="images")
+
     load(generator_path) # must provide Generator class extending BaseGenerator
     generator = Generator()
 
     # preview/build to specified JSON file
-    if sys.argv[3].lower() == "preview":
-        amount = 10
-    else:
-        amount = 1_000
     seeds = []
     for i in range(amount):
-        if sys.argv[3].lower() == "preview":
+        if i > 0 and (i % 50) == 0:
+            print(f"Generating seed {i}")
+        if random:
             set_random_seed()
             seed_int = int(randrange(1_000))
         else:
             seed_int = int(i)
-        gen_images = (len(sys.argv) >= 5 and sys.argv[4]=="images")
         generator.roll_data(seed=seed_int)
         seed  = {"seed":seed_int,"data":json_ready(generator.get_data())}
         if gen_images:
             graphics = generator.graphics()
             if graphics is not None:
-                directory = os.path.join(os.path.dirname(sys.argv[2]))
+                directory = os.path.join(os.path.dirname(seeds_path))
                 if not os.path.exists(directory):
                     os.makedirs(directory)
                 for filename in graphics:
@@ -233,6 +235,8 @@ if len(sys.argv) >= 4:
         "seeds": seeds,
         "generated_on": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
-    os.makedirs(os.path.dirname(sys.argv[2]), exist_ok=True)
-    with open(os.path.join(sys.argv[2]), 'w') as f:
+    os.makedirs(os.path.dirname(seeds_path), exist_ok=True)
+    with open(os.path.join(seeds_path), 'w') as f:
         json.dump(data, f)
+else:
+    raise RuntimeError("Three positional arguments are required")

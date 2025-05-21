@@ -29,7 +29,7 @@
 
     let selectedOutcomeSlugs:Array<string> = []
 
-    let questionType:"essay"|"upload"="upload"
+    let questionType:"essay"|"upload"|"boolean"="upload"
 
     let lms:"canvas"|"brightspace"|"moodle"="canvas"
 
@@ -48,6 +48,7 @@
             "bank": $bank.title,
             "bankSlug": $bank.slug,
             "title": o.title,
+            "questionType": questionType,
             "id": id,
             "exercises": Array.from(Array(900)).map((_, i) => {
                 let seed=i+100
@@ -201,7 +202,7 @@ outcomes at a time is advised.
             <Col>
                 <select class="form-select" label="lmsSelect" bind:value={lms}>
                     <option value="canvas">
-                        Canvas (Classic Quizzes)
+                        Canvas (New & Classic Quizzes)
                     </option>
                     <option value="brightspace">
                         D2L Brightspace
@@ -220,11 +221,14 @@ outcomes at a time is advised.
                         <option value="upload">
                             File upload
                         </option>
+                        <option value="boolean">
+                            True/false (for feedback support in New Quizzes)
+                        </option>
                     </select>
                 </Col>
             {/if}
             <Col>
-                <Button block on:click={exportToLms} disabled={working} color="primary">
+                <Button block on:click={exportToLms} disabled={working || selectedOutcomeSlugs.length == 0} color="primary">
                     {#if working}
                         Exporting...
                     {:else}

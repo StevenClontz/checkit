@@ -30,7 +30,7 @@ export const outcomeToStx = (o:Outcome,seed:number) => {
     }
     let stxElement = parser.parseFromString(stxString, "application/xml").querySelector(":scope")
     stxElement.querySelectorAll("image").forEach(image => {
-        image.setAttribute("remote", `${location.protocol}//${location.host}${location.pathname}`)
+        image.setAttribute("remote", `${location.protocol}//${location.host}${location.pathname.replace(/\/+$/, "")}`)
     });
     return stxElement
 }

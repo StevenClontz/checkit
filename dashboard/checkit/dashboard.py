@@ -4,6 +4,13 @@ from .bank import Bank
 from . import VERSION
 from html import escape as escape_html
 
+print(
+"""
+Jupyter dashboard is DEPRECATED - can use as-is, but we recommend
+using Codespaces/CLI as of 0.2.7
+"""
+)
+
 class modifiedOutput(widgets.Output):
     """
     https://github.com/jupyter-widgets/ipywidgets/issues/3208#issuecomment-1070836153

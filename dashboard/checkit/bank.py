@@ -1,5 +1,6 @@
 from lxml import etree
-import os, json, datetime, zipfile, shutil, glob
+import os, json, datetime, zipfile, shutil
+from pathlib import Path
 from . import static
 from .outcome import Outcome
 from .xml import CHECKIT_NS
@@ -34,9 +35,10 @@ class Bank():
     def outcomes(self):
         return self._outcomes
     
-    def generate_exercises(self,regenerate=False,images=False):
+    def generate_exercises(self,regenerate=False,images=False,amount=1_000):
         for o in self.outcomes():
-            o.generate_exercises(regenerate=regenerate,images=images)
+            print(f"Generating {amount} exercises for outcome {o.slug}")
+            o.generate_exercises(regenerate=regenerate,images=images,amount=amount)
 
     def build_path(self):
         p = os.path.join(self.abspath(),"assets")
@@ -59,14 +61,14 @@ class Bank():
             json.dump(self.to_dict(regenerate=regenerate),f)
 
     def build_viewer(self):
-        build_path = os.path.join(self.abspath(),"docs")
-        if os.path.exists(build_path) and os.path.isdir(build_path):
-            shutil.rmtree(build_path)
-        os.makedirs(build_path)
+        docs_path = Path(self.abspath()) / "docs"
+        if docs_path.exists() and docs_path.is_dir():
+            shutil.rmtree(docs_path)
+        docs_path.mkdir()
         archive = zipfile.ZipFile(static.open_resource("viewer.zip"))
-        archive.extractall(build_path)
+        archive.extractall(docs_path)
         # copy assets
-        shutil.copytree(self.build_path(),os.path.join("docs","assets"), dirs_exist_ok=True)
+        shutil.copytree(self.build_path(), docs_path / "assets", dirs_exist_ok=True)
 
     def generated_on(self):
         try:
