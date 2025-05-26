@@ -48,46 +48,6 @@ class Outcome():
             "exercises": [e.to_dict() for e in exs],
         }
 
-    def preview_exercises(self):
-        preview_json = os.path.join(self.build_path(),"preview.json")
-        sage(self,preview_json,preview=True,images=True)
-        with open(os.path.join(preview_json)) as f:
-            data = json.load(f)['seeds']
-        return [Exercise(d["data"],d["seed"],self) for d in data]
-
-    def html_preview(self,pregenerated=False):
-        if pregenerated:
-            exs = random.sample(self.exercises(),1)
-        else:
-            exs = self.preview_exercises()
-        html = "<h2>Preview:</h2>\n"
-        for ex in exs:
-            html += ex.html()
-            html += "\n"
-            html += "<h3>Data</h3>"
-            html += "<pre>\n"
-            html += escape_html(json.dumps(ex.to_dict(),indent=4))
-            html += "</pre>\n"
-            html += "\n"
-            html += "<h3>SpaTeXt</h3>"
-            html += "<pre>\n"
-            html += escape_html(ex.spatext())
-            html += "</pre>\n"
-            html += "\n"
-            html += "<h3>HTML</h3>"
-            html += "<pre>\n"
-            html += escape_html(ex.html())
-            html += "</pre>\n"
-            html += "<h3>LaTeX</h3>"
-            html += "<pre>\n"
-            html += escape_html(ex.latex())
-            html += "</pre>\n"
-            html += "<h3>PreTeXt</h3>"
-            html += "<pre>\n"
-            html += escape_html(ex.pretext())
-            html += "</pre>\n"
-        return html
-
     def build_path(self):
         p = os.path.join(self.bank.build_path(),self.slug,"generated")
         os.makedirs(p, exist_ok=True)
@@ -103,7 +63,7 @@ class Outcome():
                 return
             except RuntimeError:
                 pass # generation is necessary
-        sage(self,self.seeds_json_path(),preview=False,images=images,amount=amount)
+        sage(self,images=images,amount=amount)
         self.load_exercises(reload=True)
 
 

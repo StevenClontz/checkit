@@ -1,4 +1,4 @@
 assets/**/generated
 assets/bank.json
-demo-bank/assets/cache.zip
-demo-bank/assets/.cache
+assets/**/cache.zip
+assets/.cache
