@@ -1,4 +1,4 @@
-import sys,json,os,datetime,hashlib,argparse
+import sys,json,os,datetime,hashlib,argparse,shutil
 
 # Library of helpful functions
 class CheckIt:
@@ -208,11 +208,13 @@ def cli(generator_path, build_path, slug, amount=1000, random=True, gen_images=F
     generator = Generator()
 
     # Get hash of generator file
-    #with open(generator_path, 'rb') as f:
-    #    generator_bytes = f.read()
-    #generator_hash = hashlib.sha256(generator_bytes).hexdigest()
-    #cache_file = 
-    cache_exists = False
+    with open(generator_path, 'rb') as f:
+        generator_bytes = f.read()
+    generator_hash = hashlib.sha256(generator_bytes).hexdigest()
+    cache_dir = os.path.join(build_path, ".cache", f"{generator_hash}")
+    cache_exists = os.path.exists(cache_dir)
+    if cache_exists:
+        shutil.copytree(cache_dir,os.path.dirname(seeds_path), dirs_exist_ok=True)
 
     # preview/build to specified JSON file
     seeds = []
@@ -225,21 +227,22 @@ def cli(generator_path, build_path, slug, amount=1000, random=True, gen_images=F
         else:
             seed_int = int(i)
         generator.roll_data(seed=seed_int)
-        seed  = {"seed":seed_int,"data":json_ready(generator.get_data())}
-        if gen_images:
-            if cache_exists:
-                pass # use cache
-            else:
-                graphics = generator.graphics()
-                if graphics is not None:
-                    directory = os.path.join(os.path.dirname(seeds_path))
-                    if not os.path.exists(directory):
-                        os.makedirs(directory)
-                    for filename in graphics:
-                        seed_path = os.path.join(directory,f"{seed_int:04}")
-                        if not os.path.exists(seed_path):
-                            os.makedirs(seed_path)
-                        graphics[filename].save(os.path.join(seed_path,f"{filename}.png"))
+        seed  = {
+            "seed":seed_int,
+            "hash":generator_hash,
+            "data":json_ready(generator.get_data())
+        }
+        if gen_images and not cache_exists:
+            graphics = generator.graphics()
+            if graphics is not None:
+                directory = os.path.join(os.path.dirname(seeds_path))
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                for filename in graphics:
+                    seed_path = os.path.join(directory,f"{seed_int:04}")
+                    if not os.path.exists(seed_path):
+                        os.makedirs(seed_path)
+                    graphics[filename].save(os.path.join(seed_path,f"{filename}.png"))
         seeds.append(seed)
     data = {
         "seeds": seeds,
@@ -248,6 +251,9 @@ def cli(generator_path, build_path, slug, amount=1000, random=True, gen_images=F
     os.makedirs(os.path.dirname(seeds_path), exist_ok=True)
     with open(os.path.join(seeds_path), 'w') as f:
         json.dump(data, f)
+    if amount==1000:
+        shutil.copytree(os.path.dirname(seeds_path),cache_dir, dirs_exist_ok=True)
+
 
 
 if __name__ == "__main__":
