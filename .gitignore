@@ -10,7 +10,8 @@ viewer.zip
 # demo bank
 demo-bank/**/generated
 demo-bank/assets/bank.json
-demo-bank/dashboard.ipynb
+demo-bank/assets/cache.zip
+demo-bank/assets/.cache
 demo-bank/docs
 
 # default new bank
