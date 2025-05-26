@@ -1,6 +1,5 @@
 from .exercise import Exercise
-import os, json, random
-from html import escape as escape_html
+import os, json, random, hashlib
 from .wrapper import sage
 
 class Outcome():
@@ -88,6 +87,12 @@ class Outcome():
             return self._generated_on
         except AttributeError as e:
             return "(never generated)"
+
+    def generator_hash(self):
+        # Get hash of generator file
+        with open(self.generator_path(), 'rb') as f:
+            generator_bytes = f.read()
+        return hashlib.sha256(generator_bytes).hexdigest()
     
     def exercises(self,all=True,amount=300,randomized=False):
         try:

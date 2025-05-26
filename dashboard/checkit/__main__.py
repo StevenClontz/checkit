@@ -88,8 +88,14 @@ def generate(amount,regenerate,images,outcome):
 @main.command(
     short_help="generate bank viewer",
 )
-def viewer():
-    bank.Bank().build_viewer()
+@click.option(
+    "-c",
+    "--cache",
+    is_flag=True,
+    help="Include cache.",
+)
+def viewer(cache):
+    bank.Bank().build_viewer(with_cache=cache)
 
 
 if __name__ == "__main__":
