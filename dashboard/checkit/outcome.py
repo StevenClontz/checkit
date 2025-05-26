@@ -1,5 +1,5 @@
 from .exercise import Exercise
-import os, json, random, hashlib
+import os, json, random, hashlib, zipfile, requests, io
 from .wrapper import sage
 
 class Outcome():
@@ -93,6 +93,18 @@ class Outcome():
         with open(self.generator_path(), 'rb') as f:
             generator_bytes = f.read()
         return hashlib.sha256(generator_bytes).hexdigest()
+
+    def download_cache(self,url):
+        # append /assets/{self.slug}/generated/cache.zip to the url
+        url = os.path.join(url, "assets", self.slug, "generated", "cache.zip")
+        # download cache.zip from url
+        response = requests.get(url)
+        if response.status_code == 200:
+            print(f"Extracting from <{url}>.")
+            with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
+                zip_ref.extractall(os.path.join(self.bank.build_path(), ".cache"))
+        else:
+            print(f"Failed to download cache.zip from <{url}>.")
     
     def exercises(self,all=True,amount=300,randomized=False):
         try:
