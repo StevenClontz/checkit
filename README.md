@@ -18,8 +18,18 @@ is available in the [wiki on GitHub](https://github.com/StevenClontz/checkit/wik
 
 All dependencies are installed automatically when using a Codespace.
 On GitHub, click "Code", select "Codespaces", then click "Create codespace on main".
-For local installation, run `.devcontainer/setup.sh` and refer to
-`.devcontainer/devcontainer.json` for other configurations.
+
+Once the following process completes in your terminal, you're ready to go:
+
+```
+Use Cmd/Ctrl + Shift + P -> View Creation Log to see full logs
+✔ Finishing up...
+⠼ Running postCreateCommand...
+  › bash .devcontainer/setup.sh
+```
+
+For local installation, refer to `.devcontainer/devcontainer.json` for
+configuration.
 
 ### Build & deploy package
 

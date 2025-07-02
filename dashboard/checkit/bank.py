@@ -60,15 +60,31 @@ class Bank():
         with open(build_path,'w') as f:
             json.dump(self.to_dict(regenerate=regenerate),f)
 
-    def build_viewer(self):
+    def build_viewer(self, with_cache=False):
         docs_path = Path(self.abspath()) / "docs"
         if docs_path.exists() and docs_path.is_dir():
             shutil.rmtree(docs_path)
         docs_path.mkdir()
         archive = zipfile.ZipFile(static.open_resource("viewer.zip"))
         archive.extractall(docs_path)
+        if with_cache:
+            for o in self.outcomes():
+                cache_zip = os.path.join(o.build_path(), "cache.zip")
+                with zipfile.ZipFile(cache_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                    cache_dir = os.path.join(self.build_path(), ".cache", o.generator_hash())
+                    for root, _, files in os.walk(cache_dir):
+                        for file in files:
+                            file_path = os.path.join(root, file)
+                            arcname = os.path.join(o.generator_hash(), os.path.relpath(file_path, cache_dir))
+                            zipf.write(file_path, arcname)
         # copy assets
         shutil.copytree(self.build_path(), docs_path / "assets", dirs_exist_ok=True)
+        # remove cache directory if it exists
+        cache_dir = docs_path / "assets" / ".cache"
+        if cache_dir.exists() and cache_dir.is_dir():
+            shutil.rmtree(cache_dir)
+
+
 
     def generated_on(self):
         try:

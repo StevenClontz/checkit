@@ -1,4 +1,4 @@
-import sys,json,os,datetime
+import sys,json,os,datetime,hashlib,argparse,shutil
 
 # Library of helpful functions
 class CheckIt:
@@ -194,32 +194,45 @@ def json_ready(obj):
     else:
         return str(latex(obj))
 
+
+
+
+
+
 # this script should be called from the root directory of the bank
 # so loads in the generator file work as intended
-# sage /path/to/wrapper.sage /path/to/generator.sage /path/to/output/seeds.json 1000 random? images?
-if len(sys.argv) >= 4:
-    generator_path = sys.argv[1]
-    seeds_path = sys.argv[2]
-    amount = int(sys.argv[3])
-    random = (len(sys.argv) >= 5 and sys.argv[4].lower() == "random")
-    gen_images = (len(sys.argv) >= 6 and sys.argv[5].lower()=="images")
+def cli(_generator_path, _build_path, _slug, _amount=1000, _random=True, _gen_images=False):
+    seeds_path = os.path.join(_build_path, _slug, "generated", "seeds.json")
 
-    load(generator_path) # must provide Generator class extending BaseGenerator
+    load(_generator_path) # must provide Generator class extending BaseGenerator
     generator = Generator()
+
+    # Get hash of generator file
+    with open(_generator_path, 'rb') as f:
+        generator_bytes = f.read()
+    generator_hash = hashlib.sha256(generator_bytes).hexdigest()
+    cache_dir = os.path.join(_build_path, ".cache", f"{generator_hash}")
+    cache_exists = os.path.exists(cache_dir)
+    if cache_exists:
+        shutil.copytree(cache_dir,os.path.dirname(seeds_path), dirs_exist_ok=True)
 
     # preview/build to specified JSON file
     seeds = []
-    for i in range(amount):
+    for i in range(_amount):
         if i > 0 and (i % 50) == 0:
             print(f"Generating seed {i}")
-        if random:
+        if _random:
             set_random_seed()
             seed_int = int(randrange(1_000))
         else:
             seed_int = int(i)
         generator.roll_data(seed=seed_int)
-        seed  = {"seed":seed_int,"data":json_ready(generator.get_data())}
-        if gen_images:
+        seed  = {
+            "seed":seed_int,
+            "hash":generator_hash,
+            "data":json_ready(generator.get_data())
+        }
+        if _gen_images and not cache_exists:
             graphics = generator.graphics()
             if graphics is not None:
                 directory = os.path.join(os.path.dirname(seeds_path))
@@ -238,5 +251,27 @@ if len(sys.argv) >= 4:
     os.makedirs(os.path.dirname(seeds_path), exist_ok=True)
     with open(os.path.join(seeds_path), 'w') as f:
         json.dump(data, f)
-else:
-    raise RuntimeError("Three positional arguments are required")
+    if _amount==1000:
+        shutil.copytree(os.path.dirname(seeds_path),cache_dir, dirs_exist_ok=True)
+
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate seeds for CheckIt bank.")
+    parser.add_argument("generator_path", type=str, help="Path to the generator file.")
+    parser.add_argument("build_path", type=str, help="Path to save generated assets.")
+    parser.add_argument("slug", type=str, help="Slug for the outcome.")
+    parser.add_argument("--amount", type=int, default=1000, help="Number of seeds to generate (default: 1000).")
+    parser.add_argument("--random", action='store_true', help="Generate seeds randomly.")
+    parser.add_argument("--gen_images", action='store_true', help="Generate images for each seed.")
+
+    args = parser.parse_args()
+    
+    cli(
+        args.generator_path, 
+        args.build_path, 
+        args.slug,
+        _amount=args.amount, 
+        _random=args.random, 
+        _gen_images=args.gen_images
+    )

@@ -25,3 +25,5 @@ python -m pip install --upgrade pip
 python -m pip install -e ./dashboard[dev]
 cd viewer
 npm install .
+cd ../dashboard
+python update_viewer.py
