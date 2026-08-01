@@ -122,7 +122,7 @@ export const parseMath = (html:string) => {
     );
 }
 
-export const getRandomAssessmentFromSlugs = (bank:Bank,slugs:string[]) => {
+export const getRandomAssessmentFromSlugs = (bank:Bank,slugs:string[],template:string=assessmentTemplate) => {
     let assessment: Assessment = {
         "latex": "",
         "exercises": [],
@@ -138,7 +138,7 @@ export const getRandomAssessmentFromSlugs = (bank:Bank,slugs:string[]) => {
         }
     })
     assessment.latex = Mustache.render(
-        assessmentTemplate, 
+        template,
         {
             "version": Date.now(),
             "exercises": assessment.exercises.map((e)=>{

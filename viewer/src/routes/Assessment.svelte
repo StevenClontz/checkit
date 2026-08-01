@@ -11,7 +11,7 @@
     } from 'sveltestrap';
     import OutcomeDropdown from '../components/dropdowns/Outcome.svelte';
     import Sorter from '../components/Sorter.svelte';
-    import { assessmentOutcomeSlugs, instructorEnabled } from '../stores/instructor';
+    import { assessmentOutcomeSlugs, instructorEnabled, assessmentTemplate, defaultAssessmentTemplate } from '../stores/instructor';
     import { bank } from '../stores/banks';
     import { getOutcomeFromSlug, getRandomAssessmentFromSlugs } from '../utils';
     import type { Assessment } from '../types';
@@ -24,7 +24,7 @@
         return `${slug} — ${o.title}`
     };
     let generatedAssessment: Assessment | undefined = undefined
-    const generate = () => generatedAssessment = getRandomAssessmentFromSlugs($bank,$assessmentOutcomeSlugs)
+    const generate = () => generatedAssessment = getRandomAssessmentFromSlugs($bank,$assessmentOutcomeSlugs,$assessmentTemplate)
 
     const copyToClipboard = (text:string) => () => {
         navigator.clipboard.writeText(text)
@@ -67,6 +67,29 @@
                         </a>
                     {/if}
                 </div>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <details class="my-3">
+                    <summary>
+                        Customize the LaTeX template
+                    </summary>
+                    {#if $assessmentTemplate !== defaultAssessmentTemplate}
+                        <p>
+                            <a
+                                href="#."
+                                on:click|preventDefault={()=>$assessmentTemplate=defaultAssessmentTemplate}>
+                                [Reset to default template]
+                            </a>
+                        </p>
+                    {/if}
+                    <textarea
+                        class="form-control font-monospace mb-3"
+                        rows="10"
+                        bind:value={$assessmentTemplate}
+                    />
+                </details>
             </Col>
         </Row>
         <Row>
