@@ -1,4 +1,8 @@
 import { writable } from 'svelte/store';
+// @ts-ignore
+import defaultAssessmentTemplateRaw from '../templates/assessmentTemplate.tex?raw'
+
+export const defaultAssessmentTemplate = defaultAssessmentTemplateRaw;
 
 let _ie = false;
 if (localStorage.getItem('instructorEnabled')) {
@@ -22,4 +26,16 @@ if (localStorage.getItem('assessmentOutcomeSlugs')) {
 export const assessmentOutcomeSlugs = writable(_ao);
 assessmentOutcomeSlugs.subscribe(value => {
     localStorage.setItem(location.pathname+"#assessmentOutcomeSlugs", JSON.stringify(value));
+});
+
+let _at: string = defaultAssessmentTemplate;
+if (localStorage.getItem('assessmentTemplate')) {
+    try {
+        let _attry = JSON.parse(localStorage.getItem(location.pathname+'#assessmentTemplate'));
+        if (typeof _attry == 'string') { _at = _attry }
+    } catch {}
+}
+export const assessmentTemplate = writable(_at);
+assessmentTemplate.subscribe(value => {
+    localStorage.setItem(location.pathname+"#assessmentTemplate", JSON.stringify(value));
 });

@@ -11,7 +11,7 @@
     } from 'sveltestrap';
     import OutcomeDropdown from '../components/dropdowns/Outcome.svelte';
     import Sorter from '../components/Sorter.svelte';
-    import { assessmentOutcomeSlugs, instructorEnabled } from '../stores/instructor';
+    import { assessmentOutcomeSlugs, instructorEnabled, assessmentTemplate, defaultAssessmentTemplate } from '../stores/instructor';
     import { bank } from '../stores/banks';
     import { getOutcomeFromSlug, getRandomAssessmentFromSlugs } from '../utils';
     import type { Assessment } from '../types';
@@ -24,7 +24,7 @@
         return `${slug} — ${o.title}`
     };
     let generatedAssessment: Assessment | undefined = undefined
-    const generate = () => generatedAssessment = getRandomAssessmentFromSlugs($bank,$assessmentOutcomeSlugs)
+    const generate = () => generatedAssessment = getRandomAssessmentFromSlugs($bank,$assessmentOutcomeSlugs,$assessmentTemplate)
 
     const copyToClipboard = (text:string) => () => {
         navigator.clipboard.writeText(text)
@@ -67,6 +67,25 @@
                         </a>
                     {/if}
                 </div>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <p>
+                    Optionally customize the LaTeX template used to build your assessment.
+                    {#if $assessmentTemplate !== defaultAssessmentTemplate}
+                        <a
+                            href="#."
+                            on:click|preventDefault={()=>$assessmentTemplate=defaultAssessmentTemplate}>
+                            [Reset to default template]
+                        </a>
+                    {/if}
+                </p>
+                <textarea
+                    class="form-control text-monospace mb-3"
+                    rows="10"
+                    bind:value={$assessmentTemplate}
+                />
             </Col>
         </Row>
         <Row>
