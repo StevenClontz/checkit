@@ -71,21 +71,25 @@
         </Row>
         <Row>
             <Col>
-                <p>
-                    Optionally customize the LaTeX template used to build your assessment.
+                <details class="my-3">
+                    <summary>
+                        Customize the LaTeX template
+                    </summary>
                     {#if $assessmentTemplate !== defaultAssessmentTemplate}
-                        <a
-                            href="#."
-                            on:click|preventDefault={()=>$assessmentTemplate=defaultAssessmentTemplate}>
-                            [Reset to default template]
-                        </a>
+                        <p>
+                            <a
+                                href="#."
+                                on:click|preventDefault={()=>$assessmentTemplate=defaultAssessmentTemplate}>
+                                [Reset to default template]
+                            </a>
+                        </p>
                     {/if}
-                </p>
-                <textarea
-                    class="form-control font-monospace mb-3"
-                    rows="10"
-                    bind:value={$assessmentTemplate}
-                />
+                    <textarea
+                        class="form-control font-monospace mb-3"
+                        rows="10"
+                        bind:value={$assessmentTemplate}
+                    />
+                </details>
             </Col>
         </Row>
         <Row>
