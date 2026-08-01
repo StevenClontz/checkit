@@ -82,7 +82,7 @@
                     {/if}
                 </p>
                 <textarea
-                    class="form-control text-monospace mb-3"
+                    class="form-control font-monospace mb-3"
                     rows="10"
                     bind:value={$assessmentTemplate}
                 />
