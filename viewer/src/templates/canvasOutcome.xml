@@ -23,8 +23,11 @@
               -->file_upload_question<!-- 
               {{/upload}} 
               {{#boolean}}
-              -->true_false_question<!-- 
-              {{/boolean}} 
+              -->true_false_question<!--
+              {{/boolean}}
+              {{#mcq}}
+              -->multiple_choice_question<!--
+              {{/mcq}}
               --></fieldentry>
           </qtimetadatafield>
           <qtimetadatafield>
@@ -78,6 +81,32 @@
           </render_choice>
         </response_lid>
         <!-- {{/boolean}} -->
+        <!-- {{#mcq}} -->
+        <response_lid ident="response1" rcardinality="Single">
+          <render_choice>
+            <response_label ident="correct_choice">
+              <material>
+                <mattext texttype="text/html">Correct!</mattext>
+              </material>
+            </response_label>
+            <response_label ident="distractor1_choice">
+              <material>
+                <mattext texttype="text/html">Distractor 1</mattext>
+              </material>
+            </response_label>
+            <response_label ident="distractor2_choice">
+              <material>
+                <mattext texttype="text/html">Distractor 2</mattext>
+              </material>
+            </response_label>
+            <response_label ident="distractor3_choice">
+              <material>
+                <mattext texttype="text/html">Distractor 3</mattext>
+              </material>
+            </response_label>
+          </render_choice>
+        </response_lid>
+        <!-- {{/mcq}} -->
       </presentation>
       <resprocessing>
         <outcomes>
@@ -91,6 +120,14 @@
           <setvar action="Set" varname="SCORE">100</setvar>
         </respcondition>
         <!-- {{/boolean}} -->
+        <!-- {{#mcq}} -->
+        <respcondition continue="No">
+          <conditionvar>
+            <varequal respident="response1">correct_choice</varequal>
+          </conditionvar>
+          <setvar action="Set" varname="SCORE">100</setvar>
+        </respcondition>
+        <!-- {{/mcq}} -->
       </resprocessing>
       <itemfeedback ident="correct_fb">
         <flow_mat>

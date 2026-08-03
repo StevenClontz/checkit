@@ -29,7 +29,7 @@
 
     let selectedOutcomeSlugs:Array<string> = []
 
-    let questionType:"essay"|"upload"|"boolean"="upload"
+    let questionType:"essay"|"upload"|"boolean"|"mcq"="upload"
 
     let lms:"canvas"|"brightspace"|"moodle"="canvas"
 
@@ -223,6 +223,9 @@ outcomes at a time is advised.
                         </option>
                         <option value="boolean">
                             True/false (for feedback support in New Quizzes)
+                        </option>
+                        <option value="mcq">
+                            Multiple choice (experimental)
                         </option>
                     </select>
                 </Col>
