@@ -65,6 +65,14 @@
     {/if}
     {#if knowl.querySelectorAll(":scope > outtro").length > 0}
         <div class="outtro">
+            {#if knowl.querySelectorAll(":scope > outtro[distractor='true']").length > 1}
+                <h5>Choices:</h5>
+                <ol class="choices">
+                {#each [...knowl.querySelectorAll(":scope > outtro")] as outtro}
+                    <li><Content content={outtro}/></li>
+                {/each}
+                </ol>
+            {/if}
             <p>
                 <a class="toggle" href="#toggle" on:click={toggleOuttro}>
                     {#if showOuttro}
@@ -77,10 +85,9 @@
             </p>
             {#if showOuttro}
                 {#each [...knowl.querySelectorAll(":scope > outtro")] as outtro}
-                    {#if outtro.getAttribute("distractor")=="true"}
-                        <p><em>Distractor:</em></p>
+                    {#if outtro.getAttribute("distractor") != "true"}
+                        <Content content={outtro}/>
                     {/if}
-                    <Content content={outtro}/>
                 {/each}
             {/if}
         </div>
@@ -94,6 +101,9 @@
     }
     ol {
         list-style: none;
+    }
+    ol.choices {
+       list-style: upper-alpha;
     }
     .outtro {
         border-color: rgb(90, 90, 90);
