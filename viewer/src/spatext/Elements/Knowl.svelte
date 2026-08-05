@@ -76,7 +76,12 @@
                 </a>
             </p>
             {#if showOuttro}
-                <Content content={knowl.querySelector(":scope > outtro")}/>
+                {#each [...knowl.querySelectorAll(":scope > outtro")] as outtro}
+                    {#if outtro.getAttribute("distractor")=="true"}
+                        <p><em>Distractor:</em></p>
+                    {/if}
+                    <Content content={outtro}/>
+                {/each}
             {/if}
         </div>
     {/if}

@@ -84,26 +84,13 @@
         <!-- {{#mcq}} -->
         <response_lid ident="response1" rcardinality="Single">
           <render_choice>
-            <response_label ident="correct_choice">
+            <!-- {{#choices}} -->
+            <response_label ident="{{ident}}">
               <material>
-                <mattext texttype="text/html">Correct!</mattext>
+                <mattext texttype="text/html">{{html}}</mattext>
               </material>
             </response_label>
-            <response_label ident="distractor1_choice">
-              <material>
-                <mattext texttype="text/html">Distractor 1</mattext>
-              </material>
-            </response_label>
-            <response_label ident="distractor2_choice">
-              <material>
-                <mattext texttype="text/html">Distractor 2</mattext>
-              </material>
-            </response_label>
-            <response_label ident="distractor3_choice">
-              <material>
-                <mattext texttype="text/html">Distractor 3</mattext>
-              </material>
-            </response_label>
+            <!-- {{/choices}} -->
           </render_choice>
         </response_lid>
         <!-- {{/mcq}} -->
@@ -123,7 +110,7 @@
         <!-- {{#mcq}} -->
         <respcondition continue="No">
           <conditionvar>
-            <varequal respident="response1">correct_choice</varequal>
+            <varequal respident="response1">{{correctChoiceIdent}}</varequal>
           </conditionvar>
           <setvar action="Set" varname="SCORE">100</setvar>
         </respcondition>

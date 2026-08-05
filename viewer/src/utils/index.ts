@@ -43,10 +43,9 @@ export const outcomeToLatex = (o:Outcome,seed:number) => {
     return transform.transformToDocument(e).querySelector(":scope").textContent.trim()
 }
 
-export const outcomeToHtml = (
+const stxToHtmlElement = (
     o:Outcome,seed:number,
-    mathMode:'default'|'canvas'|'brightspace'='default',
-    solutions:'show'|'hide'|'only'='show'
+    mathMode:'default'|'canvas'|'brightspace'='default'
 ) => {
     const e = outcomeToStx(o,seed)
     const transform = new XSLTProcessor()
@@ -65,6 +64,15 @@ export const outcomeToHtml = (
             )
         })
     }
+    return ele
+}
+
+export const outcomeToHtml = (
+    o:Outcome,seed:number,
+    mathMode:'default'|'canvas'|'brightspace'='default',
+    solutions:'show'|'hide'|'only'='show'
+) => {
+    let ele = stxToHtmlElement(o,seed,mathMode)
     if (solutions=="hide") {
         ele.querySelectorAll('.stx-outtro').forEach((outtro)=>{
             outtro.parentElement.removeChild(outtro)
@@ -77,8 +85,25 @@ export const outcomeToHtml = (
         ele.querySelectorAll('.stx-content').forEach((content)=>{
             content.parentElement.removeChild(content)
         })
+        ele.querySelectorAll('.stx-outtro[data-distractor="true"]').forEach((outtro)=>{
+            outtro.parentElement.removeChild(outtro)
+        })
     }
     return ele.outerHTML.trim()
+}
+
+export const outcomeToMcqChoices = (
+    o:Outcome,seed:number,
+    mathMode:'default'|'canvas'|'brightspace'='default'
+) => {
+    const ele = stxToHtmlElement(o,seed,mathMode)
+    return Array.from(ele.querySelectorAll('.stx-outtro')).map((outtro, i) => {
+        return {
+            "ident": `choice${i}`,
+            "html": outtro.innerHTML.trim(),
+            "correct": outtro.getAttribute('data-distractor') !== 'true'
+        }
+    })
 }
 
 export const outcomeToPtx = (o:Outcome,seed:number) => {

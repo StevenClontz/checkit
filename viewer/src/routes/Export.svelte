@@ -12,7 +12,7 @@
     import { bank } from '../stores/banks';
     import Mustache from 'mustache';
 
-    import {outcomeToHtml} from '../utils/index'
+    import {outcomeToHtml, outcomeToMcqChoices} from '../utils/index'
 
     // @ts-ignore
     import canvasManifest from '../templates/canvasManifest.xml?raw'
@@ -52,12 +52,17 @@
             "id": id,
             "exercises": Array.from(Array(900)).map((_, i) => {
                 let seed=i+100
-                return {
+                let exercise:any = {
                     "seed": seed,
                     "generated_on": new Date(Date.now()).toISOString(),
                     "question": outcomeToHtml(o,seed,"canvas","hide"),
                     "answer": outcomeToHtml(o,seed,"canvas","only"),
                 }
+                if (questionType == "mcq") {
+                    exercise.choices = outcomeToMcqChoices(o,seed,"canvas")
+                    exercise.correctChoiceIdent = exercise.choices.find((c:any)=>c.correct)?.ident
+                }
+                return exercise
             })
         }
         ctx[questionType] = true
