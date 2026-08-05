@@ -36,7 +36,7 @@
                     <xsl:apply-templates select="stx:content[1]"/>
                 </xsl:otherwise>
             </xsl:choose>
-            <xsl:apply-templates select="stx:outtro[1]"/>
+            <xsl:apply-templates select="stx:outtro"/>
         </div>
     </xsl:template>
 
@@ -67,6 +67,9 @@
 
     <xsl:template match="stx:outtro">
         <div class="stx-outtro">
+            <xsl:if test="@distractor='true'">
+                <xsl:attribute name="data-distractor">true</xsl:attribute>
+            </xsl:if>
             <xsl:apply-templates select="stx:p|stx:list"/>
         </div>
     </xsl:template>

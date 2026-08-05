@@ -29,6 +29,14 @@ Demo of using tasks and subtasks.
             </description>
         </outcome>
         <outcome>
+            <title>Multiple-Choice</title>
+            <slug>EX4</slug>
+            <path>outcomes/EX/EX4</path>
+            <description>
+Demo of using multiple-choice questions.
+            </description>
+        </outcome>
+        <outcome>
             <title>Matrix Example</title>
             <slug>MX1</slug>
             <path>outcomes/MX/MX1</path>

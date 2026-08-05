@@ -12,6 +12,14 @@
         if (p.parentElement!=null && p.parentElement.tagName=="knowl") return isInExercise(p.parentElement)
         return false
     }
+    const randomChoices = (e:Element) => {
+        let choices = [...e.querySelectorAll(":scope > outtro")]
+        for (let i=choices.length-1; i>0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [choices[i], choices[j]] = [choices[j], choices[i]];
+        }
+        return choices
+    }
     let outtroLabel:string
     let partLabel:string
     let knowlLabel:string
@@ -65,6 +73,14 @@
     {/if}
     {#if knowl.querySelectorAll(":scope > outtro").length > 0}
         <div class="outtro">
+            {#if knowl.querySelectorAll(":scope > outtro[distractor='true']").length > 1}
+                <h5>Choices:</h5>
+                <ol class="choices">
+                {#each randomChoices(knowl) as outtro}
+                    <li><Content content={outtro}/></li>
+                {/each}
+                </ol>
+            {/if}
             <p>
                 <a class="toggle" href="#toggle" on:click={toggleOuttro}>
                     {#if showOuttro}
@@ -76,7 +92,11 @@
                 </a>
             </p>
             {#if showOuttro}
-                <Content content={knowl.querySelector(":scope > outtro")}/>
+                {#each [...knowl.querySelectorAll(":scope > outtro")] as outtro}
+                    {#if outtro.getAttribute("distractor") != "true"}
+                        <Content content={outtro}/>
+                    {/if}
+                {/each}
             {/if}
         </div>
     {/if}
@@ -89,6 +109,9 @@
     }
     ol {
         list-style: none;
+    }
+    ol.choices {
+       list-style: upper-alpha;
     }
     .outtro {
         border-color: rgb(90, 90, 90);

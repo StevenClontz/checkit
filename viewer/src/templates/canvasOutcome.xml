@@ -23,8 +23,11 @@
               -->file_upload_question<!-- 
               {{/upload}} 
               {{#boolean}}
-              -->true_false_question<!-- 
-              {{/boolean}} 
+              -->true_false_question<!--
+              {{/boolean}}
+              {{#mcq}}
+              -->multiple_choice_question<!--
+              {{/mcq}}
               --></fieldentry>
           </qtimetadatafield>
           <qtimetadatafield>
@@ -78,6 +81,19 @@
           </render_choice>
         </response_lid>
         <!-- {{/boolean}} -->
+        <!-- {{#mcq}} -->
+        <response_lid ident="response1" rcardinality="Single">
+          <render_choice>
+            <!-- {{#choices}} -->
+            <response_label ident="{{ident}}">
+              <material>
+                <mattext texttype="text/html">{{html}}</mattext>
+              </material>
+            </response_label>
+            <!-- {{/choices}} -->
+          </render_choice>
+        </response_lid>
+        <!-- {{/mcq}} -->
       </presentation>
       <resprocessing>
         <outcomes>
@@ -91,6 +107,14 @@
           <setvar action="Set" varname="SCORE">100</setvar>
         </respcondition>
         <!-- {{/boolean}} -->
+        <!-- {{#mcq}} -->
+        <respcondition continue="No">
+          <conditionvar>
+            <varequal respident="response1">{{correctChoiceIdent}}</varequal>
+          </conditionvar>
+          <setvar action="Set" varname="SCORE">100</setvar>
+        </respcondition>
+        <!-- {{/mcq}} -->
       </resprocessing>
       <itemfeedback ident="correct_fb">
         <flow_mat>
